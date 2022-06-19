@@ -31,3 +31,5 @@ let emaleExceptions = [
 ];
 
 console.log(filterNoException(emaleAll, emaleExceptions));
+
+export default filterNoException;
