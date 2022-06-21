@@ -58,17 +58,21 @@ let panfilovtsev28 = [
   {name: 'Николай', surname: 'Ананьев'},
 ]
 
-function filterArrayKeyVol(array, propName) {
-  console.log(propName);
+function filterArrayKeyVol(array, propName, val) {
+  let found = [];
   for (let item of array) {
-    console.log(item);
-
+    for (let i of Object.keys(item)) {
+      if (i === propName) {
+        for (let p of Object.values(item)) {
+          if (p === val) {
+            found.push(item)
+          }
+        }
+      }
+    }
   }
-
+  return found;
 }
-// let find = [];
 
-
-
-
-filterArrayKeyVol(panfilovtsev28, 'surmame');
+console.log(filterArrayKeyVol(panfilovtsev28, 'name', 'Николай'));
+console.log(filterArrayKeyVol(BakuСommissars26, 'name', 'Иван'));

@@ -11,8 +11,8 @@ let computer = {
 
 }
 
-let values = Object.keys(computer);
-let keys = Object.values(computer);
+let key = Object.keys(computer);
+let value = Object.values(computer);
 let entries = Object.entries(computer);
 
 for (let value of values) {
