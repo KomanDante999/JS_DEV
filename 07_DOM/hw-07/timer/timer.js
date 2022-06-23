@@ -1,18 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-  let duration = 0;
-  let intervID;
   let timerInput = document.querySelector('.timer__input');
   let timerOutput = document.querySelector('.timer__output');
   let timerStart = document.querySelector('.timer__start');
 
-  function inputVal() {
-    let inputValue = Math.round(Math.abs(timerInput.value));
-    if (inputValue > 0) {
-      return inputValue - 1;
-    } else {
-      return inputValue;
-    }
-  };
+  let inputValue = Math.round(Math.abs(timerInput.value));
+
 
 
   function timeOut() {
@@ -20,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentVal === duration) {
       clearInterval(intervID);
     }
-    timerOutput.textContent =currentVal  +1;
+    timerOutput.textContent = currentVal  +1;
   };
 
   timerInput.addEventListener('input', inputVal);
