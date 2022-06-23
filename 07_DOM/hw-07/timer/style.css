@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 100px 20px;
+}
+
+.timer__output {
+  margin-right: 20px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 20px;
+  color: white;
+  background-color: rgb(12, 105, 241);
+  box-shadow: rgba(49, 132, 253, 0.5) 0px 0px 0px 4px;
+}
+
+.timer__input {
+  width: 100px;
+  outline: none;
+  border-color: transparent;
+  border-radius: 6px;
+  text-align: center;
+  margin-right: 20px;
+  box-shadow: rgba(49, 132, 253, 0.5) 0px 0px 0px 4px;
+
+}
