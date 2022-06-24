@@ -8,13 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
       return timerInput.value;
   };
 
-  function timeOut(finalVal, step) {
+  function timeOut(step) {
     let currentVal = parseInt(timerOutput.textContent);
     console.log('currentVal', currentVal);
-    if (currentVal >= finalVal) {
-      clearInterval(intervID);
+    if (currentVal !== 0) {
+      timerOutput.textContent = currentVal - step;
     }
-    timerOutput.textContent = currentVal + step;
+    else {
+      clearInterval(intervID);
+    };
   };
 
   timerInput.addEventListener('input', inputVal);
@@ -22,19 +24,16 @@ document.addEventListener('DOMContentLoaded', function() {
   timerStart.addEventListener('click', function() {
     console.log(inputVal());
     clearInterval(intervID);
-    step = 1;
+    timerOutput.textContent = inputVal();
     delay = 1000;
     if (inputVal() > 0) {
-      timerOutput.textContent = 0;
-      intervID = setInterval(timeOut, delay, inputVal() - 1, step);
-    };
+      step = 1;
+      intervID = setInterval(timeOut, delay, step);
+    }
     if (inputVal() < 0) {
-      timerOutput.textContent = inputVal();
-      intervID = setInterval(timeOut, delay, -1, step);
-    };
-    if (inputVal() === 0) {
-      timerOutput.textContent = 0;
-    };
+      step = -1;
+      intervID = setInterval(timeOut, delay, step);
+    }
   });
 
 
