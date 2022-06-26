@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function timeOut(step) {
     let currentVal = parseInt(timerOutput.textContent);
-    console.log('currentVal', currentVal);
     if (currentVal !== 0) {
       timerOutput.textContent = currentVal - step;
     }
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
   timerInput.addEventListener('input', inputVal);
 
   timerStart.addEventListener('click', function() {
-    console.log(inputVal());
     clearInterval(intervID);
     timerOutput.textContent = inputVal();
     delay = 1000;
