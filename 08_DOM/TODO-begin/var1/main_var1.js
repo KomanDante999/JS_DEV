@@ -69,10 +69,8 @@
     };
   };
 
-  document.addEventListener('DOMContentLoaded', function() {
-    let container = document.getElementById('todo-app');
-
-    let todoAppTitle = createAppTitle('Список дел');
+  function createTodoApp(container, title = 'Список дел') {
+    let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
 
@@ -111,10 +109,14 @@
 
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
-
     });
+  }
 
 
+  document.addEventListener('DOMContentLoaded', function() {
+    createTodoApp(document.getElementById('my-todos'), 'Мои дела');
+    createTodoApp(document.getElementById('mom-todos'), 'Дела для мамы');
+    createTodoApp(document.getElementById('dad-todos'), 'Дела для папы');
   });
 
 
