@@ -1,3 +1,5 @@
+// { name: 'Название дела', done: false/true }
+
 (function() {
   // создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
@@ -22,10 +24,13 @@
     button.textContent = 'Добавить дело';
 
     // убираем disabled с кнопки если введено назвние дела
+    // вешаем disabled на кнопку если поле ввода очистили
     input.addEventListener('input', function() {
       if (input.value) {
-        console.log(input.value);
         button.removeAttribute("disabled");
+      }
+      if (!input.value) {
+        button.setAttribute("disabled", "disabled");
       }
     });
 
@@ -40,7 +45,7 @@
     };
   };
 
-  // создаем и возврпщаем список элементов
+ // создаем и возврпщаем список элементов
   function createTodoList() {
     let list = document.createElement('ul');
     list.classList.add('list-group');
@@ -78,6 +83,16 @@
     };
   };
 
+  // первоначальный список дел
+  let listTodoInit = [
+    {name: 'разблокировать сервер', done: false},
+    {name: 'проверить почту', done: false},
+    {name: 'проверить сертификаты', done: false},
+    {name: 'заблокировать сервер', done: false},
+  ];
+  console.log(listTodoInit);
+
+
   function createTodoApp(container, title = 'Список дел') {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
@@ -98,6 +113,8 @@
         return;
       }
 
+
+
       let todoItem = createTodoItem(todoItemForm.input.value);
 
       // добавляем обработчики событий на кнопки
@@ -115,6 +132,7 @@
 
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
+      // вешаем disabled на кнопку так как поле ввода обнулилось
       todoItemForm.button.setAttribute("disabled", "disabled");
     });
   }
