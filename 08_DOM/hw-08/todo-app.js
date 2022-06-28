@@ -19,8 +19,15 @@
     buttonWrapper.classList.add('input-group-append');
     button.classList.add('btn', 'btn-primary');
     button.setAttribute("disabled", "disabled");
-
     button.textContent = 'Добавить дело';
+
+    // убираем disabled с кнопки если введено назвние дела
+    input.addEventListener('input', function() {
+      if (input.value) {
+        console.log(input.value);
+        button.removeAttribute("disabled");
+      }
+    });
 
     buttonWrapper.append(button);
     form.append(input);
@@ -32,13 +39,6 @@
       button,
     };
   };
-
-  // функция проверки поля input и удаления disabled с кнопки
-  function disabledRemove(element) {
-    if (input.value !== '') {
-      element.removeAttribute("disabled");
-    }
-  }
 
   // создаем и возврпщаем список элементов
   function createTodoList() {
@@ -96,8 +96,6 @@
       // игнорируем создание элемента, если пользователь ничего не ввел в поле
       if (!todoItemForm.input.value) {
         return;
-      } else {
-        disabledRemove(button);
       }
 
       let todoItem = createTodoItem(todoItemForm.input.value);
@@ -117,6 +115,7 @@
 
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
+      todoItemForm.button.setAttribute("disabled", "disabled");
     });
   }
 
