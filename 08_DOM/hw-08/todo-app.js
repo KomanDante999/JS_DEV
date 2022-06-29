@@ -53,7 +53,7 @@
   }
 
   // создание дела
-  function createTodoItem(name) {
+  function createTodoItem({name, done}) {
     let item = document.createElement('li');
     // кнопки помещаем в элемент, который красиво покажет их в одной группе
     let buttonGroup = document.createElement('div');
@@ -70,6 +70,10 @@
     deleteButton.classList.add('btn', 'btn-danger');
     deleteButton.textContent = 'Удалить';
 
+    if (done === true) {
+      item.classList.add('list-group-item-success');
+    }
+
     // вкладываем кнопки в один элемент
     buttonGroup.append(doneButton);
     buttonGroup.append(deleteButton);
@@ -85,15 +89,14 @@
 
   // первоначальный список дел
   let listTodoInit = [
-    {name: 'разблокировать сервер', done: false},
+    {name: 'разблокировать сервер', done: true},
     {name: 'проверить почту', done: false},
     {name: 'проверить сертификаты', done: false},
     {name: 'заблокировать сервер', done: false},
   ];
   console.log(listTodoInit);
 
-
-  function createTodoApp(container, title = 'Список дел') {
+  function createTodoApp(container, title = 'Список дел', array) {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
@@ -101,6 +104,11 @@
     container.append(todoAppTitle);
     container.append(todoItemForm.form);
     container.append(todoList);
+
+    for (let todo of array) {
+      createTodoItem(todo);
+      todoList.append(todoItem.item);
+    }
 
     // браузер создает событие submit на форма по нажатию на Enter или на кнопку создания дела
     todoItemForm.form.addEventListener('submit', function(e) {
