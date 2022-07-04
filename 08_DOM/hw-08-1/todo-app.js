@@ -7,9 +7,6 @@
     {name: 'дело 4', done: false},
   ];
 
-  console.log(Object.values(todoItemDefault[0]));
-  console.log(Object.keys(todoItemDefault[0]));
-
   // 1 создаем и возвращаем заголовок приложения
   function createAppTitle(title) {
     let appTitle = document.createElement('h2');
@@ -102,12 +99,56 @@
       }
     });
 
+    // вывод списка дел по умолчанию
     for (const item of todoItemDefault) {
       let ItemDefaultValue = item.name;
       let ItemDefault = createTodoItem(ItemDefaultValue)
       todoList.append(ItemDefault.item)
+
+      // обработчики событий на кнопках
+      ItemDefault.doneButton.addEventListener('click', function() {
+        ItemDefault.item.classList.toggle('list-group-item-success')
+      });
+      ItemDefault.deleteButton.addEventListener('click', function() {
+        if (confirm('Удалить дело?')) {
+          ItemDefault.item.remove();
+        }
+      });
+
     }
 
+
+    // реакция на событие submit
+    todoItemForm.form.addEventListener('submit', function(e) {
+      // предотвращаем перезагрузку страницы
+      e.preventDefault();
+
+      if (!todoItemForm.input.value) {
+        return;
+      }
+
+      // создаем новый элемент (дело)
+      let todoItem = createTodoItem(todoItemForm.input.value);
+
+
+      // обработчики событий на кнопках
+      todoItem.doneButton.addEventListener('click', function() {
+        todoItem.item.classList.toggle('list-group-item-success')
+      });
+      todoItem.deleteButton.addEventListener('click', function() {
+        if (confirm('Удалить дело?')) {
+          todoItem.item.remove();
+        }
+      });
+
+      // добавляем новый элемент (дело) в DOM
+      todoList.append(todoItem.item);
+
+
+      todoItemForm.input.value = '';
+      todoItemForm.button.setAttribute("disabled", "disabled");
+
+    });
 
   });
 
