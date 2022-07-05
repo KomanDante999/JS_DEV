@@ -1,6 +1,6 @@
 (function() {
   // 0 список дел по умолчанию
-  let todoItemDefault = [
+  let todoItemList = [
     {name: 'дело 1', done: false},
     {name: 'дело 2', done: true},
     {name: 'дело 3', done: false},
@@ -10,7 +10,7 @@
   // 1 создаем и возвращаем заголовок приложения
   function createAppTitle(title) {
     let appTitle = document.createElement('h2');
-    title = prompt('введите название списка', 'Планирование на день')
+    // title = prompt('введите название списка', 'Планирование на день')
     appTitle.innerHTML = title;
     return appTitle;
   }
@@ -75,13 +75,9 @@
     }
   }
 
-
-
-  // помещаем элементы формы в DOM
-  document.addEventListener('DOMContentLoaded', function() {
-    let container = document.getElementById('todo-app');
-
-    let todoAppTitle = createAppTitle();
+  // сборка
+  function createTodoApp(container, title = 'планирование') {
+    let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
 
@@ -100,7 +96,7 @@
     });
 
     // вывод списка дел по умолчанию
-    for (const item of todoItemDefault) {
+    for (const item of todoItemList) {
       let ItemDefaultValue = item.name;
       let ItemDefault = createTodoItem(ItemDefaultValue)
       todoList.append(ItemDefault.item)
@@ -108,6 +104,7 @@
       // обработчики событий на кнопках
       ItemDefault.doneButton.addEventListener('click', function() {
         ItemDefault.item.classList.toggle('list-group-item-success')
+        console.log(ItemDefault.item);
       });
       ItemDefault.deleteButton.addEventListener('click', function() {
         if (confirm('Удалить дело?')) {
@@ -134,6 +131,7 @@
       // обработчики событий на кнопках
       todoItem.doneButton.addEventListener('click', function() {
         todoItem.item.classList.toggle('list-group-item-success')
+        console.log(todoItem);
       });
       todoItem.deleteButton.addEventListener('click', function() {
         if (confirm('Удалить дело?')) {
@@ -149,10 +147,10 @@
       todoItemForm.button.setAttribute("disabled", "disabled");
 
     });
+  }
 
-  });
-
-
+  // регистрируем функцию приложения как глобальный объект
+  window.createTodoApp = createTodoApp;
 
 
 
