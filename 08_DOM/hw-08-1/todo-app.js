@@ -1,6 +1,6 @@
 (function() {
-  // 0 список дел по умолчанию
-  let todoItemList = [
+  // список дел по умолчанию
+  let myListTodos = [
     {name: 'дело 1', done: false},
     {name: 'дело 2', done: true},
     {name: 'дело 3', done: false},
@@ -49,7 +49,7 @@
   }
 
   // 4 создание элемента списка (дело)
-  function createTodoItem(name = 'новое дело') {
+  function createTodoItem({name, done}) {
     let item = document.createElement('li');
     let buttonGroup = document.createElement('div');
     let doneButton = document.createElement('button');
@@ -62,7 +62,10 @@
     doneButton.classList.add('btn', 'btn-success');
     doneButton.textContent = 'Завершено';
     deleteButton.classList.add('btn', 'btn-danger');
-    deleteButton.textContent = 'Удалить'
+    deleteButton.textContent = 'Удалить';
+    if (done === true) {
+      item.classList.add('list-group-item-success');
+    }
 
     buttonGroup.append(doneButton);
     buttonGroup.append(deleteButton);
@@ -75,8 +78,8 @@
     }
   }
 
-  // сборка
-  function createTodoApp(container, title = 'планирование') {
+  // основная фнкция
+  function createTodoApp(container, title = 'планирование', listItems) {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
@@ -96,15 +99,13 @@
     });
 
     // вывод списка дел по умолчанию
-    for (const item of todoItemList) {
-      let ItemDefaultValue = item.name;
-      let ItemDefault = createTodoItem(ItemDefaultValue)
+    for (const item of listItems) {
+      let ItemDefault = createTodoItem(item)
       todoList.append(ItemDefault.item)
 
       // обработчики событий на кнопках
       ItemDefault.doneButton.addEventListener('click', function() {
         ItemDefault.item.classList.toggle('list-group-item-success')
-        console.log(ItemDefault.item);
       });
       ItemDefault.deleteButton.addEventListener('click', function() {
         if (confirm('Удалить дело?')) {
@@ -124,9 +125,11 @@
         return;
       }
 
+      // добавляем новое дело в массив (список дел)
+      listItems.push({name: todoItemForm.input.value, done: false})
+      console.log(listItems);
       // создаем новый элемент (дело)
-      let todoItem = createTodoItem(todoItemForm.input.value);
-
+      let todoItem = createTodoItem(listItems[listItems.length - 1]);
 
       // обработчики событий на кнопках
       todoItem.doneButton.addEventListener('click', function() {
@@ -151,6 +154,7 @@
 
   // регистрируем функцию приложения как глобальный объект
   window.createTodoApp = createTodoApp;
+  window.myListTodos = myListTodos;
 
 
 
