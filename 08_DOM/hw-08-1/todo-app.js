@@ -91,28 +91,29 @@
     // активация и деактивация кнопки создания дела
     todoItemForm.input.addEventListener('input', function() {
       if (todoItemForm.input.value) {
-        todoItemForm.button.removeAttribute("disabled");
+        todoItemForm.button.removeAttribute('disabled');
       }
       else {
-        todoItemForm.button.setAttribute("disabled", "disabled");
+        todoItemForm.button.setAttribute('disabled', 'disabled');
       }
     });
 
-    // вывод списка дел по умолчанию
-    for (const item of listItems) {
-      let ItemDefault = createTodoItem(item)
-      todoList.append(ItemDefault.item)
+    // вывод списка дел из сохраненного массива
+    for (let i = 0; i < listItems.length; i++) {
+      let element = createTodoItem(listItems[i]);
+      todoList.append(element.item);
+      element.item.setAttribute('value', i);
 
-      // обработчики событий на кнопках
-      ItemDefault.doneButton.addEventListener('click', function() {
-        ItemDefault.item.classList.toggle('list-group-item-success')
+
+          // обработчики событий на кнопках
+      element.doneButton.addEventListener('click', function() {
+        element.item.classList.toggle('list-group-item-success')
       });
-      ItemDefault.deleteButton.addEventListener('click', function() {
+      element.deleteButton.addEventListener('click', function() {
         if (confirm('Удалить дело?')) {
-          ItemDefault.item.remove();
+          element.item.remove();
         }
       });
-
     }
 
 
@@ -150,6 +151,9 @@
       todoItemForm.button.setAttribute("disabled", "disabled");
 
     });
+
+
+
   }
 
   // регистрируем функцию приложения как глобальный объект
