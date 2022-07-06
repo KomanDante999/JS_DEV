@@ -80,6 +80,35 @@
     }
   }
 
+  // 5 вывод списка дел из массива
+  function createItemFromList(list, todoList) {
+    for (let i = 0; i < list.length; i++) {
+      let element = createTodoItem(list[i]);
+      todoList.append(element.item);
+
+      // обработчики событий на кнопках
+      element.doneButton.addEventListener('click', function() {
+        element.item.classList.toggle('list-group-item-success');
+        // изменение статуса дела в массиве
+        if (list[i].done) {
+          list[i].done = false;
+        } else {
+          list[i].done = true;
+        }
+      });
+      element.deleteButton.addEventListener('click', function() {
+        if (confirm('Удалить дело?')) {
+          element.item.remove();
+
+          // list.splice(i, 1)
+          // console.log(list);
+        }
+      });
+    }
+
+  }
+
+
   // основная фнкция
   function createTodoApp(container, title = 'планирование', list) {
     let todoAppTitle = createAppTitle(title);
@@ -100,32 +129,8 @@
       }
     });
 
-    // вывод списка дел из сохраненного массива
-    for (let i = 0; i < list.length; i++) {
-        let element = createTodoItem(list[i]);
-        todoList.append(element.item);
-
-        // обработчики событий на кнопках
-        element.doneButton.addEventListener('click', function() {
-          element.item.classList.toggle('list-group-item-success');
-          // изменение статуса дела в массиве
-          if (list[i].done) {
-            list[i].done = false;
-          } else {
-            list[i].done = true;
-          }
-        });
-        element.deleteButton.addEventListener('click', function() {
-          if (confirm('Удалить дело?')) {
-            element.item.remove();
-
-            list.splice(i, 1)
-            console.log(list);
-          }
-        });
-
-      }
-
+    // создание списка элементов из сохраненного массива
+    createItemFromList(list, todoList);
 
     // реакция на событие submit
     todoItemForm.form.addEventListener('submit', function(e) {
@@ -139,29 +144,40 @@
       // добавляем новое дело в массив (список дел)
       list.push({name: todoItemForm.input.value, done: false})
       console.log(list);
+
+      createItemFromList(list, todoList);
+
       // создаем новый элемент (дело)
-      let todoItem = createTodoItem(list[list.length - 1]);
+      // let todoItem = createTodoItem(list[list.length - 1]);
 
       // обработчики событий на кнопках
-      todoItem.doneButton.addEventListener('click', function() {
-        todoItem.item.classList.toggle('list-group-item-success')
-        console.log(todoItem);
-      });
-      todoItem.deleteButton.addEventListener('click', function() {
-        if (confirm('Удалить дело?')) {
-          todoItem.item.remove();
-        }
-      });
+      // todoItem.doneButton.addEventListener('click', function() {
+      //   todoItem.item.classList.toggle('list-group-item-success')
+      //   console.log(todoItem);
+      // });
+      // todoItem.deleteButton.addEventListener('click', function() {
+      //   if (confirm('Удалить дело?')) {
+      //     todoItem.item.remove();
+      //   }
+      // });
 
       // добавляем новый элемент (дело) в DOM
-      todoList.append(todoItem.item);
+      // todoList.append(todoItem.item);
 
 
       todoItemForm.input.value = '';
       todoItemForm.button.disabled = true;
+      return list;
     });
 
+
+
+
+
   }
+
+
+
 
   // регистрируем функцию приложения как глобальный объект
   window.createTodoApp = createTodoApp;
