@@ -44,7 +44,7 @@
   }
 
   // 3 создаем и возвращаем список элементов
-  function createTodoList(params) {
+  function createTodoList() {
     let list = document.createElement('ul');
     list.classList.add('list-group');
     return list;
@@ -81,10 +81,15 @@
   }
 
   // 5 вывод списка дел из массива
-  function createItemFromList(list, todoList) {
+  function createItemFromList(list, ul) {
+    // удаление всех элементов списка
+    while (ul.firstElementChild) {
+      ul.firstElementChild.remove()
+    }
+
     for (let i = 0; i < list.length; i++) {
       let element = createTodoItem(list[i]);
-      todoList.append(element.item);
+      ul.append(element.item);
 
       // обработчики событий на кнопках
       element.doneButton.addEventListener('click', function() {
@@ -96,13 +101,14 @@
           list[i].done = true;
         }
       });
+
       element.deleteButton.addEventListener('click', function() {
         if (confirm('Удалить дело?')) {
           element.item.remove();
 
-          // list.splice(i, 1)
-          // console.log(list);
+          list.splice(i, 1)
         }
+        console.log(list);
       });
     }
 
@@ -143,12 +149,9 @@
 
       // добавляем новое дело в массив (список дел)
       list.push({name: todoItemForm.input.value, done: false})
-      console.log(list);
 
       createItemFromList(list, todoList);
 
-      // создаем новый элемент (дело)
-      // let todoItem = createTodoItem(list[list.length - 1]);
 
       // обработчики событий на кнопках
       // todoItem.doneButton.addEventListener('click', function() {
