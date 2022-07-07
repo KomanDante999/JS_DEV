@@ -1,5 +1,8 @@
 (function() {
-  let listCase = [];
+  let listCase = [],
+      my = '',
+      listName = '';
+
 
   // 01 создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
@@ -58,8 +61,12 @@
     }
     return maxId + 1;
   }
+  // 05 сохранение в storage
+  function saveListCase(array, keyName) {
+    localStorage.setItem(keyName, JSON.stringify(array))
+  }
 
-  // 05 создание дела
+  // 06 создание дела
   function createTodoItem(obj) {
     let item = document.createElement('li');
     // кнопки помещаем в элемент, который красиво покажет их в одной группе
@@ -91,6 +98,8 @@
           console.log('смена состояния', listCase);
         }
       }
+      // сохраняем в storage
+      saveListCase(listCase, listName);
     });
     // delete
     deleteButton.addEventListener('click', function () {
@@ -105,6 +114,8 @@
           }
         }
       }
+      // сохраняем в storage
+      saveListCase(listCase, listName);
     });
 
     // вкладываем кнопки в один элемент
@@ -121,10 +132,12 @@
   };
 
   // основная функция
-  function createTodoApp(container, title) {
+  function createTodoApp(container, title, keyName) {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
+
+    listName = keyName;
 
     container.append(todoAppTitle);
     container.append(todoItemForm.form);
@@ -157,6 +170,9 @@
       // добавление нового дела в массив
       listCase.push(newCase);
       console.log('добавление в массив', listCase);
+      // сохраняем в storage
+      saveListCase(listCase, listName);
+
 
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
@@ -165,5 +181,6 @@
   }
 
   window.createTodoApp = createTodoApp;
+  window.my = my;
 
 })();
