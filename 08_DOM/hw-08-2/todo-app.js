@@ -102,14 +102,24 @@
         }
       });
 
-      element.deleteButton.addEventListener('click', function() {
-        if (confirm('Удалить дело?')) {
-          element.item.remove();
+      // element.deleteButton.addEventListener('click', function() {
+      //   if (confirm('Удалить дело?')) {
+      //     list.splice(i, 1)
+      //     // element.item.remove();
+      //     // удаление всех элементов списка
+      //     while (ul.firstElementChild) {
+      //       ul.firstElementChild.remove();
+      //     }
 
-          list.splice(i, 1)
-        }
-        console.log(list);
-      });
+      //     for (let n = 0; n < list.length; n++) {
+      //       let elm = createTodoItem(list[n]);
+      //       ul.append(elm.item);
+      //     }
+
+      //   }
+      //   console.log(list);
+      //   return
+      // });
     }
 
   }
@@ -137,6 +147,7 @@
 
     // создание списка элементов из сохраненного массива
     createItemFromList(list, todoList);
+    console.log('список по умолчанию', todoList);
 
     // реакция на событие submit
     todoItemForm.form.addEventListener('submit', function(e) {
@@ -151,6 +162,7 @@
       list.push({name: todoItemForm.input.value, done: false})
 
       createItemFromList(list, todoList);
+      console.log('после добавления элемента', todoList);
 
 
       // обработчики событий на кнопках

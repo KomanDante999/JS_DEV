@@ -1,12 +1,14 @@
 (function() {
-  // создаем и возврпщаем заголовок приложения
+  let listCase = [];
+
+  // 01 создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
     let appTitle = document.createElement('h2');
     appTitle.innerHTML = title;
     return appTitle
   }
 
-  // создаем и возврпщаем форму для создания дела
+  // 02 создаем и возврпщаем форму для создания дела
   function createTodoItemForm() {
     let form = document.createElement('form');
     let input = document.createElement('input');
@@ -19,6 +21,14 @@
     buttonWrapper.classList.add('input-group-append');
     button.classList.add('btn', 'btn-primary');
     button.textContent = 'Добавить дело';
+    button.disabled = true;
+    input.addEventListener('input', function() {
+      if (input.value) {
+        button.disabled = false;
+      } else {
+        button.disabled = true;
+      }
+    });
 
     buttonWrapper.append(button);
     form.append(input);
@@ -31,15 +41,26 @@
     };
   };
 
- // создаем и возврпщаем список элементов
+ // 03 создаем и возврпщаем список элементов
   function createTodoList() {
     let list = document.createElement('ul');
     list.classList.add('list-group');
     return list;
   }
 
-  // создание дела
-  function createTodoItem(name) {
+  // 04 получение уникального id
+  function getUniqId(array) {
+    let maxId = 0;
+    for (const item of array) {
+      if (item.id > maxId) {
+        maxId = item.id;
+      }
+    }
+    return maxId + 1;
+  }
+
+  // 05 создание дела
+  function createTodoItem(obj) {
     let item = document.createElement('li');
     // кнопки помещаем в элемент, который красиво покажет их в одной группе
     let buttonGroup = document.createElement('div');
@@ -48,13 +69,43 @@
 
     // стили для элемента списка и для размещения кнопок
     item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-    item.textContent = name;
+    item.textContent = obj.name;
 
     buttonGroup.classList.add('btn-group', 'btn-group-sm');
     doneButton.classList.add('btn', 'btn-success');
     doneButton.textContent = 'Готово';
     deleteButton.classList.add('btn', 'btn-danger');
     deleteButton.textContent = 'Удалить';
+
+    if (obj.done) {
+      item.classList.add('list-group-item-success');
+    }
+
+    // добавляем обработчики событий на кнопки
+    // done
+    doneButton.addEventListener('click', function () {
+      item.classList.toggle('list-group-item-success');
+      for (const changeableCase of listCase) {
+        if (changeableCase.id == item.id) {
+          changeableCase.done = !changeableCase.done;
+          console.log('смена состояния', listCase);
+        }
+      }
+    });
+    // delete
+    deleteButton.addEventListener('click', function () {
+      if (confirm('Вы уверены?')) {
+        item.remove();
+        // удаление из массива
+        for (let i = 0; i < listCase.length; i++) {
+          let deletedCase = listCase[i];
+          if (deletedCase.id == item.id) {
+            listCase.splice(i, 1);
+            console.log('удаление элемента', listCase);
+          }
+        }
+      }
+    });
 
     // вкладываем кнопки в один элемент
     buttonGroup.append(doneButton);
@@ -69,6 +120,7 @@
     };
   };
 
+  // основная функция
   function createTodoApp(container, title) {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
@@ -87,24 +139,28 @@
       if (!todoItemForm.input.value) {
         return;
       }
+      // создание объекта с именем дела
+      let newCase = {
+        id: getUniqId(listCase),
+        name: todoItemForm.input.value,
+        done: false
+      };
 
-      let todoItem = createTodoItem(todoItemForm.input.value);
+      let todoItem = createTodoItem(newCase);
+      todoItem.item.id = newCase.id;
 
-      // добавляем обработчики событий на кнопки
-      todoItem.doneButton.addEventListener('click', function () {
-        todoItem.item.classList.toggle('list-group-item-success');
-      });
-      todoItem.deleteButton.addEventListener('click', function () {
-        if (confirm('Вы уверены?')) {
-          todoItem.item.remove();
-        }
-      });
+
 
       // создаем и добавляем в список новое дело с названием из поля ввода
       todoList.append(todoItem.item);
 
+      // добавление нового дела в массив
+      listCase.push(newCase);
+      console.log('добавление в массив', listCase);
+
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
+      todoItemForm.button.disabled = true;
     });
   }
 
