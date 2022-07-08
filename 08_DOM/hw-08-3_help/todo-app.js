@@ -1,8 +1,27 @@
 (function() {
   let listCase = [],
-      my = '',
-      listName = '';
-
+  listNameStorage = '',
+  myListCaseDefolt = [
+    {id: 0, name: 'моё запланированное дело 1', done: false},
+    {id: 1, name: 'моё запланированное дело 2', done: false},
+    {id: 2, name: 'моё запланированное дело 3', done: false},
+    {id: 3, name: 'моё запланированное дело 4', done: false},
+    {id: 4, name: 'моё запланированное дело 5', done: false},
+  ],
+  momListCaseDefolt = [
+    {id: 0, name: 'мамино запланированное дело 1', done: false},
+    {id: 1, name: 'мамино запланированное дело 2', done: false},
+    {id: 2, name: 'мамино запланированное дело 3', done: false},
+    {id: 3, name: 'мамино запланированное дело 4', done: false},
+    {id: 4, name: 'мамино запланированное дело 5', done: false},
+  ],
+  dadListCaseDefolt = [
+    {id: 0, name: 'папино запланированное дело 1', done: false},
+    {id: 1, name: 'папино запланированное дело 2', done: false},
+    {id: 2, name: 'папино запланированное дело 3', done: false},
+    {id: 3, name: 'папино запланированное дело 4', done: false},
+    {id: 4, name: 'папино запланированное дело 5', done: false},
+  ];
 
   // 01 создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
@@ -62,7 +81,7 @@
     return maxId + 1;
   }
   // 05 сохранение в storage
-  function saveListCase(array, keyName) {
+  function saveListStorage(array, keyName) {
     localStorage.setItem(keyName, JSON.stringify(array))
   }
 
@@ -77,6 +96,7 @@
     // стили для элемента списка и для размещения кнопок
     item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
     item.textContent = obj.name;
+    item.value = obj.id;
 
     buttonGroup.classList.add('btn-group', 'btn-group-sm');
     doneButton.classList.add('btn', 'btn-success');
@@ -93,13 +113,12 @@
     doneButton.addEventListener('click', function () {
       item.classList.toggle('list-group-item-success');
       for (const changeableCase of listCase) {
-        if (changeableCase.id == item.id) {
+        if (changeableCase.id == item.value) {
           changeableCase.done = !changeableCase.done;
-          console.log('смена состояния', listCase);
         }
       }
       // сохраняем в storage
-      saveListCase(listCase, listName);
+      saveListStorage(listCase, listNameStorage);
     });
     // delete
     deleteButton.addEventListener('click', function () {
@@ -108,14 +127,13 @@
         // удаление из массива
         for (let i = 0; i < listCase.length; i++) {
           let deletedCase = listCase[i];
-          if (deletedCase.id == item.id) {
+          if (deletedCase.id == item.value) {
             listCase.splice(i, 1);
-            console.log('удаление элемента', listCase);
           }
         }
       }
       // сохраняем в storage
-      saveListCase(listCase, listName);
+      saveListStorage(listCase, listNameStorage);
     });
 
     // вкладываем кнопки в один элемент
@@ -131,17 +149,42 @@
     };
   };
 
+  // 07 восстановление данных из storage
+  function restoredListStorage(keyName, array) {
+    let localData = localStorage.getItem(keyName);
+    if (localData !== null && localData !== '') {
+      array = JSON.parse(localData);
+    }
+    return array;
+  }
+
+  // 08 создание списка элементов из массива
+  function createItemFromList(array, targetNode) {
+    for (const itemFromArray of array) {
+      let todoItem = createTodoItem(itemFromArray);
+      targetNode.append(todoItem.item);
+    }
+  }
+
   // основная функция
-  function createTodoApp(container, title, keyName) {
+  function createTodoApp(container, title, keyName, listDefolt = []) {
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
 
-    listName = keyName;
 
     container.append(todoAppTitle);
     container.append(todoItemForm.form);
     container.append(todoList);
+
+    listNameStorage = keyName;
+
+    listCase = listDefolt;
+    // восстанавливаем список из storage в массив
+    listCase = restoredListStorage(listNameStorage, listCase);
+
+    // формируем список элементов из массива в указанный узел
+    createItemFromList(listCase, todoList);
 
     // обработка события submit на форме
     todoItemForm.form.addEventListener('submit', function(e) {
@@ -158,20 +201,15 @@
         name: todoItemForm.input.value,
         done: false
       };
-
-      let todoItem = createTodoItem(newCase);
-      todoItem.item.id = newCase.id;
-
-
-
       // создаем и добавляем в список новое дело с названием из поля ввода
+      let todoItem = createTodoItem(newCase);
       todoList.append(todoItem.item);
+
 
       // добавление нового дела в массив
       listCase.push(newCase);
-      console.log('добавление в массив', listCase);
       // сохраняем в storage
-      saveListCase(listCase, listName);
+      saveListStorage(listCase, listNameStorage);
 
 
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
@@ -180,7 +218,10 @@
     });
   }
 
+  // засоряем глобальную облать видимости
   window.createTodoApp = createTodoApp;
-  window.my = my;
+  window.myListCaseDefolt = myListCaseDefolt;
+  window.momListCaseDefolt = momListCaseDefolt;
+  window.dadListCaseDefolt = dadListCaseDefolt;
 
 })();
