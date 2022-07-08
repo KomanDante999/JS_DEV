@@ -1,27 +1,50 @@
 (function() {
   let listCase = [],
   listNameStorage = '',
-  myListCaseDefolt = [
+  myListCaseDefault = [
     {id: 0, name: 'моё запланированное дело 1', done: false},
     {id: 1, name: 'моё запланированное дело 2', done: false},
     {id: 2, name: 'моё запланированное дело 3', done: false},
     {id: 3, name: 'моё запланированное дело 4', done: false},
     {id: 4, name: 'моё запланированное дело 5', done: false},
   ],
-  momListCaseDefolt = [
+  momListCaseDefault = [
     {id: 0, name: 'мамино запланированное дело 1', done: false},
     {id: 1, name: 'мамино запланированное дело 2', done: false},
     {id: 2, name: 'мамино запланированное дело 3', done: false},
     {id: 3, name: 'мамино запланированное дело 4', done: false},
     {id: 4, name: 'мамино запланированное дело 5', done: false},
   ],
-  dadListCaseDefolt = [
+  dadListCaseDefault = [
     {id: 0, name: 'папино запланированное дело 1', done: false},
     {id: 1, name: 'папино запланированное дело 2', done: false},
     {id: 2, name: 'папино запланированное дело 3', done: false},
     {id: 3, name: 'папино запланированное дело 4', done: false},
     {id: 4, name: 'папино запланированное дело 5', done: false},
   ];
+
+  // дополнение
+  // кнопки очистки списка и восстановлениея списка по умолчанию
+  function createCleanDefaultBtn() {
+    let buttonWrapper = document.createElement('div');
+    let buttonClean = document.createElement('button');
+    let buttonDefault = document.createElement('button');
+
+    buttonWrapper.classList.add('d-flex', 'justify-content-end', 'align-items-center', 'mb-5');
+    buttonClean.classList.add('btn', 'btn-outline-primary', 'mr-2');
+    buttonClean.textContent = 'Очистить список дел';
+    buttonDefault.classList.add('btn', 'btn-outline-primary');
+    buttonDefault.textContent = 'Вернуть список дел по умолчанию';
+
+    buttonWrapper.append(buttonClean);
+    buttonWrapper.append(buttonDefault);
+
+    return {
+      buttonWrapper,
+      buttonClean,
+      buttonDefault,
+    }
+  }
 
   // 01 создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
@@ -167,7 +190,11 @@
   }
 
   // основная функция
-  function createTodoApp(container, title, keyName, listDefolt = []) {
+  function createTodoApp(container, title, keyName, listDefault = []) {
+    // дополнение
+    let todoCleanGroup = createCleanDefaultBtn();
+    container.append(todoCleanGroup.buttonWrapper);
+
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
@@ -179,7 +206,7 @@
 
     listNameStorage = keyName;
 
-    listCase = listDefolt;
+    listCase = listDefault;
     // восстанавливаем список из storage в массив
     listCase = restoredListStorage(listNameStorage, listCase);
 
@@ -211,17 +238,33 @@
       // сохраняем в storage
       saveListStorage(listCase, listNameStorage);
 
-
       // обнуляем значение в поле, что бы не пришлось стирать его вручную
       todoItemForm.input.value = '';
       todoItemForm.button.disabled = true;
+    });
+
+
+    // дополнение
+    // очистка списка дел
+    console.log(todoCleanGroup.buttonClean);
+    todoCleanGroup.buttonClean.addEventListener('click', function() {
+      listCase = [];
+      saveListStorage(listCase, listNameStorage);
+      // удаление всех элементов списка
+      while (todoList.firstElementChild) {
+        todoList.firstElementChild.remove();
+      }
+    });
+
+    todoCleanGroup.buttonDefault.addEventListener('click', function() {
+
     });
   }
 
   // засоряем глобальную облать видимости
   window.createTodoApp = createTodoApp;
-  window.myListCaseDefolt = myListCaseDefolt;
-  window.momListCaseDefolt = momListCaseDefolt;
-  window.dadListCaseDefolt = dadListCaseDefolt;
+  window.myListCaseDefault = myListCaseDefault;
+  window.momListCaseDefault = momListCaseDefault;
+  window.dadListCaseDefault = dadListCaseDefault;
 
 })();
