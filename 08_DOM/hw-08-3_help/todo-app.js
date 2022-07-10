@@ -86,7 +86,7 @@
     };
   };
 
- // 03 создаем и возврпщаем список элементов
+ // 03 создаем и возврпщаем ul
   function createTodoList() {
     let list = document.createElement('ul');
     list.classList.add('list-group');
@@ -94,8 +94,8 @@
   }
 
   // 04 получение уникального id
-  function getUniqId(array) {
-    let maxId = 0;
+  function getUniqId(array, lowLimit) {
+    let maxId = lowLimit;
     for (const item of array) {
       if (item.id > maxId) {
         maxId = item.id;
@@ -103,9 +103,20 @@
     }
     return maxId + 1;
   }
+
   // 05 сохранение в storage
   function saveListStorage(array, keyName) {
     localStorage.setItem(keyName, JSON.stringify(array))
+  }
+
+  // удаление из массива
+  function deletingFromArray(array, item) {
+    for (let i = 0; i < array.length; i++) {
+      let deletedCase = array[i];
+      if (deletedCase.id == item.value) {
+        array.splice(i, 1);
+      }
+    }
   }
 
   // 06 создание дела
@@ -148,12 +159,7 @@
       if (confirm('Вы уверены?')) {
         item.remove();
         // удаление из массива
-        for (let i = 0; i < listCase.length; i++) {
-          let deletedCase = listCase[i];
-          if (deletedCase.id == item.value) {
-            listCase.splice(i, 1);
-          }
-        }
+        deletingFromArray(listCase, item)
       }
       // сохраняем в storage
       saveListStorage(listCase, listNameStorage);
@@ -184,8 +190,8 @@
   // 08 создание списка элементов из массива
   function createItemFromList(array, targetNode) {
     for (const itemFromArray of array) {
-      let todoItem = createTodoItem(itemFromArray);
-      targetNode.append(todoItem.item);
+      let childNode = createTodoItem(itemFromArray);
+      targetNode.append(childNode.item);
     }
   }
 
@@ -206,7 +212,11 @@
 
     listNameStorage = keyName;
 
+    // обеспечиваем уникальность id списка дел по умолчанию
+    lowLimitId = listDefault.length;
+
     listCase = listDefault;
+
     // восстанавливаем список из storage в массив
     listCase = restoredListStorage(listNameStorage, listCase);
 
@@ -222,12 +232,14 @@
       if (!todoItemForm.input.value) {
         return;
       }
+
       // создание объекта с именем дела
       let newCase = {
-        id: getUniqId(listCase),
+        id: getUniqId(listCase, lowLimitId +1),
         name: todoItemForm.input.value,
         done: false
       };
+
       // создаем и добавляем в список новое дело с названием из поля ввода
       let todoItem = createTodoItem(newCase);
       todoList.append(todoItem.item);
@@ -246,18 +258,46 @@
 
     // дополнение
     // очистка списка дел
-    console.log(todoCleanGroup.buttonClean);
-    todoCleanGroup.buttonClean.addEventListener('click', function() {
-      listCase = [];
-      saveListStorage(listCase, listNameStorage);
-      // удаление всех элементов списка
-      while (todoList.firstElementChild) {
-        todoList.firstElementChild.remove();
+    function cleanList(array, targetNode, keyStorage) {
+      array = [];
+      saveListStorage(array, keyStorage);
+      // удаление всех элементов ul
+      while (targetNode.firstElementChild) {
+        targetNode.firstElementChild.remove();
       }
+
+    }
+    // действие кнопки "Очистить список дел"
+    todoCleanGroup.buttonClean.addEventListener('click', function() {
+      // обнуляем список и DOM
+      cleanList(listCase, todoList, listNameStorage);
+      //
+      // localStorage.clear();
+      // location.reload();
     });
 
+    // действие кнопки "Вернуть список дел по умолчанию"
     todoCleanGroup.buttonDefault.addEventListener('click', function() {
+      // сохраняем пользовательские дела
+      let saveList = [];
+      for (const element of listCase) {
+        if (element.id > lowLimitId) {
+          saveList.push(element)
+        }
+      }
+      // обнуляем список и DOM
+      cleanList(listCase, todoList, listNameStorage);
+      localStorage.removeItem(listNameStorage);
+      location.reload();
 
+      // объединяем массивы
+      let listConcat = listDefault.concat(saveList);
+
+      listCase = listConcat;
+      saveListStorage(listCase, listNameStorage);
+
+      // формируем список элементов из массива в указанный узел
+      createItemFromList(listCase, todoList);
     });
   }
 
