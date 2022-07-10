@@ -46,14 +46,14 @@
     }
   }
 
-  // 01 создаем и возврпщаем заголовок приложения
+  // создаем и возврпщаем заголовок приложения
   function createAppTitle(title) {
     let appTitle = document.createElement('h2');
     appTitle.innerHTML = title;
     return appTitle
   }
 
-  // 02 создаем и возврпщаем форму для создания дела
+  // создаем и возврпщаем форму для создания дела
   function createTodoItemForm() {
     let form = document.createElement('form');
     let input = document.createElement('input');
@@ -86,14 +86,14 @@
     };
   };
 
- // 03 создаем и возврпщаем ul
+ // создаем и возврпщаем ul
   function createTodoList() {
     let list = document.createElement('ul');
     list.classList.add('list-group');
     return list;
   }
 
-  // 04 получение уникального id
+  // получение уникального id
   function getUniqId(array, lowLimit) {
     let maxId = lowLimit;
     for (const item of array) {
@@ -104,7 +104,7 @@
     return maxId + 1;
   }
 
-  // 05 сохранение в storage
+  // сохранение в storage
   function saveListStorage(array, keyName) {
     localStorage.setItem(keyName, JSON.stringify(array))
   }
@@ -119,7 +119,7 @@
     }
   }
 
-  // 06 создание дела
+  // создание дела
   function createTodoItem(obj) {
     let item = document.createElement('li');
     // кнопки помещаем в элемент, который красиво покажет их в одной группе
@@ -170,7 +170,6 @@
     buttonGroup.append(deleteButton);
     item.append(buttonGroup);
 
-    // приложению нужен доступ и к самому элементу, и к кнопкам, что бы отрабатывать события нажантия
     return {
       item,
       doneButton,
@@ -178,7 +177,7 @@
     };
   };
 
-  // 07 восстановление данных из storage
+  // восстановление данных из storage
   function restoredListStorage(keyName, array) {
     let localData = localStorage.getItem(keyName);
     if (localData !== null && localData !== '') {
@@ -187,7 +186,7 @@
     return array;
   }
 
-  // 08 создание списка элементов из массива
+  // создание списка элементов из массива
   function createItemFromList(array, targetNode) {
     for (const itemFromArray of array) {
       let childNode = createTodoItem(itemFromArray);
@@ -204,7 +203,6 @@
     let todoAppTitle = createAppTitle(title);
     let todoItemForm = createTodoItemForm();
     let todoList = createTodoList();
-
 
     container.append(todoAppTitle);
     container.append(todoItemForm.form);
@@ -244,7 +242,6 @@
       let todoItem = createTodoItem(newCase);
       todoList.append(todoItem.item);
 
-
       // добавление нового дела в массив
       listCase.push(newCase);
       // сохраняем в storage
@@ -261,19 +258,16 @@
     function cleanList(array, targetNode, keyStorage) {
       array = [];
       saveListStorage(array, keyStorage);
+      location.reload();
       // удаление всех элементов ul
       while (targetNode.firstElementChild) {
         targetNode.firstElementChild.remove();
       }
-
     }
     // действие кнопки "Очистить список дел"
     todoCleanGroup.buttonClean.addEventListener('click', function() {
       // обнуляем список и DOM
       cleanList(listCase, todoList, listNameStorage);
-      //
-      // localStorage.clear();
-      // location.reload();
     });
 
     // действие кнопки "Вернуть список дел по умолчанию"
@@ -287,8 +281,6 @@
       }
       // обнуляем список и DOM
       cleanList(listCase, todoList, listNameStorage);
-      localStorage.removeItem(listNameStorage);
-      location.reload();
 
       // объединяем массивы
       let listConcat = listDefault.concat(saveList);
@@ -306,5 +298,4 @@
   window.myListCaseDefault = myListCaseDefault;
   window.momListCaseDefault = momListCaseDefault;
   window.dadListCaseDefault = dadListCaseDefault;
-
 })();
