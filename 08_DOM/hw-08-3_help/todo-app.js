@@ -50,7 +50,7 @@
   function createAppTitle(title) {
     let appTitle = document.createElement('h2');
     appTitle.innerHTML = title;
-    return appTitle
+    return appTitle;
   }
 
   // создаем и возврпщаем форму для создания дела
