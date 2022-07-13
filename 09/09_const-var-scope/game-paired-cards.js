@@ -2,10 +2,11 @@
   // название игры
   let nameGame = 'Найди пару';
   // размер поля игры
-  let withField = 6;
-  let heightField = 6;
+  let withField = 4;
+  let heightField = 4;
   // массив для формирования карточек
   let arrayCardsPaired = [];
+
   // счетчик кликов
   let countClick = 0;
   // счетчик количества ходов (кликов) в игре
@@ -32,8 +33,6 @@
     for (let i = 0; i < numberOfPairs; i++) {
       let objCard = {};
       objCard.id = i;
-      objCard.status = 'close';
-      objCard.find = false;
       // символ или изображение на карте может быть любым
       objCard.simbol = i + 1;
       array.push(objCard);
@@ -44,12 +43,22 @@
 
   // заголовок
   function createTitle(name) {
-    let titile = document.createElement('h2');
+    const titile = document.createElement('h2');
     titile.classList.add('paired-card__title')
     titile.textContent = name;
     return titile;
   }
 
+  // счетчтк числа ходов
+  function createCountSteps(number) {
+    const countWrap = document.createElement('div');
+    const count = document.createElement('div');
+    countWrap.classList.add('paired-card__count-wrap');
+    count.classList.add('paired-card__count-wrap');
+    count.textContent = number;
+    countWrap.append(count);
+    return {countWrap, count};
+  }
 
 
   // создание строки сетки
@@ -73,7 +82,9 @@
       card.textContent = objCard.simbol;
       card.disabled = true;
       countClick++;
+      // чмсло ходов
       countStep++;
+
       // проверка условий игры
       checkPaired(card);
     })
@@ -91,6 +102,7 @@
   // создание игрового поля
   function createField(withField, heightField, array) {
     let field = document.createElement('div');
+    field.classList.add('paired-card__field')
     let counter = 0;
     for (let i = 0; i < heightField; i++) {
       let row = createRow();
@@ -138,16 +150,21 @@
 
 
   document.addEventListener('DOMContentLoaded', () => {
+
+    // создаем массив
+    arrayCardsPaired = createCardsPaired((withField * heightField) / 2, arrayCardsPaired);
+    // перемешиваем массив
+    arrayCardsPaired = shuffle(arrayCardsPaired);
+
+    // создаем разметку
     const container = document.getElementById('game-paired-cards');
     container.classList.add('container');
 
-    title = createTitle(nameGame);
-    container.append(title);
+    const titleGame = createTitle(nameGame);
+    container.append(titleGame);
 
-    // создаем массив
-    arrayCardsPaired = createCardsPaired(withField + heightField, arrayCardsPaired);
-    // перемешиваем массив
-    arrayCardsPaired = shuffle(arrayCardsPaired);
+    const panelCountSteps = createCountSteps(countStep);
+    container.append(panelCountSteps.countWrap);
 
     // запускаем игру (фомируем игровое поле)
     field = createField(withField, heightField, arrayCardsPaired);
