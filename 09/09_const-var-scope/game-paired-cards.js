@@ -4,6 +4,7 @@
   // размер поля игры
   let withField = 4;
   let heightField = 4;
+  let numberOfPairs = (withField * heightField) / 2;
   // массив для формирования карточек
   let arrayCardsPaired = [];
 
@@ -17,7 +18,7 @@
   // контейнер для первой открытой карты
   let cardOpenSave = '';
   // таймаут показа открытых карт
-  let timeout = 1000;
+  let timeout = 700;
 
   // перемешивание массива
   function shuffle(array) {
@@ -29,8 +30,8 @@
   }
 
   // создание массива карточек
-  function createCardsPaired(numberOfPairs, array) {
-    for (let i = 0; i < numberOfPairs; i++) {
+  function createCardsPaired(numberPairs, array) {
+    for (let i = 0; i < numberPairs; i++) {
       let objCard = {};
       objCard.id = i;
       // символ или изображение на карте может быть любым
@@ -41,6 +42,7 @@
     return array;
   }
 
+  // ___________________ оформление интерфейса _________________
   // заголовок
   function createTitle(name) {
     const titile = document.createElement('h2');
@@ -49,13 +51,26 @@
     return titile;
   }
 
+  // выбор размера игрового поля
+  function createSizeField() {
+    const wrap = document.createElement('div');
+    const input0 = document.createElement('input');
+    const input1 = document.createElement('input');
+    const input2 = document.createElement('input');
+
+  }
+
   // счетчтк числа ходов
-  function createCountSteps(number = 0) {
+  function createCountSteps() {
     const countWrap = document.createElement('div');
     const count = document.createElement('span');
+    const caption = document.createElement('span');
     countWrap.classList.add('paired-card__count-wrap');
+    caption.classList.add('paired-card__caption');
     count.classList.add('paired-card__count', 'js-count-step');
-    count.textContent = number;
+    caption.textContent = 'Число ходов';
+    count.textContent = 0;
+    countWrap.append(caption);
     countWrap.append(count);
     return {countWrap, count};
   }
@@ -85,9 +100,10 @@
       // число ходов
       countStep++;
       // вывод числа ходов
+      document.querySelector('.js-count-step').textContent = countStep;
 
       // проверка условий игры
-      checkPaired(card);
+      rulesGame(card);
     })
     return card;
   }
@@ -117,8 +133,16 @@
     return field;
   }
 
-  // проверка условий игры
-  function checkPaired(element) {
+  // оконяание игры
+  function gameOver(counter, gameResult) {
+    if (gameResult == 'win') {
+      alert('Игра закончена за ', counter, 'ходов')
+    }
+  }
+
+
+  // правила игры
+  function rulesGame(element) {
     // если открыта первая карта запоминаем ее
     if (countClick == 1) {
       cardOpenSave = element;
@@ -140,30 +164,29 @@
         cardOpenSave = '';
         countClick = 0;
         countOpenPaired++;
-        return
+        // проверка условия окончания игры
+        if (countOpenPaired == numberOfPairs) {
+          gameOver(countClick, 'win');
+          return;
+        }
+        return;
       }
     }
   }
 
-  // вывод информации в заданный элемент
-  function outInform(info, targetName) {
-    let targetElement = document.querySelector(targetName);
-    console.log(targetElement);
-    targetElement.textContent = info;
-  }
-
-
-
   document.addEventListener('DOMContentLoaded', () => {
 
     // создаем массив
-    arrayCardsPaired = createCardsPaired((withField * heightField) / 2, arrayCardsPaired);
+    arrayCardsPaired = createCardsPaired(numberOfPairs, arrayCardsPaired);
     // перемешиваем массив
     arrayCardsPaired = shuffle(arrayCardsPaired);
 
     // создаем разметку
     const container = document.getElementById('game-paired-cards');
     container.classList.add('container');
+
+    const sizeField = createSizeField()
+    container.append(sizeField);
 
     const titleGame = createTitle(nameGame);
     container.append(titleGame);
@@ -175,8 +198,6 @@
     const fieldGame = createField(withField, heightField, arrayCardsPaired);
     container.append(fieldGame);
 
-    let panel = document.getElementsByClassName('js-count-step')
-    // let t = document.getElementsByClassName('js-count-step');
 
   })
 
