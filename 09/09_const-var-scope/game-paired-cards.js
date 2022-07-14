@@ -50,11 +50,11 @@
   }
 
   // счетчтк числа ходов
-  function createCountSteps(number) {
+  function createCountSteps(number = 0) {
     const countWrap = document.createElement('div');
-    const count = document.createElement('div');
+    const count = document.createElement('span');
     countWrap.classList.add('paired-card__count-wrap');
-    count.classList.add('paired-card__count-wrap');
+    count.classList.add('paired-card__count', 'js-count-step');
     count.textContent = number;
     countWrap.append(count);
     return {countWrap, count};
@@ -63,14 +63,14 @@
 
   // создание строки сетки
   function createRow() {
-    let row = document.createElement('div');
+    const row = document.createElement('div');
     row.classList.add('row');
     return row;
   }
 
   // создание карточки
   function createCard(objCard) {
-    let card = document.createElement('button');
+    const card = document.createElement('button');
     card.classList.add('col', 'btn', 'btn-outline-primary', 'js-card-close')
     card.textContent = '?';
     card.value = objCard.id;
@@ -82,8 +82,9 @@
       card.textContent = objCard.simbol;
       card.disabled = true;
       countClick++;
-      // чмсло ходов
+      // число ходов
       countStep++;
+      // вывод числа ходов
 
       // проверка условий игры
       checkPaired(card);
@@ -101,7 +102,7 @@
 
   // создание игрового поля
   function createField(withField, heightField, array) {
-    let field = document.createElement('div');
+    const field = document.createElement('div');
     field.classList.add('paired-card__field')
     let counter = 0;
     for (let i = 0; i < heightField; i++) {
@@ -121,7 +122,6 @@
     // если открыта первая карта запоминаем ее
     if (countClick == 1) {
       cardOpenSave = element;
-      console.log('открыта карта', cardOpenSave);
       return;
     }
     // если открыта вторая карта
@@ -143,9 +143,14 @@
         return
       }
     }
-
   }
 
+  // вывод информации в заданный элемент
+  function outInform(info, targetName) {
+    let targetElement = document.querySelector(targetName);
+    console.log(targetElement);
+    targetElement.textContent = info;
+  }
 
 
 
@@ -163,12 +168,15 @@
     const titleGame = createTitle(nameGame);
     container.append(titleGame);
 
-    const panelCountSteps = createCountSteps(countStep);
+    const panelCountSteps = createCountSteps();
     container.append(panelCountSteps.countWrap);
 
     // запускаем игру (фомируем игровое поле)
-    field = createField(withField, heightField, arrayCardsPaired);
-    container.append(field);
+    const fieldGame = createField(withField, heightField, arrayCardsPaired);
+    container.append(fieldGame);
+
+    let panel = document.getElementsByClassName('js-count-step')
+    // let t = document.getElementsByClassName('js-count-step');
 
   })
 
