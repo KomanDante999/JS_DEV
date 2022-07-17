@@ -2,9 +2,8 @@
   // название игры
   let nameGame = 'Найди пару';
   // размер поля игры
-  let withField = 4;
-  let heightField = 4;
-  let numberOfPairs = (withField * heightField) / 2;
+  let withFieldSize = 4;
+  let heightFieldSize = 4;
   // массив для формирования карточек
   let arrayCardsPaired = [];
 
@@ -14,23 +13,22 @@
   let countStep = 0;
   // счетчик открытых пар
   let countOpenPaired = 0;
+  // таймер
+  let timerCame = 60;
 
   // контейнер для первой открытой карты
   let cardOpenSave = '';
   // таймаут показа открытых карт
   let timeout = 700;
 
-  // перемешивание массива
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  // определение числа пар
+  function numberOfPairs(withField, heightField) {
+    return (withField * heightField) / 2
   }
 
   // создание массива карточек
   function createCardsPaired(numberPairs, array) {
+    array = [];
     for (let i = 0; i < numberPairs; i++) {
       let objCard = {};
       objCard.id = i;
@@ -42,13 +40,25 @@
     return array;
   }
 
+  // перемешивание массива
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   // ___________________ оформление интерфейса _________________
   // заголовок
   function createTitle(name) {
+    const wrapTitile = document.createElement('div');
     const titile = document.createElement('h2');
     titile.classList.add('paired-card__title')
     titile.textContent = name;
-    return titile;
+    titile.style.width = '100%';
+    wrapTitile.append(titile);
+    return wrapTitile;
   }
 
   // модальное окно
@@ -56,7 +66,7 @@
     const modal = document.createElement('div');
     modal.classList.add('modal', 'fade');
     modal.tabIndex = -1;
-    modal.id = 'js-modal-widow';
+    // modal.id = idModal;
     modal.setAttribute('data-bs-backdrop', 'static');
     modal.setAttribute('data-bs-keyboard', 'false');
     modal.setAttribute('aria-labelledby', 'staticBackdropLabel');
@@ -70,7 +80,6 @@
     modalHeader.classList.add('modal-header');
     const modalTitle = document.createElement('h2');
     modalTitle.classList.add('modal-title');
-    modalTitle.textContent = 'Выберите размер игрового поля';
     const modalBtnClose = document.createElement('button');
     modalBtnClose.classList.add("btn-close");
     modalBtnClose.setAttribute('data-bs-dismiss', 'modal');
@@ -82,7 +91,6 @@
     const modalBtnStart = document.createElement('button');
     modalBtnStart.classList.add("btn", "btn-primary");
     modalBtnStart.setAttribute('data-bs-dismiss', 'modal');
-    modalBtnStart.textContent = 'НАЧАТЬ ИГРУ!';
 
     modalHeader.append(modalTitle, modalBtnClose);
     modalBody.append(contentBody);
@@ -91,7 +99,7 @@
     modalDialog.append(modalConten);
     modal.append(modalDialog);
 
-    return {modal, modalBtnStart};
+    return {modal, modalTitle, modalBtnStart};
   }
 
   // кнопка изменения размера игрового поля
@@ -100,20 +108,17 @@
     const btnSizeField = document.createElement('button');
     btnSizeField.classList.add("btn", "btn-primary");
     btnSizeField.setAttribute('data-bs-toggle', 'modal');
-    btnSizeField.setAttribute('data-bs-target', '#js-modal-widow');
+    btnSizeField.setAttribute('data-bs-target', '#modal-size-field');
     btnSizeField.textContent = 'ВЫБРАТЬ РАЗМЕР ИГРОВОГО ПОЛЯ';
     wrap.append(btnSizeField);
     return wrap;
   }
 
   // радио чекбокс
-  function createRadioCheck(inlineClass, name, index) {
+  function createRadioCheck(optionClass, name, index) {
     const wrapForm = document.createElement('div');
     wrapForm.classList.add('form-check');
-    // инлайн класс для горизонтального расположение
-    if (inlineClass) {
-      wrapForm.classList.add(inlineClass);
-    }
+    wrapForm.classList.add(optionClass);
     const input = document.createElement('input');
     input.classList.add('form-check-input');
     input.type = 'radio';
@@ -121,7 +126,7 @@
     input.value = index;
     input.name = name;
     // событие выбора чекбокса
-    input.setAttribute('onchange','rulesCreateField(this.id, this.value)')
+    input.setAttribute('onchange','rulesCreateField(this.name, this.value)');
     const label = document.createElement('label');
     label.classList.add('form-check-label');
     label.for = name + index;
@@ -132,13 +137,13 @@
     return {wrapForm, input};
   }
 
-  // панель выбора размера игрового поля
+  // панель выбора размера игрового поля с радио чекбоксами
   function createPanelSizeField(minSize = 1, maxSize = 4) {
     const wrap = document.createElement('div');
     const wrapWithField = document.createElement('div');
-    wrapWithField.classList.add('with', 'd-flex', 'flex-nowrap', 'ps-5');
+    wrapWithField.classList.add('with-line', 'd-flex', 'flex-nowrap', 'ps-5');
     const wrapHeightField = document.createElement('div');
-    wrapHeightField.classList.add('height');
+    wrapHeightField.classList.add('height-line');
     wrapHeightField.style.width = '40px';
     wrap.append(wrapWithField, wrapHeightField)
     // горизонтальная строка
@@ -154,6 +159,30 @@
     return wrap;
   }
 
+  // панель установки таймера (input range)
+  function createSetTimerPanel() {
+    const timerSet = document.createElement('div');
+    timerSet.classList.add('timer-set');
+    const timerSetWindov = document.createElement('div');
+    timerSetWindov.classList.add('timer-set__windov-output', 'js-timer-set-windov');
+
+    const timerSetLabel = document.createElement('label');
+    timerSetLabel.classList.add('timer-set__label', 'form-label');
+    timerSetLabel.for = 'timer-set-range';
+    timerSetLabel.textContent = 'время в мин';
+    const timerSetInput = document.createElement('input');
+    timerSetInput.classList.add('timer-set__input-range', 'form-range');
+    timerSetInput.id = 'timer-set-range';
+    timerSetInput.type = 'range';
+    // обработчик события на input range
+    timerSetInput.setAttribute('onchange','rulesTimerset(this.value)')
+
+    timerSetWindov.textContent = timerSetInput.value;
+
+    timerSet.append(timerSetWindov, timerSetLabel, timerSetInput);
+
+    return {timerSet, timerSetWindov, timerSetInput}
+  }
 
   // счетчтк числа ходов
   function createCountSteps() {
@@ -165,9 +194,36 @@
     count.classList.add('paired-card__count', 'js-count-step');
     caption.textContent = 'Число ходов';
     count.textContent = 0;
-    countWrap.append(caption);
-    countWrap.append(count);
+    countWrap.append(caption, count);
     return {countWrap, count};
+  }
+
+  // панель таймера
+  function createTimerPanel(time = '1 мин 00 сек') {
+    const timerWrap = document.createElement('div');
+    timerWrap.classList.add('timer');
+    const timerTitle = document.createElement('h3');
+    timerTitle.classList.add('timer__title');
+    timerTitle.textContent = 'ИГРАТЬ НА ВРЕМЯ';
+    const timerBtnPanel = document.createElement('div');
+    timerBtnPanel.classList.add('timer__panel-button');
+    const timerWindow = document.createElement('div');
+    timerWindow.classList.add('timer__window');
+    timerWindow.textContent = time;
+    const timerBtnSet = document.createElement('button');
+    timerBtnSet.classList.add('timer__button-set', "btn", "btn-primary");
+    timerBtnSet.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
+    timerBtnSet.setAttribute('data-bs-toggle', 'modal');
+    timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
+
+    const timerBtnStart = document.createElement('button');
+    timerBtnStart.classList.add('timer__button-start', "btn", "btn-danger");
+    timerBtnStart.textContent = 'СТАРТ!!!';
+
+    timerBtnPanel.append(timerBtnStart, timerBtnSet, timerWindow);
+    timerWrap.append(timerTitle, timerBtnPanel);
+
+    return {timerWrap, timerBtnStart, timerBtnSet, timerWindow}
   }
 
 
@@ -212,13 +268,13 @@
   }
 
   // создание игрового поля
-  function createField(withField, heightField, array) {
+  function createField(withFieldSize, heightFieldSize, array) {
     const field = document.createElement('div');
-    field.classList.add('paired-card__field')
+    field.classList.add('paired-card__field', 'js-field-game')
     let counter = 0;
-    for (let i = 0; i < heightField; i++) {
+    for (let i = 0; i < heightFieldSize; i++) {
       let row = createRow();
-      for (let j = 0; j < withField; j++) {
+      for (let j = 0; j < withFieldSize; j++) {
         let card = createCard(array[counter]);
         row.append(card);
         counter++;
@@ -260,7 +316,7 @@
         countClick = 0;
         countOpenPaired++;
         // проверка условия окончания игры
-        if (countOpenPaired == numberOfPairs) {
+        if (countOpenPaired == numberOfPairs(withFieldSize, heightFieldSize)) {
           gameOver(countClick, 'win');
           return;
         }
@@ -269,22 +325,70 @@
     }
   }
 
-  // правила создания игрового поля
-  function rulesCreateField(id, value) {
-    if (value % 2 !== 0) {
-
-      if (id.includes('withField')) {
-
-        console.log(id, value);
+  // правила создания игрового поля (исключение выбора нечетного числа полей)
+  function rulesCreateField(nameRadio, value) {
+    // горизонтальный ряд
+    if (nameRadio == 'withField') {
+      withFieldSize = value;
+      const listRadio = document.getElementsByName('heightField');
+      if (value % 2 !== 0) {
+        for (const radio of listRadio) {
+          if (radio.value % 2 !== 0) {
+            // блокируем нечетные чекбоксы в вертикальном ряду
+            radio.disabled = true;
+          }
+        }
+      } else {
+        for (const radio of listRadio) {
+          if (radio.disabled == true) {
+            radio.disabled = false;
+          }
+        }
       }
+    }
+    // вертикальный ряд
+    if (nameRadio == 'heightField') {
+      heightFieldSize = value;
+      const listRadio = document.getElementsByName('withField');
+      if (value % 2 !== 0) {
+        for (const radio of listRadio) {
+          if (radio.value % 2 !== 0) {
+            // блокируем нечетные чекбоксы в горизонтальном ряду
+            radio.disabled = true;
+          }
+        }
+      } else {
+        for (const radio of listRadio) {
+          if (radio.disabled == true) {
+            radio.disabled = false;
+          }
+        }
+      }
+    }
+  }
+
+  // правила установки таймера
+  function rulesTimerset(value) {
+    windowOut = document.querySelector('.js-timer-set-windov');
+    windowOut.textContent = value;
+    timerCame = value;
+  }
+
+  // запуск таймера
+  function runTimer(timerValue) {
+    function timeOut(params) {
 
     }
+
+    let timerID;
+    clearInterval(timerID);
+    timerID = setInterval(timeOut, timerValue * 100, 1)
   }
 
   document.addEventListener('DOMContentLoaded', () => {
 
     // создаем массив
-    arrayCardsPaired = createCardsPaired(numberOfPairs, arrayCardsPaired);
+    arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
     // перемешиваем массив
     arrayCardsPaired = shuffle(arrayCardsPaired);
 
@@ -292,10 +396,24 @@
     const container = document.getElementById('game-paired-cards');
     container.classList.add('container');
 
-    const PanelSizeField = createPanelSizeField(1, 10);
+    // модальное окно выбора размера игрового поля
+    const panelSizeField = createPanelSizeField(1, 10);
+    const modalSizeField = createModal(panelSizeField);
+    modalSizeField.modal.id = 'modal-size-field';
+    modalSizeField.modalTitle.textContent = 'ВЫБЕРИТЕ РАЗМЕР ИГРОВОГО ПОЛЯ';
+    modalSizeField.modalBtnStart.textContent = 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ';
+    container.append(modalSizeField.modal);
 
-    const modalStartGame = createModal(PanelSizeField);
-    container.append(modalStartGame.modal);
+    // модальное окно установки таймера
+    const panelSetTimer = createSetTimerPanel();
+    const modallSetTimer = createModal(panelSetTimer.timerSet);
+    modallSetTimer.modal.id = 'modal-timer-set';
+    modallSetTimer.modalTitle.textContent = 'ВЫБЕРИТЕ ВРЕМЯ ИГРЫ';
+    modallSetTimer.modalBtnStart.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
+    console.log(panelSetTimer.timerSetInput.value);
+
+    container.append(modallSetTimer.modal);
+
 
     const titleGame = createTitle(nameGame);
     container.append(titleGame);
@@ -303,16 +421,47 @@
     const btnResizeField = createBtnSizeField();
     container.append(btnResizeField);
 
+    const timerPanel = createTimerPanel();
+    container.append(timerPanel.timerWrap);
+
     const panelCountSteps = createCountSteps();
     container.append(panelCountSteps.countWrap);
 
-    // запускаем игру (фомируем игровое поле)
-    const fieldGame = createField(withField, heightField, arrayCardsPaired);
+    // событие на кнопке 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ'
+    modalSizeField.modalBtnStart.addEventListener('click', () => {
+      // создаем массив
+      arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
+      // перемешиваем массив
+      arrayCardsPaired = shuffle(arrayCardsPaired);
+      // удаляем предыдущее игровое поле
+      const fieldGameOld = document.querySelector('.js-field-game');
+      if (fieldGameOld) {
+        container.removeChild(fieldGameOld);
+      }
+      // фомируем игровое поле
+      const fieldGameNew = createField(withFieldSize, heightFieldSize, arrayCardsPaired);
+      container.append(fieldGameNew);
+    })
+
+    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР"
+    modallSetTimer.modalBtnStart.addEventListener('click', () => {
+      timerPanel.timerWindow.textContent = timerCame;
+    })
+
+    // событие на кнопке "СТАРТ"
+    timerPanel.timerBtnStart.addEventListener('click', () => {
+      runTimer(timerCame);
+    })
+
+
+
+    // фомируем игровое поле по умолчанию
+    const fieldGame = createField(withFieldSize, heightFieldSize, arrayCardsPaired);
     container.append(fieldGame);
 
 
   })
 
   window.rulesCreateField = rulesCreateField;
-
+  window.rulesTimerset = rulesTimerset;
 })();
