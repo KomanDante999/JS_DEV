@@ -52,13 +52,10 @@
   // ___________________ оформление интерфейса _________________
   // заголовок
   function createTitle(name) {
-    const wrapTitile = document.createElement('div');
-    const titile = document.createElement('h2');
+    const titile = document.createElement('h1');
     titile.classList.add('paired-card__title')
     titile.textContent = name;
-    titile.style.width = '100%';
-    wrapTitile.append(titile);
-    return wrapTitile;
+    return titile;
   }
 
   // модальное окно
