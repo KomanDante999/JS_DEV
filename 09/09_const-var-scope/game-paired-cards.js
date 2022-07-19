@@ -58,6 +58,81 @@
     return titile;
   }
 
+
+
+  // создание строки сетки
+  function createRow() {
+    const row = document.createElement('div');
+    row.classList.add('row');
+    return row;
+  }
+
+  // создание карточки
+  function createCard(objCard) {
+    const card = document.createElement('button');
+    card.classList.add('col', 'btn', 'm-1', 'btn-outline-primary', 'js-card-close')
+    card.textContent = '?';
+    card.value = objCard.id;
+    // обработчик клика по карте
+    card.addEventListener('click', () => {
+      card.classList.remove('btn-outline-primary');
+      card.classList.add('btn-primary', 'js-card-open');
+      card.style.opacity = '1';
+      card.textContent = objCard.simbol;
+      card.disabled = true;
+      countClick++;
+      // число ходов
+      countStep++;
+      // вывод числа ходов
+      document.querySelector('.js-count-step').textContent = countStep;
+
+      // проверка условий игры
+      rulesGame(card);
+    })
+    return card;
+  }
+
+  // возврат карты в исходное состояние
+  function toInitialState(element) {
+    element.disabled = false;
+    element.classList.remove('btn-primary', 'js-card-open');
+    element.classList.add('btn-outline-primary', 'js-card-close')
+    element.textContent = '?';
+  }
+
+  // создание игрового поля
+  function createField(withFieldSize, heightFieldSize, array) {
+    const field = document.createElement('div');
+    field.classList.add('paired-card__field', 'js-field-game')
+    let counter = 0;
+    for (let i = 0; i < heightFieldSize; i++) {
+      let row = createRow();
+      for (let j = 0; j < withFieldSize; j++) {
+        let card = createCard(array[counter]);
+        row.append(card);
+        counter++;
+      }
+      field.append(row)
+    }
+    return field;
+  }
+
+
+  // дополнения -------------------------------------------------------------
+  // счетчтк числа ходов
+  function createCountSteps() {
+    const countWrap = document.createElement('div');
+    const count = document.createElement('span');
+    const caption = document.createElement('span');
+    countWrap.classList.add('paired-card__count-wrap');
+    caption.classList.add('paired-card__caption');
+    count.classList.add('paired-card__count', 'js-count-step');
+    caption.textContent = 'Число ходов';
+    count.textContent = 0;
+    countWrap.append(caption, count);
+    return {countWrap, count};
+  }
+
   // модальное окно
   function createModal(contentBody) {
     const modal = document.createElement('div');
@@ -155,6 +230,26 @@
     return wrap;
   }
 
+  // перевод времени в формат мин:сек
+  //timeVal - время в миллисекундах
+  // msStatus - нужно ли выводить миллисекунды (true/false)
+  //sepMin, sepSec - разделители минут и секунд
+  function formatMinSec(timeVal, msStatus = false, sepMin = ' : ', sepSec = ' . ') {
+    const minutes = Math.trunc(timeVal / 6000);
+    let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
+    let milliseconds = timeVal - minutes * 6000 - seconds * 100
+    if (seconds < 10) {
+      seconds = seconds + '0'
+    }
+    if (milliseconds < 10) {
+      milliseconds = milliseconds + '0'
+    }
+    if (msStatus) {
+      return `${minutes}${sepMin}${seconds}${sepSec}${milliseconds}`;
+    }
+    return `${minutes}${sepMin}${seconds}`;
+  }
+
   // панель установки таймера (input range)
   function createSetTimerPanel() {
     const timerSet = document.createElement('div');
@@ -177,39 +272,6 @@
     timerSet.append(timerSetLabel, timerSetInput);
 
     return timerSet;
-  }
-
-  // перевод времени в формат мин:сек
-  function formatMinSec(timeVal, msStatus) {
-    const minutes = Math.trunc(timeVal / 6000);
-    let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
-    let milliseconds = timeVal - minutes * 6000 - seconds * 100
-    if (seconds < 10) {
-      seconds = seconds + '0'
-    }
-    if (milliseconds < 10) {
-      milliseconds = milliseconds + '0'
-    }
-    if (msStatus) {
-      return `${minutes} : ${seconds} . ${milliseconds}`;
-
-    }
-    return `${minutes} : ${seconds}`;
-  }
-
-
-  // счетчтк числа ходов
-  function createCountSteps() {
-    const countWrap = document.createElement('div');
-    const count = document.createElement('span');
-    const caption = document.createElement('span');
-    countWrap.classList.add('paired-card__count-wrap');
-    caption.classList.add('paired-card__caption');
-    count.classList.add('paired-card__count', 'js-count-step');
-    caption.textContent = 'Число ходов';
-    count.textContent = 0;
-    countWrap.append(caption, count);
-    return {countWrap, count};
   }
 
   // панель таймера
@@ -240,70 +302,24 @@
     return {timerWrap, timerBtnStart, timerBtnSet, timerWindow}
   }
 
-
-  // создание строки сетки
-  function createRow() {
-    const row = document.createElement('div');
-    row.classList.add('row');
-    return row;
-  }
-
-  // создание карточки
-  function createCard(objCard) {
-    const card = document.createElement('button');
-    card.classList.add('col', 'btn', 'm-1', 'btn-outline-primary', 'js-card-close')
-    card.textContent = '?';
-    card.value = objCard.id;
-    // обработчик клика по карте
-    card.addEventListener('click', () => {
-      card.classList.remove('btn-outline-primary');
-      card.classList.add('btn-primary', 'js-card-open');
-      card.style.opacity = '1';
-      card.textContent = objCard.simbol;
-      card.disabled = true;
-      countClick++;
-      // число ходов
-      countStep++;
-      // вывод числа ходов
-      document.querySelector('.js-count-step').textContent = countStep;
-
-      // проверка условий игры
-      rulesGame(card);
-    })
-    return card;
-  }
-
-  // возврат карты в исходное состояние
-  function toInitialState(element) {
-    element.disabled = false;
-    element.classList.remove('btn-primary', 'js-card-open');
-    element.classList.add('btn-outline-primary', 'js-card-close')
-    element.textContent = '?';
-  }
-
-  // создание игрового поля
-  function createField(withFieldSize, heightFieldSize, array) {
-    const field = document.createElement('div');
-    field.classList.add('paired-card__field', 'js-field-game')
-    let counter = 0;
-    for (let i = 0; i < heightFieldSize; i++) {
-      let row = createRow();
-      for (let j = 0; j < withFieldSize; j++) {
-        let card = createCard(array[counter]);
-        row.append(card);
-        counter++;
+  // запуск таймера
+  function runTimer(targetOut, timeStart) {
+    let currentTime = timeStart;
+    // вывод значения таймера в заданный узел
+    function timeCount() {
+      currentTime--;
+      targetOut.textContent = formatMinSec(currentTime, true);
+      if (currentTime == 0) {
+        clearInterval(timerID);
       }
-      field.append(row)
+      return currentTime;
     }
-    return field;
+    let timerID;
+    clearInterval(timerID);
+    timerID = setInterval(timeCount, 10);
   }
 
-  // оконяание игры
-  function gameOver(counter, gameResult) {
-    if (gameResult == 'win') {
-      alert('Игра закончена за ', counter, 'ходов')
-    }
-  }
+
 
   // правила -------------------------------------------------------------
   // правила игры
@@ -388,20 +404,6 @@
     timerCame = value;
   }
 
-  // запуск таймера
-  function runTimer(targetOut) {
-    // вывод значения таймера в заданный узел
-    function timeCount() {
-      timerCame--;
-      targetOut.textContent = formatMinSec(timerCame, true)
-      if (timerCame == 0) {
-        clearInterval(timerID)
-      }
-    }
-    let timerID;
-    clearInterval(timerID);
-    timerID = setInterval(timeCount, 10);
-  }
 
   document.addEventListener('DOMContentLoaded', () => {
 
@@ -467,6 +469,7 @@
 
     // событие на кнопке "СТАРТ"
     timerPanel.timerBtnStart.addEventListener('click', () => {
+
       runTimer(timerPanel.timerWindow ,timerCame);
     })
 
