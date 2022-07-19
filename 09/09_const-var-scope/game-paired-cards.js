@@ -14,7 +14,7 @@
   // счетчик открытых пар
   let countOpenPaired = 0;
   // таймер
-  let timerCame = 60;
+  let timerCame = 6000;
 
   // контейнер для первой открытой карты
   let cardOpenSave = '';
@@ -63,7 +63,6 @@
     const modal = document.createElement('div');
     modal.classList.add('modal', 'fade');
     modal.tabIndex = -1;
-    // modal.id = idModal;
     modal.setAttribute('data-bs-backdrop', 'static');
     modal.setAttribute('data-bs-keyboard', 'false');
     modal.setAttribute('aria-labelledby', 'staticBackdropLabel');
@@ -160,26 +159,44 @@
   function createSetTimerPanel() {
     const timerSet = document.createElement('div');
     timerSet.classList.add('timer-set');
-    const timerSetWindov = document.createElement('div');
-    timerSetWindov.classList.add('timer-set__windov-output', 'js-timer-set-windov');
-
-    const timerSetLabel = document.createElement('label');
-    timerSetLabel.classList.add('timer-set__label', 'form-label');
-    timerSetLabel.for = 'timer-set-range';
-    timerSetLabel.textContent = 'время в мин';
     const timerSetInput = document.createElement('input');
     timerSetInput.classList.add('timer-set__input-range', 'form-range');
     timerSetInput.id = 'timer-set-range';
     timerSetInput.type = 'range';
+    timerSetInput.min = '3000';
+    timerSetInput.max = '60000';
+    timerSetInput.defaultValue = '6000';
+    timerSetInput.step = '100';
+    const timerSetLabel = document.createElement('label');
+    timerSetLabel.classList.add('timer-set__label', 'form-label', 'js-timer-set-lable');
+    timerSetLabel.for = 'timer-set-range';
+    timerSetLabel.textContent = formatMinSec(timerSetInput.value, false);
     // обработчик события на input range
     timerSetInput.setAttribute('onchange','rulesTimerset(this.value)')
 
-    timerSetWindov.textContent = timerSetInput.value;
+    timerSet.append(timerSetLabel, timerSetInput);
 
-    timerSet.append(timerSetWindov, timerSetLabel, timerSetInput);
-
-    return {timerSet, timerSetWindov, timerSetInput}
+    return timerSet;
   }
+
+  // перевод времени в формат мин:сек
+  function formatMinSec(timeVal, msStatus) {
+    const minutes = Math.trunc(timeVal / 6000);
+    let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
+    let milliseconds = timeVal - minutes * 6000 - seconds * 100
+    if (seconds < 10) {
+      seconds = seconds + '0'
+    }
+    if (milliseconds < 10) {
+      milliseconds = milliseconds + '0'
+    }
+    if (msStatus) {
+      return `${minutes} : ${seconds} . ${milliseconds}`;
+
+    }
+    return `${minutes} : ${seconds}`;
+  }
+
 
   // счетчтк числа ходов
   function createCountSteps() {
@@ -196,7 +213,7 @@
   }
 
   // панель таймера
-  function createTimerPanel(time = '1 мин 00 сек') {
+  function createTimerPanel() {
     const timerWrap = document.createElement('div');
     timerWrap.classList.add('timer');
     const timerTitle = document.createElement('h3');
@@ -206,7 +223,7 @@
     timerBtnPanel.classList.add('timer__panel-button');
     const timerWindow = document.createElement('div');
     timerWindow.classList.add('timer__window');
-    timerWindow.textContent = time;
+    timerWindow.textContent = formatMinSec(timerCame, true);
     const timerBtnSet = document.createElement('button');
     timerBtnSet.classList.add('timer__button-set', "btn", "btn-primary");
     timerBtnSet.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
@@ -288,7 +305,7 @@
     }
   }
 
-
+  // правила -------------------------------------------------------------
   // правила игры
   function rulesGame(element) {
     // если открыта первая карта запоминаем ее
@@ -366,20 +383,24 @@
 
   // правила установки таймера
   function rulesTimerset(value) {
-    windowOut = document.querySelector('.js-timer-set-windov');
-    windowOut.textContent = value;
+    const outWindov = document.querySelector('.js-timer-set-lable')
+    outWindov.textContent = formatMinSec(value);
     timerCame = value;
   }
 
   // запуск таймера
-  function runTimer(timerValue) {
-    function timeOut(params) {
-
+  function runTimer(targetOut) {
+    // вывод значения таймера в заданный узел
+    function timeCount() {
+      timerCame--;
+      targetOut.textContent = formatMinSec(timerCame, true)
+      if (timerCame == 0) {
+        clearInterval(timerID)
+      }
     }
-
     let timerID;
     clearInterval(timerID);
-    timerID = setInterval(timeOut, timerValue * 100, 1)
+    timerID = setInterval(timeCount, 10);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -403,11 +424,10 @@
 
     // модальное окно установки таймера
     const panelSetTimer = createSetTimerPanel();
-    const modallSetTimer = createModal(panelSetTimer.timerSet);
+    const modallSetTimer = createModal(panelSetTimer);
     modallSetTimer.modal.id = 'modal-timer-set';
     modallSetTimer.modalTitle.textContent = 'ВЫБЕРИТЕ ВРЕМЯ ИГРЫ';
     modallSetTimer.modalBtnStart.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
-    console.log(panelSetTimer.timerSetInput.value);
 
     container.append(modallSetTimer.modal);
 
@@ -442,12 +462,12 @@
 
     // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР"
     modallSetTimer.modalBtnStart.addEventListener('click', () => {
-      timerPanel.timerWindow.textContent = timerCame;
+      timerPanel.timerWindow.textContent = formatMinSec(timerCame, true);
     })
 
     // событие на кнопке "СТАРТ"
     timerPanel.timerBtnStart.addEventListener('click', () => {
-      runTimer(timerCame);
+      runTimer(timerPanel.timerWindow ,timerCame);
     })
 
 
