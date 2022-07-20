@@ -13,10 +13,14 @@
   let countStep = 0;
   // счетчик открытых пар
   let countOpenPaired = 0;
-  // значение таймера по умолчанию
-  let timerCame = 6000;
-  // текущее значение таймера
-  let timerCurrent = 0;
+  // таймер начальное значение, текущее значение, следующее событие, статус остановки
+  const timer = {
+    init: 6000,
+    current: 0,
+    event: 'start',
+    break: false,
+  }
+
   // id таймера
   let timerID;
 
@@ -61,8 +65,6 @@
     titile.textContent = name;
     return titile;
   }
-
-
 
   // создание строки сетки
   function createRow() {
@@ -121,8 +123,8 @@
     return field;
   }
 
-  // устанавливаем игровое поле в DOM
-  function installField(targetNode) {
+  // инициализация игрового поля
+  function initiallField(targetNode) {
     // создаем массив
     arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
     // перемешиваем массив
@@ -137,6 +139,13 @@
     targetNode.append(fieldGameNew);
   }
 
+  // блокировка-разблокировка закрытых карт
+  function disableCloseCards(disableStatus) {
+    const listCloseCards = document.querySelectorAll('.js-card-close');
+    for (const cardClose of listCloseCards) {
+      cardClose.disabled = disableStatus;
+    }
+  }
 
   // дополнения -------------------------------------------------------------
   // счетчтк числа ходов
@@ -314,17 +323,15 @@
     timerBtnPanel.classList.add('timer__panel-button');
     const timerWindow = document.createElement('div');
     timerWindow.classList.add('timer__window');
-    timerWindow.textContent = formatMinSec(timerCame, true);
+    timerWindow.textContent = formatMinSec(timer.init, true);
     const timerBtnSet = document.createElement('button');
     timerBtnSet.classList.add('timer__button-set', "btn", "btn-primary");
     timerBtnSet.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
     timerBtnSet.setAttribute('data-bs-toggle', 'modal');
     timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
-    timerBtnSet.setAttribute('data-status', 'set')
 
     const timerBtnStart = document.createElement('button');
     timerBtnStart.classList.add('timer__button-start', "btn", "btn-danger");
-    timerBtnStart.setAttribute('data-status', 'start')
     timerBtnStart.textContent = 'СТАРТ!!!';
 
     timerBtnPanel.append(timerBtnStart, timerBtnSet, timerWindow);
@@ -333,21 +340,13 @@
     return {timerWrap, timerBtnStart, timerBtnSet, timerWindow}
   }
 
-
   // запуск таймера
   function runTimer(targetOut, timeStart) {
-    timerCurrent = timeStart;
-    // вывод значения таймера в заданный узел
-    // const btnStop = document.querySelector('.js-timer-stop');
-
+    timer.current = timeStart;
     function timeCount() {
-      // btnStop.addEventListener('click', () => {
-      //   clearInterval(timerID);
-      // })
-
-      timerCurrent--;
-      targetOut.textContent = formatMinSec(timerCurrent, true);
-      if (timerCurrent == 0) {
+      timer.current--;
+      targetOut.textContent = formatMinSec(timer.current, true);
+      if (timer.current == 0 || timer.break) {
         clearInterval(timerID);
       }
     }
@@ -437,7 +436,7 @@
   function rulesTimerset(value) {
     const outWindov = document.querySelector('.js-timer-set-lable')
     outWindov.textContent = formatMinSec(value);
-    timerCame = value;
+    timer.init = value;
   }
 
 
@@ -464,7 +463,6 @@
 
     container.append(modallSetTimer.modal);
 
-
     const titleGame = createTitle(nameGame);
     container.append(titleGame);
 
@@ -477,61 +475,87 @@
     const panelCountSteps = createCountSteps();
     container.append(panelCountSteps.countWrap);
 
-    // кнопки
-    // const fieldSizeBtn = document.querySelector('.js-field-size');
-    // const timerSetBtn = document.querySelector('.js-timer-set');
-    // const timerStartBtn = document.querySelector('.js-timer-start');
-    // const timerStoptBtn = document.querySelector('.js-timer-stop');
-    // const timerContintBtn = document.querySelector('.js-timer-contin');
-    // const newGameBtn = document.querySelector('.js-new-game');
-
-
-
     // событие на кнопке 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ' в модальном окне
     modalSizeField.modalBtnStart.addEventListener('click', () => {
       cleanCounts();
-      installField(container);
+      initiallField(container);
     })
 
     // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР" в модальном окне
     modallSetTimer.modalBtnStart.addEventListener('click', () => {
-      timerPanel.timerWindow.textContent = formatMinSec(timerCame, true);
+      timerPanel.timerWindow.textContent = formatMinSec(timer.init, true);
     })
-
-    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР" в панели таймера
-    // timerSetBtn.addEventListener('click', () => {
-
-    // })
 
     // событие на кнопке "СТАРТ"
     timerPanel.timerBtnStart.addEventListener('click', () => {
-      const statusBtnStart = timerPanel.timerBtnStart.dataset.status;
-      const statusBtnSet = timerPanel.timerBtnSet.dataset.status;
       // start
-      if (statusBtnStart == 'start') {
-        timerPanel.timerBtnStart.setAttribute('data-status', 'stop');
+      if (timer.event == 'start') {
         timerPanel.timerBtnStart.textContent = 'СТОП !!!'
         // блокировка других кнопок
         timerPanel.timerBtnSet.disabled = true;
         btnResizeField.btnSizeField.disabled = true;
-
-
+        timer.event = 'stop';
+        // инициализация нового игрового поля
         cleanCounts();
-        installField(container);
-        runTimer(timerPanel.timerWindow ,timerCame);
-
-
-    //     timerBtnSet.setAttribute('data-bs-toggle', 'modal');
-    // timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
+        initiallField(container);
+        // запуск таймера
+        runTimer(timerPanel.timerWindow, timer.init);
+        return;
       }
+      // stop
+      if (timer.event == 'stop') {
+        timer.break = true;
+        timer.event = 'contin';
+        timerPanel.timerBtnStart.textContent = 'ПОДОЛЖИТЬ !!!'
+        // переопределение кнопки "УСТАНОВИТЬ ТАЙМЕР" в "ЗАКОНЧИТЬ ИГРУ"
+        timerPanel.timerBtnSet.disabled = false;
+        timerPanel.timerBtnSet.textContent = 'ЗАВЕРШИТЬ ИГРУ';
+        timerPanel.timerBtnSet.removeAttribute('data-bs-toggle', 'modal');
+        timerPanel.timerBtnSet.removeAttribute('data-bs-target', '#modal-timer-set');
+        // блокировка игрового поля
+        disableCloseCards(true);
 
+        return;
+      }
+      // contin
+      if (timer.event == 'contin') {
+        timer.break = false;
+        timer.event = 'stop';
+        timerPanel.timerBtnStart.textContent = 'СТОП !!!'
+        // блокировка других кнопок
+        timerPanel.timerBtnSet.disabled = true;
 
+        // разблокировка игрового поля
+        disableCloseCards(false);
+        // запуск таймера с точки остановки
+        runTimer(timerPanel.timerWindow, timer.current);
+        return;
+      }
     })
 
-
+    // событие на кнопке "ЗАКОНЧИТЬ ИГРУ"
+    timerPanel.timerBtnSet.addEventListener('click', () => {
+      if (timer.event == 'contin') {
+        // таймер в исходное состояние
+        timer.event = 'start';
+        timer.current = 0;
+        timer.break = false;
+        timerPanel.timerBtnStart.textContent = 'СТАРТ !!!';
+        timerPanel.timerWindow.textContent = formatMinSec(timer.init, true);
+        // кнопка 'ВЫБРАТЬ РАЗМЕР ИГРОВОГО ПОЛЯ в исходное состояние
+        timerPanel.timerBtnSet.textContent = 'ВЫБРАТЬ РАЗМЕР ИГРОВОГО ПОЛЯ';
+        timerPanel.timerBtnSet.setAttribute('data-bs-toggle', 'modal');
+        timerPanel.timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
+        // разблокировка кнопки изменения размеров поля
+        btnResizeField.btnSizeField.disabled = false;
+        // инициализация нового игрового поля
+        cleanCounts();
+        initiallField(container);
+      }
+    })
 
     // фомируем игровое поле по умолчанию
-    installField(container);
+    initiallField(container);
 
   })
 
