@@ -13,8 +13,12 @@
   let countStep = 0;
   // счетчик открытых пар
   let countOpenPaired = 0;
-  // таймер
+  // значение таймера по умолчанию
   let timerCame = 6000;
+  // текущее значение таймера
+  let timerCurrent = 0;
+  // id таймера
+  let timerID;
 
   // контейнер для первой открытой карты
   let cardOpenSave = '';
@@ -100,7 +104,7 @@
     element.textContent = '?';
   }
 
-  // создание игрового поля
+  // формируем игровое поле
   function createField(withFieldSize, heightFieldSize, array) {
     const field = document.createElement('div');
     field.classList.add('paired-card__field', 'js-field-game')
@@ -117,6 +121,22 @@
     return field;
   }
 
+  // устанавливаем игровое поле в DOM
+  function installField(targetNode) {
+    // создаем массив
+    arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
+    // перемешиваем массив
+    arrayCardsPaired = shuffle(arrayCardsPaired);
+    // удаляем предыдущее игровое поле
+    const fieldGameOld = document.querySelector('.js-field-game');
+    if (fieldGameOld) {
+      targetNode.removeChild(fieldGameOld);
+    }
+    // фомируем игровое поле
+    const fieldGameNew = createField(withFieldSize, heightFieldSize, arrayCardsPaired);
+    targetNode.append(fieldGameNew);
+  }
+
 
   // дополнения -------------------------------------------------------------
   // счетчтк числа ходов
@@ -131,6 +151,15 @@
     count.textContent = 0;
     countWrap.append(caption, count);
     return {countWrap, count};
+  }
+
+  // обнуление счетчиков
+  function cleanCounts() {
+    // сбрасываем счетчики
+    countClick = 0;
+    countStep = 0;
+    countOpenPaired = 0;
+    document.querySelector('.js-count-step').textContent = countStep;
   }
 
   // модальное окно
@@ -177,12 +206,12 @@
   function createBtnSizeField() {
     const wrap = document.createElement('div');
     const btnSizeField = document.createElement('button');
-    btnSizeField.classList.add("btn", "btn-primary");
+    btnSizeField.classList.add('js-field-size', 'btn', 'btn-primary');
     btnSizeField.setAttribute('data-bs-toggle', 'modal');
     btnSizeField.setAttribute('data-bs-target', '#modal-size-field');
     btnSizeField.textContent = 'ВЫБРАТЬ РАЗМЕР ИГРОВОГО ПОЛЯ';
     wrap.append(btnSizeField);
-    return wrap;
+    return {wrap, btnSizeField};
   }
 
   // радио чекбокс
@@ -235,14 +264,14 @@
   // msStatus - нужно ли выводить миллисекунды (true/false)
   //sepMin, sepSec - разделители минут и секунд
   function formatMinSec(timeVal, msStatus = false, sepMin = ' : ', sepSec = ' . ') {
-    const minutes = Math.trunc(timeVal / 6000);
+    let minutes = Math.trunc(timeVal / 6000);
     let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
     let milliseconds = timeVal - minutes * 6000 - seconds * 100
     if (seconds < 10) {
-      seconds = seconds + '0'
+      seconds = '0' + seconds;
     }
     if (milliseconds < 10) {
-      milliseconds = milliseconds + '0'
+      milliseconds = '0' + milliseconds;
     }
     if (msStatus) {
       return `${minutes}${sepMin}${seconds}${sepSec}${milliseconds}`;
@@ -291,9 +320,11 @@
     timerBtnSet.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
     timerBtnSet.setAttribute('data-bs-toggle', 'modal');
     timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
+    timerBtnSet.setAttribute('data-status', 'set')
 
     const timerBtnStart = document.createElement('button');
     timerBtnStart.classList.add('timer__button-start', "btn", "btn-danger");
+    timerBtnStart.setAttribute('data-status', 'start')
     timerBtnStart.textContent = 'СТАРТ!!!';
 
     timerBtnPanel.append(timerBtnStart, timerBtnSet, timerWindow);
@@ -302,19 +333,24 @@
     return {timerWrap, timerBtnStart, timerBtnSet, timerWindow}
   }
 
+
   // запуск таймера
   function runTimer(targetOut, timeStart) {
-    let currentTime = timeStart;
+    timerCurrent = timeStart;
     // вывод значения таймера в заданный узел
+    // const btnStop = document.querySelector('.js-timer-stop');
+
     function timeCount() {
-      currentTime--;
-      targetOut.textContent = formatMinSec(currentTime, true);
-      if (currentTime == 0) {
+      // btnStop.addEventListener('click', () => {
+      //   clearInterval(timerID);
+      // })
+
+      timerCurrent--;
+      targetOut.textContent = formatMinSec(timerCurrent, true);
+      if (timerCurrent == 0) {
         clearInterval(timerID);
       }
-      return currentTime;
     }
-    let timerID;
     clearInterval(timerID);
     timerID = setInterval(timeCount, 10);
   }
@@ -407,11 +443,6 @@
 
   document.addEventListener('DOMContentLoaded', () => {
 
-    // создаем массив
-    arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
-    // перемешиваем массив
-    arrayCardsPaired = shuffle(arrayCardsPaired);
-
     // создаем разметку
     const container = document.getElementById('game-paired-cards');
     container.classList.add('container');
@@ -438,7 +469,7 @@
     container.append(titleGame);
 
     const btnResizeField = createBtnSizeField();
-    container.append(btnResizeField);
+    container.append(btnResizeField.wrap);
 
     const timerPanel = createTimerPanel();
     container.append(timerPanel.timerWrap);
@@ -446,39 +477,61 @@
     const panelCountSteps = createCountSteps();
     container.append(panelCountSteps.countWrap);
 
-    // событие на кнопке 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ'
+    // кнопки
+    // const fieldSizeBtn = document.querySelector('.js-field-size');
+    // const timerSetBtn = document.querySelector('.js-timer-set');
+    // const timerStartBtn = document.querySelector('.js-timer-start');
+    // const timerStoptBtn = document.querySelector('.js-timer-stop');
+    // const timerContintBtn = document.querySelector('.js-timer-contin');
+    // const newGameBtn = document.querySelector('.js-new-game');
+
+
+
+    // событие на кнопке 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ' в модальном окне
     modalSizeField.modalBtnStart.addEventListener('click', () => {
-      // создаем массив
-      arrayCardsPaired = createCardsPaired(numberOfPairs(withFieldSize, heightFieldSize), arrayCardsPaired);
-      // перемешиваем массив
-      arrayCardsPaired = shuffle(arrayCardsPaired);
-      // удаляем предыдущее игровое поле
-      const fieldGameOld = document.querySelector('.js-field-game');
-      if (fieldGameOld) {
-        container.removeChild(fieldGameOld);
-      }
-      // фомируем игровое поле
-      const fieldGameNew = createField(withFieldSize, heightFieldSize, arrayCardsPaired);
-      container.append(fieldGameNew);
+      cleanCounts();
+      installField(container);
     })
 
-    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР"
+    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР" в модальном окне
     modallSetTimer.modalBtnStart.addEventListener('click', () => {
       timerPanel.timerWindow.textContent = formatMinSec(timerCame, true);
     })
 
+    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР" в панели таймера
+    // timerSetBtn.addEventListener('click', () => {
+
+    // })
+
     // событие на кнопке "СТАРТ"
     timerPanel.timerBtnStart.addEventListener('click', () => {
+      const statusBtnStart = timerPanel.timerBtnStart.dataset.status;
+      const statusBtnSet = timerPanel.timerBtnSet.dataset.status;
+      // start
+      if (statusBtnStart == 'start') {
+        timerPanel.timerBtnStart.setAttribute('data-status', 'stop');
+        timerPanel.timerBtnStart.textContent = 'СТОП !!!'
+        // блокировка других кнопок
+        timerPanel.timerBtnSet.disabled = true;
+        btnResizeField.btnSizeField.disabled = true;
 
-      runTimer(timerPanel.timerWindow ,timerCame);
+
+        cleanCounts();
+        installField(container);
+        runTimer(timerPanel.timerWindow ,timerCame);
+
+
+    //     timerBtnSet.setAttribute('data-bs-toggle', 'modal');
+    // timerBtnSet.setAttribute('data-bs-target', '#modal-timer-set');
+      }
+
+
     })
 
 
 
     // фомируем игровое поле по умолчанию
-    const fieldGame = createField(withFieldSize, heightFieldSize, arrayCardsPaired);
-    container.append(fieldGame);
-
+    installField(container);
 
   })
 
