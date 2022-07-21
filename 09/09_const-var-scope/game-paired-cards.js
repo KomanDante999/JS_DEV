@@ -4,8 +4,8 @@
     // название игры
     title: 'НАЙДИ ПАРУ',
     // размер поля игры
-    w: 2,
-    h: 1,
+    w: 4,
+    h: 4,
     // счетчик кликов до нахождения пары
     click: 0,
     // счетчик количества ходов (кликов) в игре
@@ -27,9 +27,9 @@
   // таймер
   const timer = {
     // начальное значение 6000
-    init: 100,
+    init: 6000,
     // минимальное значение 3000
-    min: 100,
+    min: 3000,
     // максимальное значение
     max: 60000,
     // текущее значение
@@ -102,10 +102,6 @@
       card.textContent = objCard.simbol;
       card.disabled = true;
       game.click++;
-      // число ходов
-      game.step++;
-      // вывод числа ходов
-      document.querySelector('.js-count-step').textContent = game.step;
 
       // проверка условий игры
       rulesGame(card);
@@ -301,7 +297,24 @@
     if (msStatus) {
       return `${minutes}${sepMin}${seconds}${sepSec}${milliseconds}`;
     }
-    return `${minutes}${sepMin}${seconds}`;
+    return `${minutes}${sepMin}${seconds}${sepSec}`;
+  }
+
+  // окончания а, ов (шаг, шага, шагов)
+  function formatEndings(number, word = 'шаг') {
+    if (number > 10 && number < 20) {
+      return word + 'ов';
+    }
+    const lastNumber = number % 10;
+    if (lastNumber == 1) {
+      return word;
+    }
+    if (lastNumber > 1 && lastNumber < 5) {
+      return word + 'а';
+    }
+    if ((lastNumber > 4 && lastNumber < 10) || lastNumber == 0) {
+      return word + 'ов';
+    }
   }
 
   // панель установки таймера (input range)
@@ -319,7 +332,7 @@
     const timerSetLabel = document.createElement('label');
     timerSetLabel.classList.add('timer-set__label', 'form-label', 'js-timer-set-lable');
     timerSetLabel.for = 'timer-set-range';
-    timerSetLabel.textContent = formatMinSec(timerSetInput.value, false);
+    timerSetLabel.textContent = formatMinSec(timerSetInput.value, false, ' мин ', ' сек');
     // обработчик события на input range
     timerSetInput.setAttribute('onchange','rulesTimerset(this.value)')
 
@@ -470,7 +483,7 @@
 
     wrapSupport.append(textSupport1, outStep, textSupport2);
     wrap.append(textMassage, wrapSupport);
-    return {wrap, outStep}
+    return {wrap, outStep, textSupport2}
   }
 
   // сообщение выигрыш в режиме на время
@@ -490,19 +503,16 @@
     outTime.classList.add('game-over__out-windov');
     const textSupport2 = document.createElement('p');
     textSupport2.classList.add('game-over__text');
-    textSupport2.textContent = 'мин';
-    const textSupport3 = document.createElement('p');
-    textSupport3.classList.add('game-over__text');
-    textSupport3.textContent = 'вы сделали';
+    textSupport2.textContent = 'вы сделали';
     const outStep = document.createElement('span');
     outStep.classList.add('game-over__out-windov');
-    const textSupport4 = document.createElement('p');
-    textSupport4.classList.add('game-over__text');
-    textSupport4.textContent = 'ходов';
+    const textSupport3 = document.createElement('p');
+    textSupport3.classList.add('game-over__text');
+    textSupport3.textContent = 'ходов';
 
-    wrapSupport.append(textSupport1, outTime, textSupport2, textSupport3, outStep, textSupport4);
+    wrapSupport.append(textSupport1, outTime, textSupport2, outStep, textSupport3);
     wrap.append(textMassage, wrapSupport);
-    return {wrap, outTime, outStep};
+    return {wrap, outTime, outStep, textSupport3};
   }
   // сообщение проигрыш по времени
   function createMassageLosTime() {
@@ -526,6 +536,11 @@
     }
     // если открыта вторая карта
     if (game.click == 2) {
+      // число ходов
+      game.step++;
+      // вывод числа ходов
+      document.querySelector('.js-count-step').textContent = game.step;
+
       let cardOpenCurrent = element;
       // если карты не совпадают = возвращаем их в исходное состояние с задержкой
       if (cardOpenCurrent.value !== game.cardOpenSave.value) {
@@ -598,7 +613,7 @@
   // правила установки таймера
   function rulesTimerset(value) {
     const outWindov = document.querySelector('.js-timer-set-lable')
-    outWindov.textContent = formatMinSec(value);
+    outWindov.textContent = formatMinSec(value, false, ' мин ', ' сек');
     timer.init = value;
   }
 
@@ -632,15 +647,20 @@
       // выигрыш в свободном режиме
       if (game.mode == 'free') {
         const message = createMassageWinFree();
+        message.outStep.textContent = game.step;
+        message.textSupport2.textContent = formatEndings(game.step, 'ход');
         const panelGameOver = createPanelGameOver(message.wrap);
         panelGameOver.title.textContent = 'ВЫ ВЫИГРАЛИ !!!';
         const modalWindov = createModalGameOver(panelGameOver.wrap);
         modalWindov.modal.classList.add('game-over_win-theme');
         container.append(modalWindov.modal);
       }
-      // выигрыш в свободном режиме
+      // выигрыш в режиме на время
       if (game.mode == 'timer') {
         const message = createMassageWinTime();
+        message.outTime.textContent = formatMinSec(timer.init - timer.current, false, ' мин ', ' сек')
+        message.outStep.textContent = game.step;
+        message.textSupport3.textContent = formatEndings(game.step, 'ход')
         const panelGameOver = createPanelGameOver(message.wrap);
         panelGameOver.title.textContent = 'ВЫ ВЫИГРАЛИ !!!';
         const modalWindov = createModalGameOver(panelGameOver.wrap);
