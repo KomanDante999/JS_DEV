@@ -108,6 +108,12 @@
     })
     return card;
   }
+  // btn.addEventListener("click", window.debounce(onBtnClick, 800));
+  // links.forEach((link) => {
+  //   link.addEventListener("click", window.debounce(onBtnClick, 800));
+  // });
+
+
 
   // возврат карты в исходное состояние
   function toInitialState(element) {
