@@ -17,7 +17,9 @@
     // контейнер для первой открытой карты
     cardOpenSave: '',
     // таймаут показа открытых карт
-    timeout: 600,
+    timeoutCard: 600,
+    // таймаут нажатия кнопок
+    timeoutClick: 600,
     // режим игры: free - свободный, timer - на время, step - на число шагов, timerStap - смешанный, level - по уровням сложности
     mode: 'free',
     // результат окончания игры: win - победа, loc - проигрыш
@@ -108,15 +110,9 @@
     })
     return card;
   }
-  // btn.addEventListener("click", window.debounce(onBtnClick, 800));
-  // links.forEach((link) => {
-  //   link.addEventListener("click", window.debounce(onBtnClick, 800));
-  // });
-
-
 
   // возврат карты в исходное состояние
-  function toInitialState(element) {
+  function cleanCard(element) {
     element.disabled = false;
     element.classList.remove('btn-primary', 'js-card-open');
     element.classList.add('btn-outline-primary', 'js-card-close')
@@ -286,42 +282,6 @@
     return wrap;
   }
 
-  // перевод времени в формат мин:сек
-  //timeVal - время в миллисекундах
-  // msStatus - нужно ли выводить миллисекунды (true/false)
-  //sepMin, sepSec - разделители минут и секунд
-  function formatMinSec(timeVal, msStatus = false, sepMin = ' : ', sepSec = ' . ') {
-    let minutes = Math.trunc(timeVal / 6000);
-    let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
-    let milliseconds = timeVal - minutes * 6000 - seconds * 100
-    if (seconds < 10) {
-      seconds = '0' + seconds;
-    }
-    if (milliseconds < 10) {
-      milliseconds = '0' + milliseconds;
-    }
-    if (msStatus) {
-      return `${minutes}${sepMin}${seconds}${sepSec}${milliseconds}`;
-    }
-    return `${minutes}${sepMin}${seconds}${sepSec}`;
-  }
-
-  // окончания а, ов (шаг, шага, шагов)
-  function formatEndings(number, word = 'шаг') {
-    if (number > 10 && number < 20) {
-      return word + 'ов';
-    }
-    const lastNumber = number % 10;
-    if (lastNumber == 1) {
-      return word;
-    }
-    if (lastNumber > 1 && lastNumber < 5) {
-      return word + 'а';
-    }
-    if ((lastNumber > 4 && lastNumber < 10) || lastNumber == 0) {
-      return word + 'ов';
-    }
-  }
 
   // панель установки таймера (input range)
   function createSetTimerPanel() {
@@ -340,7 +300,7 @@
     timerSetLabel.for = 'timer-set-range';
     timerSetLabel.textContent = formatMinSec(timerSetInput.value, false, ' мин ', ' сек');
     // обработчик события на input range
-    timerSetInput.setAttribute('onchange','rulesTimerset(this.value)')
+    timerSetInput.setAttribute('onchange','rulesTimerSet(this.value)')
 
     timerSet.append(timerSetLabel, timerSetInput);
 
@@ -368,10 +328,10 @@
     const timerBtnStart = document.createElement('button');
     timerBtnStart.classList.add('js-timer-start', 'timer__button-start', "btn", "btn-danger");
     timerBtnStart.textContent = 'СТАРТ!!!';
+    timerBtnStart.addEventListener('click', debounce(rulesTimerStart, game.timeoutClick));
 
     timerBtnPanel.append(timerBtnStart, timerBtnSet, timerWindow);
     timerWrap.append(timerTitle, timerBtnPanel);
-
     return {timerWrap, timerBtnStart, timerBtnSet, timerWindow}
   }
 
@@ -532,6 +492,18 @@
     return {wrap};
   }
 
+  // задержка выполнения функции
+  function debounce(fn, ms) {
+    let isCooldown = false;
+    return function () {
+      if (isCooldown) return;
+      fn.apply(this, arguments);
+      isCooldown = true;
+      setTimeout(() => (isCooldown = false), ms);
+    };
+  }
+
+
   // правила -------------------------------------------------------------
   // правила открытия карт и выигрыша
   function rulesGame(element) {
@@ -550,8 +522,8 @@
       let cardOpenCurrent = element;
       // если карты не совпадают = возвращаем их в исходное состояние с задержкой
       if (cardOpenCurrent.value !== game.cardOpenSave.value) {
-        setTimeout(toInitialState, game.timeout, game.cardOpenSave);
-        setTimeout(toInitialState, game.timeout, cardOpenCurrent);
+        setTimeout(cleanCard, game.timeoutCard, game.cardOpenSave);
+        setTimeout(cleanCard, game.timeoutCard, cardOpenCurrent);
         // брасываем счетчик кликов
         game.click = 0;
         game.cardOpenSave = '';
@@ -617,10 +589,60 @@
   }
 
   // правила установки таймера
-  function rulesTimerset(value) {
+  function rulesTimerSet(value) {
     const outWindov = document.querySelector('.js-timer-set-lable')
     outWindov.textContent = formatMinSec(value, false, ' мин ', ' сек');
     timer.init = value;
+  }
+
+  // правила запуска таймера
+  function rulesTimerStart() {
+    const timerBtnStart = document.querySelector('.js-timer-start');
+    const timerWindow = document.querySelector('.js-timer-windov');
+    const timerBtnSet = document.querySelector('.js-timer-set');
+    const btnSizeField = document.querySelector('.js-field-size');
+    // start
+    if (timer.event == 'start') {
+      timerBtnStart.textContent = 'СТОП !!!';
+      // блокировка других кнопок
+      timerBtnSet.disabled = true;
+      btnSizeField.disabled = true;
+      timer.event = 'stop';
+      // смена режима игры
+      game.mode = 'timer';
+      // инициализация нового игрового поля
+      cleanCounts();
+      initiallField();
+      // переопределение кнопки "УСТАНОВИТЬ ТАЙМЕР" в "ЗАКОНЧИТЬ ИГРУ"
+      changeTimerBtnSet(true);
+      // запуск таймера
+      runTimer(timerWindow, timer.init);
+      return;
+    }
+    // stop
+    if (timer.event == 'stop') {
+      timer.break = true;
+      timer.event = 'contin';
+      timerBtnStart.textContent = 'ПОДОЛЖИТЬ !!!';
+      // переопределение кнопки "УСТАНОВИТЬ ТАЙМЕР" в "ЗАКОНЧИТЬ ИГРУ"
+      changeTimerBtnSet(false);
+      // блокировка игрового поля
+      disableCloseCards(true);
+      return;
+    }
+    // contin
+    if (timer.event == 'contin') {
+      timer.break = false;
+      timer.event = 'stop';
+      timerBtnStart.textContent = 'СТОП !!!';
+      // блокировка других кнопок
+      timerBtnSet.disabled = true;
+      // разблокировка игрового поля
+      disableCloseCards(false);
+      // запуск таймера с точки остановки
+      runTimer(timerWindow, timer.current);
+      return;
+    }
   }
 
   // правила работы таймера
@@ -640,11 +662,11 @@
       if (timer.break) {
         clearInterval(timerID);
       }
-
     }
     clearInterval(timerID);
     timerID = setInterval(timeCount, 10);
   }
+
   // правила окончания игры
   function gameOver() {
     const container = document.getElementById('game-paired-cards');
@@ -687,6 +709,42 @@
       }
     }
   }
+  // перевод времени в формат мин:сек
+  //timeVal - время в миллисекундах
+  // msStatus - нужно ли выводить миллисекунды (true/false)
+  //sepMin, sepSec - разделители минут и секунд
+  function formatMinSec(timeVal, msStatus = false, sepMin = ' : ', sepSec = ' . ') {
+    let minutes = Math.trunc(timeVal / 6000);
+    let seconds = Math.trunc((timeVal - minutes * 6000) / 100);
+    let milliseconds = timeVal - minutes * 6000 - seconds * 100
+    if (seconds < 10) {
+      seconds = '0' + seconds;
+    }
+    if (milliseconds < 10) {
+      milliseconds = '0' + milliseconds;
+    }
+    if (msStatus) {
+      return `${minutes}${sepMin}${seconds}${sepSec}${milliseconds}`;
+    }
+    return `${minutes}${sepMin}${seconds}${sepSec}`;
+  }
+
+  // окончания а, ов (шаг, шага, шагов)
+  function formatEndings(number, word = 'шаг') {
+    if (number > 10 && number < 20) {
+      return word + 'ов';
+    }
+    const lastNumber = number % 10;
+    if (lastNumber == 1) {
+      return word;
+    }
+    if (lastNumber > 1 && lastNumber < 5) {
+      return word + 'а';
+    }
+    if ((lastNumber > 4 && lastNumber < 10) || lastNumber == 0) {
+      return word + 'ов';
+    }
+  }
 
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -701,16 +759,6 @@
     modalSizeField.modal.id = 'modal-size-field';
     modalSizeField.modalTitle.textContent = 'ВЫБЕРИТЕ РАЗМЕР ИГРОВОГО ПОЛЯ';
     modalSizeField.modalBtnStart.textContent = 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ';
-    //-----
-    // modalSizeField.modal.classList.add('show');
-    // modalSizeField.modal.style.display = 'block';
-    // modalSizeField.modal.removeAttribute('aria-hidden');
-    // modalSizeField.modal.setAttribute('aria-modal', 'true');
-    // modalSizeField.modal.setAttribute('role', 'dialog');
-
-
-
-
     container.append(modalSizeField.modal);
 
     // модальное окно установки таймера
@@ -745,54 +793,6 @@
       timerPanel.timerWindow.textContent = formatMinSec(timer.init, true);
     })
 
-    // событие на кнопке "СТАРТ"
-    timerPanel.timerBtnStart.addEventListener('click', () => {
-      // start
-      if (timer.event == 'start') {
-        timerPanel.timerBtnStart.textContent = 'СТОП !!!'
-        // блокировка других кнопок
-        timerPanel.timerBtnSet.disabled = true;
-        btnResizeField.btnSizeField.disabled = true;
-        timer.event = 'stop';
-        // смена режима игры
-        game.mode = 'timer';
-        // инициализация нового игрового поля
-        cleanCounts();
-        initiallField();
-        // переопределение кнопки "УСТАНОВИТЬ ТАЙМЕР" в "ЗАКОНЧИТЬ ИГРУ"
-        changeTimerBtnSet(true);
-        // запуск таймера
-        runTimer(timerPanel.timerWindow, timer.init);
-        return;
-      }
-      // stop
-      if (timer.event == 'stop') {
-        timer.break = true;
-        timer.event = 'contin';
-        timerPanel.timerBtnStart.textContent = 'ПОДОЛЖИТЬ !!!'
-        // переопределение кнопки "УСТАНОВИТЬ ТАЙМЕР" в "ЗАКОНЧИТЬ ИГРУ"
-        changeTimerBtnSet(false);
-        // блокировка игрового поля
-        disableCloseCards(true);
-
-        return;
-      }
-      // contin
-      if (timer.event == 'contin') {
-        timer.break = false;
-        timer.event = 'stop';
-        timerPanel.timerBtnStart.textContent = 'СТОП !!!'
-        // блокировка других кнопок
-        timerPanel.timerBtnSet.disabled = true;
-
-        // разблокировка игрового поля
-        disableCloseCards(false);
-        // запуск таймера с точки остановки
-        runTimer(timerPanel.timerWindow, timer.current);
-        return;
-      }
-    })
-
     // событие на кнопке "ЗАКОНЧИТЬ ИГРУ"
     timerPanel.timerBtnSet.addEventListener('click', () => {
       if (timer.event == 'contin') {
@@ -807,5 +807,5 @@
   })
 
   window.rulesCreateField = rulesCreateField;
-  window.rulesTimerset = rulesTimerset;
+  window.rulesTimerSet = rulesTimerSet;
 })();
