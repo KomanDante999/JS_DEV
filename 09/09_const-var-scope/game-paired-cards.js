@@ -93,7 +93,7 @@
   // создание карточки
   function createCard(objCard) {
     const card = document.createElement('button');
-    card.classList.add('col', 'btn', 'm-1', 'btn-outline-primary', 'js-card-close')
+    card.classList.add('col', 'btn', 'm-1', 'btn-outline-primary','js-card', 'js-card-close')
     card.textContent = '?';
     card.value = objCard.id;
     // обработчик клика по карте
@@ -104,11 +104,18 @@
       card.textContent = objCard.simbol;
       card.disabled = true;
       game.click++;
-
       // проверка условий игры
       rulesGame(card);
     })
     return card;
+  }
+  //установка высоты карты
+  function setHeightCard() {
+    const listCards = document.querySelectorAll('.js-card');
+    listCards.forEach(card => {
+      card.style.height = `100px`;
+      // card.style.height = `${card.offsetWidth}px`;
+    });
   }
 
   // возврат карты в исходное состояние
@@ -151,6 +158,8 @@
     // фомируем игровое поле
     const fieldGameNew = createField(game.w, game.h, game.arrayCards);
     container.append(fieldGameNew);
+    // устанавливаем высоту карты
+    setHeightCard();
   }
 
   // блокировка-разблокировка закрытых карт
@@ -769,7 +778,6 @@
     modallSetTimer.modalBtnStart.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
     container.append(modallSetTimer.modal);
 
-
     const titleGame = createTitle(game.title);
     container.append(titleGame);
 
@@ -803,7 +811,6 @@
 
     // фомируем игровое поле по умолчанию
     initiallField();
-
   })
 
   window.rulesCreateField = rulesCreateField;
