@@ -45,7 +45,6 @@
   // id таймера
   let timerID;
 
-
   // определение числа пар
   function numberOfPairs(withField, heightField) {
     return (withField * heightField) / 2
@@ -109,7 +108,8 @@
     })
     return card;
   }
-  //установка высоты карты
+
+  //установка адаптивной высоты карты (не реализована)
   function setHeightCard() {
     const listCards = document.querySelectorAll('.js-card');
     listCards.forEach(card => {
@@ -178,7 +178,6 @@
     game.paired = 0;
     document.querySelector('.js-count-step').textContent = game.step;
   }
-
 
   // подготовка к новой игре
   function cleanGame() {
@@ -331,7 +330,7 @@
     const modalFooter = document.createElement('div');
     modalFooter.classList.add('modal-footer');
     const modalBtnStart = document.createElement('button');
-    modalBtnStart.classList.add("btn", "btn-primary");
+    modalBtnStart.classList.add("game-button");
     modalBtnStart.setAttribute('data-bs-dismiss', 'modal');
 
     modalHeader.append(modalTitle, modalBtnClose);
@@ -340,17 +339,16 @@
     modalConten.append(modalHeader, modalBody, modalFooter);
     modalDialog.append(modalConten);
     modal.append(modalDialog);
-
-    return {modal, modalTitle, modalBtnStart, modalBtnClose};
+    return {modal,modalConten, modalTitle, modalBtnStart, modalBtnClose};
   }
 
   // радио чекбокс
   function createRadioCheck(optionClass, name, index) {
     const wrapForm = document.createElement('div');
-    wrapForm.classList.add('form-check');
+    wrapForm.classList.add('form-check', 'modal-field__check-lable');
     wrapForm.classList.add(optionClass);
     const input = document.createElement('input');
-    input.classList.add('form-check-input');
+    input.classList.add('form-check-input', 'modal-field__check-input');
     input.type = 'radio';
     input.id = name + index;
     input.value = index;
@@ -358,7 +356,7 @@
     // событие выбора чекбокса
     input.setAttribute('onchange','rulesCreateField(this.name, this.value)');
     const label = document.createElement('label');
-    label.classList.add('form-check-label');
+    label.classList.add('form-check-label', 'modal-field__check-lable');
     label.for = name + index;
     label.textContent = index;
 
@@ -369,20 +367,20 @@
   // панель выбора размера игрового поля с радио чекбоксами
   function createPanelSizeField(minSize = 1, maxSize = 4) {
     const wrap = document.createElement('div');
+    wrap.classList.add('modal-field__body')
     const wrapWithField = document.createElement('div');
-    wrapWithField.classList.add('with-line', 'd-flex', 'flex-nowrap', 'ps-5');
+    wrapWithField.classList.add('with-line', 'd-flex', 'flex-nowrap', 'ps-5', 'modal-field__with');
     const wrapHeightField = document.createElement('div');
-    wrapHeightField.classList.add('height-line');
-    wrapHeightField.style.width = '40px';
+    wrapHeightField.classList.add('height-line', 'modal-field__height');
     wrap.append(wrapWithField, wrapHeightField)
     // горизонтальная строка
     for (let i = minSize; i <= maxSize; i++) {
-      let radioChek = createRadioCheck('form-check-inline','withField', i).wrapForm;
+      let radioChek = createRadioCheck('form-check-inline', 'js-with-field', i).wrapForm;
       wrapWithField.append(radioChek);
     }
     // вертикальная колонка
     for (let i = minSize; i <= maxSize; i++) {
-      let radioChek = createRadioCheck('form-check-reverse','heightField', i).wrapForm;
+      let radioChek = createRadioCheck('form-check-reverse', 'js-height-field', i).wrapForm;
       wrapHeightField.append(radioChek);
     }
     return wrap;
@@ -391,9 +389,9 @@
   // панель установки таймера (input range)
   function createSetTimerPanel() {
     const timerSet = document.createElement('div');
-    timerSet.classList.add('timer-set');
+    timerSet.classList.add('modal-timer__body');
     const timerSetInput = document.createElement('input');
-    timerSetInput.classList.add('timer-set__input-range', 'form-range');
+    timerSetInput.classList.add('modal-timer__input-range', 'form-range');
     timerSetInput.id = 'timer-set-range';
     timerSetInput.type = 'range';
     timerSetInput.min = timer.min;
@@ -401,7 +399,7 @@
     timerSetInput.defaultValue = timer.init;
     timerSetInput.step = '100';
     const timerSetLabel = document.createElement('label');
-    timerSetLabel.classList.add('timer-set__label', 'form-label', 'js-timer-set-lable');
+    timerSetLabel.classList.add('modal-timer__label', 'form-label', 'js-timer-set-lable');
     timerSetLabel.for = 'timer-set-range';
     timerSetLabel.textContent = formatMinSec(timerSetInput.value, false, ' мин ', ' сек');
     // обработчик события на input range
@@ -411,12 +409,15 @@
     return timerSet;
   }
 
-
+  // сообщения окончания игры-------------------------
   // модальное окно окончания игры
   function createModalGameOver(panel) {
     const modalGameOver = createModal(panel);
     modalGameOver.modal.id = 'modal-game-over';
+    modalGameOver.modalConten.classList.add('modal-gameover');
+    modalGameOver.modalTitle.classList.add('modal-gameover__title');
     modalGameOver.modalTitle.textContent = 'ИГРА ОКОНЧЕНА';
+    modalGameOver.modalBtnStart.classList.add('modal-gameover__button-newgame');
     modalGameOver.modalBtnStart.textContent = 'НОВАЯ ИГРА';
     // показать модальное окно
     visibleModal(modalGameOver);
@@ -465,23 +466,16 @@
   function createMassageWinFree() {
     const wrap = document.createElement('div');
     wrap.classList.add('game-over__wrap-massage');
-    const textMassage = document.createElement('p');
-    textMassage.classList.add('game-over__text');
-    textMassage.textContent = 'все пары найдены';
-
-    const wrapSupport = document.createElement('div');
-    wrapSupport.classList.add('game-over__wrap-massage', 'game-over__wrap-massage_support');
-    const textSupport1 = document.createElement('p');
-    textSupport1.classList.add('game-over__text');
-    textSupport1.textContent = 'за';
+    const textMassage = document.createElement('span');
+    textMassage.classList.add('game-over__text', 'win-theme__text');
+    textMassage.textContent = 'все пары найдены за';
     const outStep = document.createElement('span');
-    outStep.classList.add('game-over__out-windov');
-    const textSupport2 = document.createElement('p');
-    textSupport2.classList.add('game-over__text');
+    outStep.classList.add('game-over__out-windov', 'win-theme__number');
+    const textSupport2 = document.createElement('span');
+    textSupport2.classList.add('game-over__text', 'win-theme__text');
     textSupport2.textContent = 'ходов';
 
-    wrapSupport.append(textSupport1, outStep, textSupport2);
-    wrap.append(textMassage, wrapSupport);
+    wrap.append(textMassage, outStep, textSupport2);
     return {wrap, outStep, textSupport2}
   }
 
@@ -489,53 +483,42 @@
   function createMassageWinTime() {
     const wrap = document.createElement('div');
     wrap.classList.add('game-over__wrap-massage');
-    const textMassage = document.createElement('p');
-    textMassage.classList.add('game-over__text');
-    textMassage.textContent = 'все пары найдены';
 
-    const wrapSupport = document.createElement('div');
-    wrapSupport.classList.add('game-over__wrap-massage', 'game-over__wrap-massage_support');
-    const textSupport1 = document.createElement('p');
-    textSupport1.classList.add('game-over__text');
-    textSupport1.textContent = 'за';
+    const wrapSupport1 = document.createElement('div');
+    wrapSupport1.classList.add('game-over__wrap-massage', 'game-over__wrap-massage_support');
+    const textMassage = document.createElement('span');
+    textMassage.classList.add('game-over__text', 'win-theme__text');
+    textMassage.textContent = 'все пары найдены за';
     const outTime = document.createElement('span');
-    outTime.classList.add('game-over__out-windov');
-    const textSupport2 = document.createElement('p');
-    textSupport2.classList.add('game-over__text');
+    outTime.classList.add('game-over__out-windov', 'win-theme__number');
+    wrapSupport1.append(textMassage, outTime);
+
+    const wrapSupport2 = document.createElement('div');
+    wrapSupport2.classList.add('game-over__wrap-massage', 'game-over__wrap-massage');
+    const textSupport2 = document.createElement('span');
+    textSupport2.classList.add('game-over__text', 'win-theme__text');
     textSupport2.textContent = 'вы сделали';
     const outStep = document.createElement('span');
-    outStep.classList.add('game-over__out-windov');
-    const textSupport3 = document.createElement('p');
-    textSupport3.classList.add('game-over__text');
+    outStep.classList.add('game-over__out-windov', 'win-theme__number');
+    const textSupport3 = document.createElement('span');
+    textSupport3.classList.add('game-over__text', 'win-theme__text');
     textSupport3.textContent = 'ходов';
+    wrapSupport2.append(textSupport2, outStep, textSupport3);
 
-    wrapSupport.append(textSupport1, outTime, textSupport2, outStep, textSupport3);
-    wrap.append(textMassage, wrapSupport);
+    wrap.append(wrapSupport1, wrapSupport2);
     return {wrap, outTime, outStep, textSupport3};
   }
   // сообщение проигрыш по времени
   function createMassageLosTime() {
     const wrap = document.createElement('div');
     wrap.classList.add('game-over__wrap-massage');
-    const textMassage = document.createElement('p');
-    textMassage.classList.add('game-over__text');
-    textMassage.textContent = 'время вышло';
+    const textMassage = document.createElement('span');
+    textMassage.classList.add('game-over__text', 'los-theme__text');
+    textMassage.textContent = 'время вышло...';
 
     wrap.append(textMassage);
     return {wrap};
   }
-
-  // задержка выполнения функции
-  function debounce(fn, ms) {
-    let isCooldown = false;
-    return function () {
-      if (isCooldown) return;
-      fn.apply(this, arguments);
-      isCooldown = true;
-      setTimeout(() => (isCooldown = false), ms);
-    };
-  }
-
 
   // правила -------------------------------------------------------------
   // правила открытия карт и выигрыша
@@ -583,9 +566,9 @@
   // правила создания игрового поля (исключение выбора нечетного числа полей)
   function rulesCreateField(nameRadio, value) {
     // горизонтальный ряд
-    if (nameRadio == 'withField') {
+    if (nameRadio == 'js-with-field') {
       game.w = value;
-      const listRadio = document.getElementsByName('heightField');
+      const listRadio = document.getElementsByName('js-height-field');
       if (value % 2 !== 0) {
         for (const radio of listRadio) {
           if (radio.value % 2 !== 0) {
@@ -602,9 +585,9 @@
       }
     }
     // вертикальный ряд
-    if (nameRadio == 'heightField') {
+    if (nameRadio == 'js-height-field') {
       game.h = value;
-      const listRadio = document.getElementsByName('withField');
+      const listRadio = document.getElementsByName('js-with-field');
       if (value % 2 !== 0) {
         for (const radio of listRadio) {
           if (radio.value % 2 !== 0) {
@@ -712,9 +695,10 @@
         message.outStep.textContent = game.step;
         message.textSupport2.textContent = formatEndings(game.step, 'ход');
         const panelGameOver = createPanelGameOver(message.wrap);
+        panelGameOver.title.classList.add('win-theme__title');
         panelGameOver.title.textContent = 'ВЫ ВЫИГРАЛИ !!!';
         const modalWindov = createModalGameOver(panelGameOver.wrap);
-        modalWindov.modal.classList.add('game-over_win-theme');
+        modalWindov.modalConten.classList.add('win-theme');
         container.append(modalWindov.modal);
       }
       // выигрыш в режиме на время
@@ -724,9 +708,10 @@
         message.outStep.textContent = game.step;
         message.textSupport3.textContent = formatEndings(game.step, 'ход')
         const panelGameOver = createPanelGameOver(message.wrap);
+        panelGameOver.title.classList.add('win-theme__title');
         panelGameOver.title.textContent = 'ВЫ ВЫИГРАЛИ !!!';
         const modalWindov = createModalGameOver(panelGameOver.wrap);
-        modalWindov.modal.classList.add('game-over_win-theme');
+        modalWindov.modalConten.classList.add('win-theme');
         container.append(modalWindov.modal);
       }
     }
@@ -736,15 +721,27 @@
       if (game.mode == 'timer') {
         const message = createMassageLosTime();
         const panelGameOver = createPanelGameOver(message.wrap);
+        panelGameOver.title.classList.add('los-theme__title');
         panelGameOver.title.textContent = 'ВЫ ПРОИГРАЛИ...';
         const modalWindov = createModalGameOver(panelGameOver.wrap);
-        modalWindov.modal.classList.add('game-over_los-theme');
+        modalWindov.modalConten.classList.add('los-theme');
         container.append(modalWindov.modal);
       }
     }
   }
 
   // вспомогательные функции-----------------------------------------------------
+
+  // задержка выполнения функции
+  function debounce(fn, ms) {
+    let isCooldown = false;
+    return function () {
+      if (isCooldown) return;
+      fn.apply(this, arguments);
+      isCooldown = true;
+      setTimeout(() => (isCooldown = false), ms);
+    };
+  }
 
   // перевод времени в формат мин:сек
   //timeVal - время в миллисекундах
@@ -785,8 +782,7 @@
 
 
   document.addEventListener('DOMContentLoaded', () => {
-
-    // создаем разметку
+    // контейнер игры
     const container = document.getElementById('game-paired-cards');
     container.classList.add('container', 'paired-card__container');
 
@@ -794,18 +790,34 @@
     const panelSizeField = createPanelSizeField(1, 10);
     const modalSizeField = createModal(panelSizeField);
     modalSizeField.modal.id = 'modal-size-field';
-    modalSizeField.modalTitle.textContent = 'ВЫБЕРИТЕ РАЗМЕР ИГРОВОГО ПОЛЯ';
+    modalSizeField.modalConten.classList.add('modal-field');
+    modalSizeField.modalTitle.classList.add('modal-field__title');
+    modalSizeField.modalTitle.textContent = 'РАЗМЕР ИГРОВОГО ПОЛЯ';
+    modalSizeField.modalBtnStart.classList.add('modal-field__button-create', 'game-button');
     modalSizeField.modalBtnStart.textContent = 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ';
+    modalSizeField.modalBtnStart.addEventListener('click', () => {
+      cleanCounts();
+      initiallField();
+    })
+
     container.append(modalSizeField.modal);
 
     // модальное окно установки таймера
     const panelSetTimer = createSetTimerPanel();
     const modallSetTimer = createModal(panelSetTimer);
     modallSetTimer.modal.id = 'modal-timer-set';
+    modallSetTimer.modalConten.classList.add('modal-timer');
+    modallSetTimer.modalTitle.classList.add('modal-timer__title');
     modallSetTimer.modalTitle.textContent = 'ВЫБЕРИТЕ ВРЕМЯ ИГРЫ';
+    modallSetTimer.modalBtnStart.classList.add('modal-timer__button-set');
     modallSetTimer.modalBtnStart.textContent = 'УСТАНОВИТЬ ТАЙМЕР';
+    modallSetTimer.modalBtnStart.addEventListener('click', () => {
+      document.querySelector('.js-timer-windov').textContent = formatMinSec(timer.init, true);
+    })
+
     container.append(modallSetTimer.modal);
 
+    // заголовок
     const titleGame = createTitle(game.title);
     container.append(titleGame);
 
@@ -819,18 +831,6 @@
 
     const btnResizeField = createBtnResizeField();
     container.append(btnResizeField);
-
-    // событие на кнопке 'СФОРМИРОВАТЬ ИГРОВОЕ ПОЛЕ' в модальном окне
-    modalSizeField.modalBtnStart.addEventListener('click', () => {
-      cleanCounts();
-      initiallField();
-    })
-
-    // событие на кнопке "УСТАНОВИТЬ ТАЙМЕР" в модальном окне
-    // modallSetTimer.modalBtnStart.addEventListener('click', () => {
-    //   timerPanel.timerWindow.textContent = formatMinSec(timer.init, true);
-    // })
-
 
     // фомируем игровое поле по умолчанию
     initiallField();

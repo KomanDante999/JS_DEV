@@ -1,17 +1,3 @@
-:root {
-
-}
-
-/*
-
-background-color: #076B94;
-background: linear-gradient(to right, #3498db, #2c3e50);
-background: linear-gradient(to right, #191654, #43C6AC);
-background: linear-gradient(to right, #190A05, #870000);
-
-*/
-
-
 .body {
   font-family: 'Rubik';
   font-weight: 400;
@@ -24,7 +10,7 @@ background: linear-gradient(to right, #190A05, #870000);
   border: 1px solid rgb(13, 110, 253);
   border-radius: 6px;
   background-color: transparent;
-  transition-property: border-color, box-shadow, color, opacity;
+  transition-property: border-color, box-shadow, text-shadow, color, opacity;
   transition-duration: 500ms;
   transition-timing-function: ease;
 }
@@ -32,25 +18,26 @@ background: linear-gradient(to right, #190A05, #870000);
 .game-button:hover {
   border-color: rgb(56, 135, 255);
   box-shadow: 0 0 15px rgb(56, 135, 255);
+  text-shadow: 0 0 20px rgb(240, 243, 248);
+}
+.game-button:disabled:hover {
+  border-color: rgb(13, 110, 253);
+  box-shadow: none;
+  text-shadow: none;
+
 }
 
 .paired-card__container {
   position: relative;
+  padding-top: 15px;
 }
 
 .paired-card__title {
   width: 100%;
   text-align: center;
-  font-family: 'Ripster Shadow';
-  font-family: 'Rubik Microbe';
-  font-family: 'Rubik Beastly';
-  font-family: 'Rubik Wet Paint';
-  font-family: 'Rubik Puddles';
-  font-family: 'Rubik Glitch';
-  font-family: 'Rubik Bubbles';
+  /* font-family: 'Rubik Microbe'; */
   font-family: 'Rubik Moonrocks';
-  font-family: 'Rubik Mono One';
-  font-size: 58px;
+  font-size: 70px;
 }
 
 .paired-card__control-panel {
@@ -63,8 +50,7 @@ background: linear-gradient(to right, #190A05, #870000);
 }
 
 .timer__title {
-  font-family: 'Rubik';
-  font-weight: 900;
+  font-family: 'Rubik Glitch';
 }
 
 .timer__panel-button {
@@ -125,8 +111,6 @@ background: linear-gradient(to right, #190A05, #870000);
   margin-right: 5px;
   text-align: center;
   font-size: 60px;
-  font-family: 'Rubik Mono One';
-  font-family: 'Rubik Bubbles';
   font-family: 'Rubik Microbe';
 }
 
@@ -155,15 +139,9 @@ background: linear-gradient(to right, #190A05, #870000);
   opacity: 0.5;
 }
 
-
 .field__button {
   font-family: 'Ripster Shadow';
   font-size: 54px;
-}
-
-.field__button:disabled:hover {
-  border-color: rgb(13, 110, 253);
-  box-shadow: none;
 }
 
 .field__button_open {
@@ -171,7 +149,137 @@ background: linear-gradient(to right, #190A05, #870000);
   background: linear-gradient(to right, #190A05, #870000);
 }
 
+/* modal */
+/* модальное окно выбора размеров игрового поля */
+.modal-field {
+  background: linear-gradient(to right, #191654, #43C6AC);
+}
 
+.modal-field__title {
+  width: 100%;
+  font-size: 45px;
+  text-align: center;
+  font-family: 'Rubik Bubbles';
+}
 
+.modal-field__button-create {
+  padding: 15px 10px;
+  font-family: 'Rubik';
+  font-weight: 500;
+  font-style: italic;
+  background: linear-gradient(to bottom, #190A05, #010f73);
+}
+.modal-field__button-create:hover {
+  box-shadow: 0 0 15px rgb(226, 234, 246);
+}
+.modal-field__height {
+  width: 50px;
+}
 
+.modal-field__check-lable {
+  font-size: 20px;
+  font-family: 'Ripster Shadow';
+}
 
+/* модальное окно установки таймера */
+.modal-timer {
+  background: linear-gradient(to right, #191654, #43C6AC);
+}
+
+.modal-timer__title {
+  width: 100%;
+  font-size: 45px;
+  text-align: center;
+  font-family: 'Rubik Glitch';
+}
+
+.modal-timer__label {
+  font-family: 'Rubik';
+  font-weight: 500;
+  font-style: italic;
+  font-size: 24px;
+}
+
+.modal-timer__button-set {
+  padding: 15px 10px;
+  font-family: 'Rubik';
+  font-weight: 500;
+  font-style: italic;
+  background: linear-gradient(to bottom, #190A05, #010f73);
+}
+
+.modal-timer__button-set:hover {
+  box-shadow: 0 0 15px rgb(226, 234, 246);
+}
+
+/* модальные окна окончания игры */
+.modal-gameover__title {
+  width: 100%;
+  text-align: center;
+  font-size: 60px;
+  font-family: 'Rubik Glitch';
+}
+
+.game-over__title {
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 58px;
+}
+
+.game-over__text {
+  font-size: 40px;
+}
+
+.game-over__out-windov {
+  padding: 0 10px;
+  font-size: 40px;
+}
+
+.game-over__wrap-massage {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.game-over__wrap-massage_support {
+  flex-wrap: nowrap;
+}
+
+.modal-gameover__button-newgame {
+  padding: 15px 10px;
+  font-family: 'Rubik';
+  font-weight: 500;
+  font-style: italic;
+  background: linear-gradient(to bottom, #190A05, #010f73);
+}
+
+/* тема победа для модального окна */
+.win-theme {
+  background: linear-gradient(to top, #265971, #7afae1);
+}
+
+.win-theme__title {
+  font-family: 'Rubik Beastly';
+}
+
+.win-theme__text {
+  font-family: 'Rubik Microbe';
+}
+
+.win-theme__number {
+  font-family: 'Rubik Bubbles';
+}
+
+/* тема проигрышь для модального окна */
+.los-theme {
+  background: linear-gradient(to right, #190A05, #870000);
+}
+
+.los-theme__title {
+  font-family: 'Rubik Wet Paint';
+}
+
+.los-theme__text {
+  font-family: 'Rubik Wet Paint';
+  font-size: 50px;
+}
