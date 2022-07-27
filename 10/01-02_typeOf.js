@@ -124,13 +124,13 @@ true * false // 0
 // нестрогие сравнения
 '1' == 1 // 1 == 1 => true
 true == 1 // 1 == 1 => true
-({}) == 0 // NaN == 0 => false
+if (({}) == 0) {} // NaN == 0 => false
 ({toString() { return '3'}}) == 3 // 3 == 3 => true
 
 '1' != 1 // false
 
 '1' > 2 // false
 true < 5 // true
-({}) <= 0 // NaN <= 0 => false
+if (({}) <= 0) {} // NaN <= 0 => false
 ({toString() { return '1'}}) >= false // 1 >= 0 => true
 
