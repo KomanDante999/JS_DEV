@@ -120,7 +120,6 @@ console.log(
 );
 
 // подсчет внутри массива
-
 const cartItem = [ // корзина
   {name: 'Гречка', prise: 50, quantity: 3},
   {name: 'Сок', prise: 100, quantity: 1},
@@ -132,4 +131,6 @@ console.log(
   cartItem.reduce((total, item) => total + item.prise * item.quantity, 0) // 0 - начальное значение для total
 );
 
-
+students.forEach((student, index) => {
+  console.log(`Студент №${index + 1}: ${student.name} `);
+})
