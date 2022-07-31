@@ -18,27 +18,29 @@
     const title = document.createElement('h2');
     title.classList.add('modal-title');
     title.textContent = 'Внесите данные нового студента';
-    const btnClose = document.createElement('button');
-    btnClose.classList.add("btn-close");
-    btnClose.setAttribute('data-bs-dismiss', 'modal');
-    btnClose.ariaLabel = "Close";
+    const btnCloseX = document.createElement('button');
+    btnCloseX.classList.add("btn-close");
+    btnCloseX.setAttribute('data-bs-dismiss', 'modal');
+    btnCloseX.ariaLabel = "Close";
     const body = document.createElement('div');
     body.classList.add('modal-body');
     const footer = document.createElement('div');
     footer.classList.add('modal-footer');
-    const btnCheck = document.createElement('button');
-    btnCheck.classList.add('btn', 'btn-primary');
-    btnCheck.textContent = 'Проверить данные';
-    const btnApply = document.createElement('button');
-    btnApply.classList.add('btn', 'btn-success');
-    btnApply.setAttribute('data-bs-dismiss', 'modal');
-    btnApply.textContent = 'Добавить студента';
+    const btnClose = document.createElement('button');
+    btnClose.classList.add('btn', 'btn-outline-primary');
+    btnClose.setAttribute('data-bs-dismiss', 'modal');
+    btnClose.textContent = 'Закрыть форму';
 
-    header.append(title, btnClose);
+    header.append(title, btnCloseX);
     body.append(contentBody);
-    footer.append( btnCheck,btnApply);
+    footer.append(btnClose);
     content.append(header, body, footer);
     dialog.append(content);
     wrap.append(dialog);
-    return {wrap, content, title, btnApply, btnCheck};
+    return {
+      wrap,
+      content,
+    };
   }
+
+
