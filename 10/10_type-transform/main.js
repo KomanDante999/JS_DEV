@@ -4,16 +4,17 @@ import { createFilterPanel } from './modules/create_filter-panel.js';  // пан
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { creatTable } from './modules/create_table.js';  // таблица
+import { arrayFormat } from './modules/array_filter_sort.js';  // таблица
 
 export let inputFormData = [];
 
 (() => {
 
-  let arrayStudents = [];
-  arrayStudents = arrayStudentDefault;
+  let arrayStudentsInit = [];
+  let arrayStudentsFormat = [];
+  arrayStudentsInit = arrayStudentDefault;
 
   document.addEventListener('DOMContentLoaded', () => {
-    console.log(arrayStudents);
     // контейнер
     const container = document.getElementById('student-control-panel');
     container.classList.add('container');
@@ -95,9 +96,10 @@ export let inputFormData = [];
           yearAdmission: modalInputForm.inputYearAdmission.value,
           faculty: modalInputForm.inputFaculty.value,
         }
-        arrayStudents.push(newStudent);
+        arrayStudentsInit.push(newStudent);
         cleanInputForm();
-        const tableNew = creatTable(arrayStudents);
+
+        const tableNew = creatTable(arrayStudentsInit);
         const container = document.getElementById('student-control-panel');
         const tableOld = document.getElementById('js-table-students');
         if (tableOld) {
@@ -130,7 +132,9 @@ export let inputFormData = [];
     container.append(filterPanel.wrap);
 
     // таблица
-    const table = creatTable(arrayStudents);
+    arrayStudentsFormat = arrayFormat(arrayStudentsInit);
+    console.log(arrayStudentsFormat);
+    const table = creatTable(arrayStudentsFormat);
 
 
     container.append(table.table);

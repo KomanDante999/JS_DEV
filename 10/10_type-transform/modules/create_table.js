@@ -4,13 +4,13 @@ function createRow(objStudent, index, targetNode) {
   cellBody0.scope = 'row';
   cellBody0.textContent = index;
   const cellBody1 = document.createElement('td')
-  cellBody1.textContent = `${objStudent.surname} ${objStudent.name} ${objStudent.middleName}`;
+  cellBody1.textContent = objStudent.fullName;
   const cellBody2 = document.createElement('td')
   cellBody2.textContent = objStudent.faculty;
   const cellBody3 = document.createElement('td')
-  cellBody3.textContent = objStudent.birthDate;
+  cellBody3.textContent = objStudent.birthDateAge;
   const cellBody4 = document.createElement('td')
-  cellBody4.textContent = objStudent.yearAdmission;
+  cellBody4.textContent = objStudent.yearsStudy;
   rowBody.append(
     cellBody0,
     cellBody1,
