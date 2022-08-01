@@ -1,3 +1,6 @@
+import { inputFormData } from '../main.js';  // данные формы ввода
+
+
 export function createInputForm() {
   const form = document.createElement('form');
   form.id = 'modal-input-form';
@@ -19,13 +22,13 @@ export function createInputForm() {
   inputSurname.type = 'text';
   inputSurname.placeholder = 'Фамилия';
   inputSurname.ariaLabel = 'введите вашу фамилию';
-  const inputSurnameFiidback = document.createElement('div');
-  inputSurnameFiidback.classList.add('js-feedback');
-  inputSurnameFiidback.id = 'input-surname-feedback';
+  const inputSurnameFeedback = document.createElement('div');
+  inputSurnameFeedback.classList.add('js-feedback');
+  inputSurnameFeedback.id = 'input-surname-feedback';
   inputSurnameGroup.append(
     inputSurnameCaption,
     inputSurname,
-    inputSurnameFiidback,
+    inputSurnameFeedback,
     );
     inputSurnameWrap.append(inputSurnameGroup);
     // имя
@@ -42,13 +45,13 @@ export function createInputForm() {
     inputName.type = 'text';
     inputName.placeholder = 'Имя';
     inputName.ariaLabel = 'введите ваше имя';
-    const inputNameFiidback = document.createElement('div');
-    inputNameFiidback.classList.add('js-feedback');
-    inputNameFiidback.id = 'input-name-feedback';
+    const inputNameFeedback = document.createElement('div');
+    inputNameFeedback.classList.add('js-feedback');
+    inputNameFeedback.id = 'input-name-feedback';
     inputNameGroup.append(
       inputNameCaption,
       inputName,
-      inputNameFiidback,
+      inputNameFeedback,
       );
       inputNameWrap.append(inputNameGroup);
       // отчество
@@ -65,13 +68,13 @@ export function createInputForm() {
       inputMiddleName.type = 'text';
       inputMiddleName.placeholder = 'Отчество';
       inputMiddleName.ariaLabel = 'введите ваше отчество';
-      const inputMiddleNameFiidback = document.createElement('div');
-      inputMiddleNameFiidback.classList.add('js-feedback');
-      inputMiddleNameFiidback.id = 'input-middlename-feedback';
+      const inputMiddleNameFeedback = document.createElement('div');
+      inputMiddleNameFeedback.classList.add('js-feedback');
+      inputMiddleNameFeedback.id = 'input-middlename-feedback';
       inputMiddleNameGroup.append(
         inputMiddleNameCaption,
         inputMiddleName,
-        inputMiddleNameFiidback,
+        inputMiddleNameFeedback,
         );
         inputMiddleNameWrap.append(inputMiddleNameGroup);
 
@@ -88,13 +91,13 @@ export function createInputForm() {
   inputBirthDate.id = 'input-birthdate';
   inputBirthDate.type = 'date';
   inputBirthDate.ariaLabel = 'введите вашу дату рождения';
-  const inputBirthDateFiidback = document.createElement('div');
-  inputBirthDateFiidback.classList.add('js-feedback');
-  inputBirthDateFiidback.id = 'input-birthdate-feedback';
+  const inputBirthDateFeedback = document.createElement('div');
+  inputBirthDateFeedback.classList.add('js-feedback');
+  inputBirthDateFeedback.id = 'input-birthdate-feedback';
   containerBirthDate.append(
     captionBirthDate,
     inputBirthDate,
-    inputBirthDateFiidback,
+    inputBirthDateFeedback,
     );
   wrapBirthDate.append(containerBirthDate)
 
@@ -111,13 +114,13 @@ export function createInputForm() {
   inputYearAdmission.id = 'input-admission';
   inputYearAdmission.type = 'date';
   inputYearAdmission.ariaLabel = 'введите дату поступления';
-  const inputYearAdmissionFiidback = document.createElement('div');
-  inputYearAdmissionFiidback.classList.add('js-feedback');
-  inputYearAdmissionFiidback.id = 'input-admission-feedback';
+  const inputYearAdmissionFeedback = document.createElement('div');
+  inputYearAdmissionFeedback.classList.add('js-feedback');
+  inputYearAdmissionFeedback.id = 'input-admission-feedback';
   containerYearAdmission.append(
     captionYearAdmission,
     inputYearAdmission,
-    inputYearAdmissionFiidback,
+    inputYearAdmissionFeedback,
     )
   wrapYearAdmission.append(containerYearAdmission)
 
@@ -134,13 +137,13 @@ export function createInputForm() {
   inputFaculty.id = 'input-Faculty';
   inputFaculty.type = 'text';
   inputFaculty.placeholder = 'факультет';
-  const inputFacultyFiidback = document.createElement('div');
-  inputFacultyFiidback.classList.add('js-feedback');
-  inputFacultyFiidback.id = 'input-Faculty-feedback';
+  const inputFacultyFeedback = document.createElement('div');
+  inputFacultyFeedback.classList.add('js-feedback');
+  inputFacultyFeedback.id = 'input-Faculty-feedback';
   containerFaculty.append(
     captionFaculty,
     inputFaculty,
-    inputFacultyFiidback,
+    inputFacultyFeedback,
     );
   wrapFaculty.append(containerFaculty);
   // submit
@@ -163,28 +166,46 @@ export function createInputForm() {
   return {
     form,
     inputSurname,
-    inputSurnameFiidback,
+    inputSurnameFeedback,
     inputName,
-    inputNameFiidback,
+    inputNameFeedback,
     inputMiddleName,
-    inputMiddleNameFiidback,
+    inputMiddleNameFeedback,
     inputBirthDate,
-    inputBirthDateFiidback,
+    inputBirthDateFeedback,
     inputYearAdmission,
-    inputYearAdmissionFiidback,
+    inputYearAdmissionFeedback,
     inputFaculty,
-    inputFacultyFiidback,
+    inputFacultyFeedback,
     btnSubmit,
   };
 }
 
-// export function invalidInputTheme(idInput, feedbackText) {
-//   const input = document.getElementById(idInput);
-//   input.classList.add('is-invalid');
+export function invalidInputTheme(inputNode, feedbackNode, feedbackText) {
+  inputNode.classList.remove('is-valid');
+  inputNode.classList.add('is-invalid');
+  feedbackNode.classList.remove('valid-feedback');
+  feedbackNode.classList.add('invalid-feedback');
+  feedbackNode.textContent = feedbackText;
+  }
+export function validInputTheme(inputNode, feedbackNode, feedbackText) {
+  inputNode.classList.remove('is-invalid');
+  inputNode.classList.add('is-valid');
+  feedbackNode.classList.remove('invalid-feedback');
+  feedbackNode.classList.add('valid-feedback');
+  feedbackNode.textContent = feedbackText;
+  }
+export function cleanInputForm() {
+  document.querySelectorAll('.js-input').forEach(element => {
+    element.classList.remove('is-invalid', 'is-valid')
+    element.value = '';
+  });
+  document.querySelectorAll('.js-feedback').forEach(element => {
+    element.classList.remove('valid-feedback', 'invalid-feedback')
+    element.textContent = '';
+  });
+  }
 
-//   inputSurnameFiidback.classList.add('invalid-feedback');
-//   inputSurnameFiidback.textContent = validName(modalInputForm.inputSurname.value).feedback;
 
 
-// }
 

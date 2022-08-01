@@ -1,41 +1,20 @@
-// имя фамилия
-export function validName(str) {
-  if (!str.trim()) {
-    return {valid: false, feedback: 'поле должно быть заполнено'}
-  }
-  return {valid: true, feedback: ''}
+import { inputFormData } from '../main.js';  // данные формы ввода
 
-}
-// отчество
-export function validMiddleName(str) {
-  if (!str.trim()) {
-    return {valid: false, feedback: 'поле должно быть заполнено'}
-  }
-  return {valid: true, feedback: ''}
-}
+export function validInputForm() {
 
-// дата рождения
-export function validBirthDate(str) {
-  if (!str) {
-    return {valid: false, feedback: 'поле должно быть заполнено'}
+  for (const objData of inputFormData) {
+    if (objData.fieldValue.trim() === '') {
+      objData.fieldValid = false;
+      objData.feedbackText = 'поле должно быть заполнено';
+    }
+    else {
+      objData.fieldValid = true;
+      objData.feedbackText = '';
+    }
+
   }
-  return {valid: true, feedback: ''}
 }
 
-// дата поступления
-export function validYearAdmission(str) {
-  if (!str) {
-    return {valid: false, feedback: 'поле должно быть заполнено'}
-  }
-  return {valid: true, feedback: ''}
-}
 
-// факультет
-export function validFaculty(str) {
-  if (!str.trim()) {
-    return {valid: false, feedback: 'поле должно быть заполнено'}
-  }
-  return {valid: true, feedback: ''}
-}
 
 

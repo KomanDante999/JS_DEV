@@ -40,6 +40,8 @@
     return {
       wrap,
       content,
+      btnCloseX,
+      btnClose,
     };
   }
 
