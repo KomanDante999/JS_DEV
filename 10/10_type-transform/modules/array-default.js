@@ -1,6 +1,6 @@
 const arrayStudentDefault = [
-  {surname: 'Артемьев', name: 'Андрей', middleName: 'Юрьевич', birthDate: new Date('1995-2-15'), yearAdmission: new Date('2015-9'), faculty: 'физика-математика'},
-  {surname: 'Арефьев', name: 'Петр', middleName: 'Виниаминович', birthDate: new Date('1985-3-1'), yearAdmission: new Date('2000-9'), faculty: 'физика-математика'},
+  {surname: 'Артемьев', name: 'Андрей', middleName: 'Юрьевич', birthDate: new Date('2000-2-15'), yearAdmission: new Date('2015-9'), faculty: 'физика-математика'},
+  {surname: 'Арефьев', name: 'Петр', middleName: 'Виниаминович', birthDate: new Date('2000-9-1'), yearAdmission: new Date('2000-9'), faculty: 'физика-математика'},
   {surname: 'Бабаев', name: 'Дмитрий', middleName: 'Иванович', birthDate: new Date('1998-12-18'), yearAdmission: new Date('2019-9'), faculty: 'физика-математика'},
   {surname: 'Букина', name: 'Ольга', middleName: 'Владимировна', birthDate: new Date('2000-5-5'), yearAdmission: new Date('2020-9'), faculty: 'физика-математика'},
   {surname: 'Бабаян', name: 'Динара', middleName: 'Отар оглы', birthDate: new Date('1999-9-25'), yearAdmission: new Date('2018-9'), faculty: 'физика-математика'},
