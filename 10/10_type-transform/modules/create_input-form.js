@@ -101,19 +101,19 @@ export function createInputForm() {
     );
   wrapBirthDate.append(containerBirthDate)
 
-  // дата поступления
+  // год поступления
   const wrapYearAdmission = document.createElement('div');
   wrapYearAdmission.classList.add('col-5');
   const containerYearAdmission = document.createElement('div');
   containerYearAdmission.classList.add('input-group');
   const captionYearAdmission = document.createElement('span');
   captionYearAdmission.classList.add('input-group-text');
-  captionYearAdmission.textContent = 'дата поступления';
+  captionYearAdmission.textContent = 'год поступления';
   const inputYearAdmission = document.createElement('input');
   inputYearAdmission.classList.add('form-control', 'js-input');
   inputYearAdmission.id = 'input-admission';
-  inputYearAdmission.type = 'date';
-  inputYearAdmission.ariaLabel = 'введите дату поступления';
+  inputYearAdmission.type = 'number';
+  inputYearAdmission.ariaLabel = 'введите год поступления';
   const inputYearAdmissionFeedback = document.createElement('div');
   inputYearAdmissionFeedback.classList.add('js-feedback');
   inputYearAdmissionFeedback.id = 'input-admission-feedback';

@@ -97,9 +97,10 @@ export let inputFormData = [];
           faculty: modalInputForm.inputFaculty.value,
         }
         arrayStudentsInit.push(newStudent);
+        arrayStudentsFormat = arrayFormat(arrayStudentsInit);
         cleanInputForm();
 
-        const tableNew = creatTable(arrayStudentsInit);
+        const tableNew = creatTable(arrayStudentsFormat);
         const container = document.getElementById('student-control-panel');
         const tableOld = document.getElementById('js-table-students');
         if (tableOld) {
@@ -133,7 +134,6 @@ export let inputFormData = [];
 
     // таблица
     arrayStudentsFormat = arrayFormat(arrayStudentsInit);
-    console.log(arrayStudentsFormat);
     const table = creatTable(arrayStudentsFormat);
 
 

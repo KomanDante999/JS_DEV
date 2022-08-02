@@ -19,9 +19,9 @@ export function formatNumber00(number) {
   return numberSign + Math.abs(Math.trunc(number));
 }
 
-  // формат лет/годов
+// формат лет/годов
 export function formatAge(number) {
-    if (number > 10 && number < 20) {
+    if (number % 100 > 10 && number % 100 < 20) {
       return 'лет';
     }
     const lastNumber = number % 10;
@@ -35,3 +35,17 @@ export function formatAge(number) {
       return 'лет';
     }
   }
+
+// года обучения
+export function getYearsStudy(yearAdmission) {
+  let currentDate = new Date();
+  let course = currentDate.getFullYear() - yearAdmission;
+  if (currentDate.getMonth() + 1 >= 9) {
+    course++;
+  }
+  if (course > 5) {
+    return 'закончил';
+  }
+  return course + ' курс';
+}
+
