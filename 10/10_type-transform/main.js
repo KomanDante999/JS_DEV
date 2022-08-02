@@ -3,7 +3,7 @@ import { createModal } from './modules/modal-window_bootstrap.js';  // обол�
 import { createFilterPanel } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
-import { creatTable } from './modules/create_table.js';  // таблица
+import { creatTable, initNewTable } from './modules/create_table.js';  // таблица
 import { arrayFormat } from './modules/array_filter_sort.js';  // таблица
 
 export let inputFormData = [];
@@ -88,25 +88,20 @@ export let inputFormData = [];
         });
       }
       else {
+        // добавление новой записи
         const newStudent = {
           surname: modalInputForm.inputName.value,
           name: modalInputForm.inputSurname.value,
           middleName: modalInputForm.inputMiddleName.value,
-          birthDate: modalInputForm.inputBirthDate.value,
-          yearAdmission: modalInputForm.inputYearAdmission.value,
+          birthDate: new Date(modalInputForm.inputBirthDate.value),
+          yearAdmission: Number(modalInputForm.inputYearAdmission.value),
           faculty: modalInputForm.inputFaculty.value,
         }
         arrayStudentsInit.push(newStudent);
         arrayStudentsFormat = arrayFormat(arrayStudentsInit);
+        // отрисовка новой таблицы
+        initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
         cleanInputForm();
-
-        const tableNew = creatTable(arrayStudentsFormat);
-        const container = document.getElementById('student-control-panel');
-        const tableOld = document.getElementById('js-table-students');
-        if (tableOld) {
-          container.removeChild(tableOld);
-        }
-        container.append(tableNew.table);
       }
 
     });
@@ -134,10 +129,9 @@ export let inputFormData = [];
 
     // таблица
     arrayStudentsFormat = arrayFormat(arrayStudentsInit);
-    const table = creatTable(arrayStudentsFormat);
-
-
-    container.append(table.table);
+    initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
+    // const table = creatTable(arrayStudentsFormat);
+    // container.append(table.table);
 
   });
 

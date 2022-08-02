@@ -13,13 +13,3 @@ export function createFilterPanel(modalId) {
 }
 
 
-// <div class="input-group flex-nowrap">
-//   <span class="input-group-text" id="addon-wrapping">@</span>
-//   <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
-// </div>
-
-// <div class="input-group">
-//   <span class="input-group-text">First and last name</span>
-//   <input type="text" aria-label="First name" class="form-control">
-//   <input type="text" aria-label="Last name" class="form-control">
-// </div>
