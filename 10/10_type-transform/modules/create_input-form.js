@@ -5,6 +5,7 @@ export function createInputForm() {
   const form = document.createElement('form');
   form.id = 'modal-input-form';
   form.name = 'modal-input-form';
+  form.noValidate = true;
   // row
   const row = document.createElement('div');
   row.classList.add('row', 'g-3', 'mb-3')

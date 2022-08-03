@@ -1,6 +1,6 @@
-import { getAge, formatNumber00, formatAge, getYearsStudy } from './servise-function.js';
+import { getAge, formatNumber00, formatAge, getYearsStudy } from './servise-function.js'; // вспомогательные функции
 
-
+// форматирование масива для таблицы
 export function arrayFormat(arrayInit) {
   let arrayFormat = arrayInit;
 
@@ -12,6 +12,22 @@ export function arrayFormat(arrayInit) {
   return arrayFormat;
 }
 
+// фильтр
+export function filterArray(arrayTarget, arrayFilter) {
+  for (const objFilter of arrayFilter) {
+    // ФИО
+    if (objFilter.fieldName === 'fullName') {
+      if (objFilter.fieldValue) {
+        for (const objStident of arrayTarget) {
 
+        }
+
+      }
+    }
+
+  }
+
+
+}
 
 

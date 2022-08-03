@@ -1,10 +1,10 @@
 import { arrayStudentDefault } from './modules/array-default.js'; // массив студентов по умолчанию
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
-import { createFilterPanel } from './modules/create_filter-panel.js';  // панель фильтров
+import { createBtnAddStudent, createFilterForm } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { creatTable, initNewTable } from './modules/create_table.js';  // таблица
-import { arrayFormat } from './modules/array_filter_sort.js';  // таблица
+import { arrayFormat, filterArray } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
 
 export let inputFormData = [];
 
@@ -12,6 +12,7 @@ export let inputFormData = [];
 
   let arrayStudentsInit = [];
   let arrayStudentsFormat = [];
+  let filterFormData = [];
   arrayStudentsInit = arrayStudentDefault;
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -93,8 +94,8 @@ export let inputFormData = [];
           surname: modalInputForm.inputName.value,
           name: modalInputForm.inputSurname.value,
           middleName: modalInputForm.inputMiddleName.value,
-          birthDate: new Date(modalInputForm.inputBirthDate.value),
-          yearAdmission: Number(modalInputForm.inputYearAdmission.value),
+          birthDate: modalInputForm.inputBirthDate.valueAsDate,
+          yearAdmission: modalInputForm.inputYearAdmission.valueAsNumber,
           faculty: modalInputForm.inputFaculty.value,
         }
         arrayStudentsInit.push(newStudent);
@@ -119,19 +120,68 @@ export let inputFormData = [];
     // заголовок
     const title = document.createElement('h1');
     title.textContent = 'Список студентов университета';
-    title.classList.add('h1', 'mb-4');
+    title.classList.add('h1', 'text-center');
     container.append(title);
 
     // панель фильтров
-    const filterPanel = createFilterPanel('modal-input-form');
+    const btnAddStudent = createBtnAddStudent('modal-input-form');
+    const filterForm = createFilterForm();
+    filterForm.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      filterFormData = [
+        {
+          fieldName: 'fullName',
+          fieldValue: filterForm.inputFullName.value,
+          fieldValid: false,
+          feedbackText: '',
+          inputNode: filterForm.inputFullName,
+          feedbackNode: filterForm.inputFullNameFeedback,
+        },
+        {
+          fieldName: 'faculty',
+          fieldValue: filterForm.inputFaculty.value,
+          fieldValid: false,
+          feedbackText: '',
+          inputNode: filterForm.inputFaculty,
+          feedbackNode: filterForm.inputFacultyFeedback,
+        },
+        {
+          fieldName: 'birthYear',
+          fieldValue: filterForm.inputBirthYear.valueAsNumber,
+          fieldValid: false,
+          feedbackText: '',
+          inputNode: filterForm.inputBirthYear,
+          feedbackNode: filterForm.inputBirthYearFeedback,
+        },
+        {
+          fieldName: 'yearAdmission',
+          fieldValue: filterForm.inputYearAdmission.valueAsNumber,
+          fieldValid: false,
+          feedbackText: '',
+          inputNode: filterForm.inputYearAdmission,
+          feedbackNode: filterForm.inputYearAdmissionFeedback,
+        },
+        {
+          fieldName: 'yearEnding',
+          fieldValue: filterForm.inputYearEnding.valueAsNumber,
+          fieldValid: false,
+          feedbackText: '',
+          inputNode: filterForm.inputYearEnding,
+          feedbackNode: filterForm.inputYearEndingFeedback,
+        },
+      ]
+      // фильтрация таблицы
+      arrayStudentsFormat = filterArray(arrayStudentsInit, filterFormData);
+      // отрисовка новой таблицы
+      // initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
 
-    container.append(filterPanel.wrap);
+    })
+
+    container.append(btnAddStudent.wrap, filterForm.form);
 
     // таблица
     arrayStudentsFormat = arrayFormat(arrayStudentsInit);
     initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
-    // const table = creatTable(arrayStudentsFormat);
-    // container.append(table.table);
 
   });
 
