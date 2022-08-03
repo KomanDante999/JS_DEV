@@ -1,6 +1,6 @@
 import { arrayStudentDefault } from './modules/array-default.js'; // массив студентов по умолчанию
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
-import { createBtnAddStudent, createFilterForm } from './modules/create_filter-panel.js';  // панель фильтров
+import { createBtnAddStudent, createFilterForm, cleanFilterField } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { creatTable, initNewTable } from './modules/create_table.js';  // таблица
@@ -51,7 +51,7 @@ export let inputFormData = [];
         },
         {
           fieldName: 'birthDate',
-          fieldValue: modalInputForm.inputBirthDate.value,
+          fieldValue: modalInputForm.inputBirthDate.valueAsDate,
           fieldValid: false,
           feedbackText: '',
           inputNode: modalInputForm.inputBirthDate,
@@ -59,7 +59,7 @@ export let inputFormData = [];
         },
         {
           fieldName: 'yearAdmission',
-          fieldValue: modalInputForm.inputYearAdmission.value,
+          fieldValue: modalInputForm.inputYearAdmission.valueAsNumber,
           fieldValid: false,
           feedbackText: '',
           inputNode: modalInputForm.inputYearAdmission,
@@ -126,6 +126,20 @@ export let inputFormData = [];
     // панель фильтров
     const btnAddStudent = createBtnAddStudent('modal-input-form');
     const filterForm = createFilterForm();
+
+    // очтска фильтров
+    filterForm.inputFullNameClean.addEventListener('click', () => {
+      cleanFilterField('fullName')
+      // filterForm.inputFullName.value = '';
+      // filterForm.inputFullNameClean.classList.add('visually-hidden');
+      // for (const objInput of filterFormData) {
+      //   if (objInput.fieldName === 'fullName') {
+      //     objInput.fieldValue = ''
+      //   }
+      // }
+      console.log(filterFormData);
+    })
+
     filterForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
       filterFormData = [
