@@ -158,13 +158,12 @@ export let inputFormData = [];
     filterForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
       filterFormData = getDataFofm('js-filter-input');
-      // console.log(filterFormData);
-      // console.log(arrayStudentsFormat);
 
       // фильтрация таблицы
       // arrayStudentsFilters = arrayStudentsFormat;
       arrayStudentsFilters = filterArray(arrayStudentsFormat, filterFormData);
-      console.log(arrayStudentsFilters);
+      // console.log(arrayStudentsFilters);
+      // console.log(filterFormData);
       // отрисовка новой таблицы
       initNewTable(arrayStudentsFilters, 'student-control-panel', 'js-table-students');
 

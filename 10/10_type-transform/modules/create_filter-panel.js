@@ -100,7 +100,7 @@ export function createFilterForm() {
   const inputFacultyFeedback = document.createElement('div');
   inputFacultyFeedback.classList.add('js-feedback');
   inputFacultyFeedback.id = 'faculty-faculty-feedback';
-  const inputFacultyClean = document.createElement('button');
+  const inputFacultyClean = document.createElement('span');
   inputFacultyClean.classList.add('input-group-text', 'visually-hidden');
   inputFacultyClean.id = 'faculty-filter-clean';
   inputFacultyClean.textContent = 'x';
@@ -135,7 +135,7 @@ export function createFilterForm() {
   const inputBirthYearFeedback = document.createElement('div');
   inputBirthYearFeedback.classList.add('js-feedback');
   inputBirthYearFeedback.id = 'birthYear-filter-feedback';
-  const inputBirthYearClean = document.createElement('button');
+  const inputBirthYearClean = document.createElement('span');
   inputBirthYearClean.classList.add('input-group-text', 'visually-hidden');
   inputBirthYearClean.id = 'birthYear-filter-clean';
   inputBirthYearClean.textContent = 'x';
@@ -170,7 +170,7 @@ export function createFilterForm() {
   const inputYearAdmissionFeedback = document.createElement('div');
   inputYearAdmissionFeedback.classList.add('js-feedback');
   inputYearAdmissionFeedback.id = 'yearAdmission-filter-feedback';
-  const inputYearAdmissionClean = document.createElement('button');
+  const inputYearAdmissionClean = document.createElement('span');
   inputYearAdmissionClean.classList.add('input-group-text', 'visually-hidden');
   inputYearAdmissionClean.id = 'yearAdmission-filter-clean';
   inputYearAdmissionClean.textContent = 'x';
@@ -205,7 +205,7 @@ export function createFilterForm() {
   const inputYearEndingFeedback = document.createElement('div');
   inputYearEndingFeedback.classList.add('js-feedback');
   inputYearEndingFeedback.id = 'yearEnding-filter-feedback';
-  const inputYearEndingClean = document.createElement('button');
+  const inputYearEndingClean = document.createElement('span');
   inputYearEndingClean.classList.add('input-group-text', 'visually-hidden');
   inputYearEndingClean.id = 'yearEnding-filter-clean';
   inputYearEndingClean.textContent = 'x';

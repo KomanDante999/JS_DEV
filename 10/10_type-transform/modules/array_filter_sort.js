@@ -20,13 +20,44 @@ export function filterArray(arrayTarget, filterData) {
     if (objFilter.fieldName === 'fullName') {
       newArrayFilter = newArrayFilter.filter(item => item.fullName.toLowerCase().includes(objFilter.fieldValue.toLowerCase()))
     }
+    // факультет
     if (objFilter.fieldName === 'faculty') {
       newArrayFilter = newArrayFilter.filter(item => item.faculty.toLowerCase().includes(objFilter.fieldValue.toLowerCase()))
+    }
+    // год рождения
+    if (objFilter.fieldName === 'birthYear') {
+        newArrayFilter = newArrayFilter.filter(item => item.birthDateAge
+          .split('.')
+          .filter(text => text.length > 4)
+          .toString()
+          .split(' (')
+          .filter(text => text.length === 4)
+          .toString()
+          .includes(objFilter.fieldValue)
+          );
+        }
+    // год поступления
+    if (objFilter.fieldName === 'yearAdmission') {
+      newArrayFilter = newArrayFilter.filter(item => item.yearsStudy
+        .split(' ')
+        .shift()
+        .includes(objFilter.fieldValue)
+        );
+      }
+      // год окончания
+      if (objFilter.fieldName === 'yearEnding') {
+        newArrayFilter = newArrayFilter.filter(item => item.yearsStudy
+          .split(' - ')
+          .filter(text => text.length > 5)
+          .toString()
+          .split(' (')
+          .shift()
+          .includes(objFilter.fieldValue)
+        );
     }
   }
   return newArrayFilter
 }
-
 
 // получение данных формы
 export function getDataFofm(classInput) {
