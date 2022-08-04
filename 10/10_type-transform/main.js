@@ -4,7 +4,7 @@ import { createBtnAddStudent, createFilterForm, cleanFilterField } from './modul
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { creatTable, initNewTable } from './modules/create_table.js';  // таблица
-import { arrayFormat, filterArray } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
+import { arrayFormat, filterArray, getDataFofm } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
 
 export let inputFormData = [];
 
@@ -12,8 +12,19 @@ export let inputFormData = [];
 
   let arrayStudentsInit = [];
   let arrayStudentsFormat = [];
+  let arrayStudentsFilters = [];
+  let arrayStudentsSortes = [];
+  // данные формы фильтров
   let filterFormData = [];
+
   arrayStudentsInit = arrayStudentDefault;
+
+  // очиска одного поля фильтрации
+  function cleanFilterOneField(arrayFilter, fieldName, fieldJsClass) {
+    cleanFilterField(`${fieldName}`);
+    arrayFilter= getDataFofm(`${fieldJsClass}`);
+  }
+
 
   document.addEventListener('DOMContentLoaded', () => {
     // контейнер
@@ -129,65 +140,33 @@ export let inputFormData = [];
 
     // очтска фильтров
     filterForm.inputFullNameClean.addEventListener('click', () => {
-      cleanFilterField('fullName')
-      // filterForm.inputFullName.value = '';
-      // filterForm.inputFullNameClean.classList.add('visually-hidden');
-      // for (const objInput of filterFormData) {
-      //   if (objInput.fieldName === 'fullName') {
-      //     objInput.fieldValue = ''
-      //   }
-      // }
-      console.log(filterFormData);
+      cleanFilterOneField(filterFormData, 'fullName', 'js-filter-input');
+    })
+    filterForm.inputFacultyClean.addEventListener('click', () => {
+      cleanFilterOneField(filterFormData, 'faculty', 'js-filter-input');
+    })
+    filterForm.inputBirthYearClean.addEventListener('click', () => {
+      cleanFilterOneField(filterFormData, 'birthYear', 'js-filter-input');
+    })
+    filterForm.inputYearAdmissionClean.addEventListener('click', () => {
+      cleanFilterOneField(filterFormData, 'yearAdmission', 'js-filter-input');
+    })
+    filterForm.inputYearEndingClean.addEventListener('click', () => {
+      cleanFilterOneField(filterFormData, 'yearEnding', 'js-filter-input');
     })
 
     filterForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      filterFormData = [
-        {
-          fieldName: 'fullName',
-          fieldValue: filterForm.inputFullName.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: filterForm.inputFullName,
-          feedbackNode: filterForm.inputFullNameFeedback,
-        },
-        {
-          fieldName: 'faculty',
-          fieldValue: filterForm.inputFaculty.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: filterForm.inputFaculty,
-          feedbackNode: filterForm.inputFacultyFeedback,
-        },
-        {
-          fieldName: 'birthYear',
-          fieldValue: filterForm.inputBirthYear.valueAsNumber,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: filterForm.inputBirthYear,
-          feedbackNode: filterForm.inputBirthYearFeedback,
-        },
-        {
-          fieldName: 'yearAdmission',
-          fieldValue: filterForm.inputYearAdmission.valueAsNumber,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: filterForm.inputYearAdmission,
-          feedbackNode: filterForm.inputYearAdmissionFeedback,
-        },
-        {
-          fieldName: 'yearEnding',
-          fieldValue: filterForm.inputYearEnding.valueAsNumber,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: filterForm.inputYearEnding,
-          feedbackNode: filterForm.inputYearEndingFeedback,
-        },
-      ]
+      filterFormData = getDataFofm('js-filter-input');
+      // console.log(filterFormData);
+      // console.log(arrayStudentsFormat);
+
       // фильтрация таблицы
-      arrayStudentsFormat = filterArray(arrayStudentsInit, filterFormData);
+      // arrayStudentsFilters = arrayStudentsFormat;
+      arrayStudentsFilters = filterArray(arrayStudentsFormat, filterFormData);
+      console.log(arrayStudentsFilters);
       // отрисовка новой таблицы
-      // initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
+      initNewTable(arrayStudentsFilters, 'student-control-panel', 'js-table-students');
 
     })
 

@@ -34,8 +34,9 @@ export function createFilterForm() {
   inputFullNameCaption.classList.add('input-group-text');
   inputFullNameCaption.textContent = 'ФИО';
   const inputFullName = document.createElement('input');
-  inputFullName.classList.add('form-control', 'js-input');
+  inputFullName.classList.add('form-control', 'js-filter-input');
   inputFullName.id = 'fullName-filter-input';
+  inputFullName.name = 'fullName';
   inputFullName.type = 'text';
   inputFullName.placeholder = 'поиск по фамилии, имени или отчеству студента';
   inputFullName.ariaLabel = 'поиск по фамилии, имени или отчеству студента';
@@ -84,7 +85,8 @@ export function createFilterForm() {
   captionFaculty.classList.add('input-group-text');
   captionFaculty.textContent = 'факультет';
   const inputFaculty = document.createElement('input');
-  inputFaculty.classList.add('form-control', 'js-input');
+  inputFaculty.classList.add('form-control', 'js-filter-input');
+  inputFaculty.name = 'faculty';
   inputFaculty.id = 'faculty-filter-input';
   inputFaculty.type = 'text';
   inputFaculty.placeholder = 'поиск по факульту';
@@ -97,9 +99,10 @@ export function createFilterForm() {
   });
   const inputFacultyFeedback = document.createElement('div');
   inputFacultyFeedback.classList.add('js-feedback');
-  inputFacultyFeedback.id = 'filter-faculty-feedback';
+  inputFacultyFeedback.id = 'faculty-faculty-feedback';
   const inputFacultyClean = document.createElement('button');
   inputFacultyClean.classList.add('input-group-text', 'visually-hidden');
+  inputFacultyClean.id = 'faculty-filter-clean';
   inputFacultyClean.textContent = 'x';
   containerFaculty.append(
     captionFaculty,
@@ -117,8 +120,9 @@ export function createFilterForm() {
   captionBirthYear.classList.add('input-group-text');
   captionBirthYear.textContent = 'год роджения';
   const inputBirthYear = document.createElement('input');
-  inputBirthYear.classList.add('form-control', 'js-input');
-  inputBirthYear.id = 'filter-birthYear';
+  inputBirthYear.classList.add('form-control', 'js-filter-input');
+  inputBirthYear.name = 'birthYear';
+  inputBirthYear.id = 'birthYear-filter-input';
   inputBirthYear.type = 'number';
   inputBirthYear.placeholder = 'поиск по году рождения';
   inputBirthYear.ariaLabel = 'поиск по году рождения';
@@ -130,9 +134,10 @@ export function createFilterForm() {
   });
   const inputBirthYearFeedback = document.createElement('div');
   inputBirthYearFeedback.classList.add('js-feedback');
-  inputBirthYearFeedback.id = 'input-birthYear-feedback';
+  inputBirthYearFeedback.id = 'birthYear-filter-feedback';
   const inputBirthYearClean = document.createElement('button');
   inputBirthYearClean.classList.add('input-group-text', 'visually-hidden');
+  inputBirthYearClean.id = 'birthYear-filter-clean';
   inputBirthYearClean.textContent = 'x';
   containerBirthYear.append(
     captionBirthYear,
@@ -150,8 +155,9 @@ export function createFilterForm() {
   captionYearAdmission.classList.add('input-group-text');
   captionYearAdmission.textContent = 'год поступления';
   const inputYearAdmission = document.createElement('input');
-  inputYearAdmission.classList.add('form-control', 'js-input');
-  inputYearAdmission.id = 'filter-admission';
+  inputYearAdmission.classList.add('form-control', 'js-filter-input');
+  inputYearAdmission.name = 'yearAdmission';
+  inputYearAdmission.id = 'yearAdmission-filter-input';
   inputYearAdmission.type = 'number';
   inputYearAdmission.placeholder = 'поиск по году поступления';
   inputYearAdmission.ariaLabel = 'поиск по году поступления';
@@ -163,11 +169,11 @@ export function createFilterForm() {
   });
   const inputYearAdmissionFeedback = document.createElement('div');
   inputYearAdmissionFeedback.classList.add('js-feedback');
-  inputYearAdmissionFeedback.id = 'filter-admission-feedback';
+  inputYearAdmissionFeedback.id = 'yearAdmission-filter-feedback';
   const inputYearAdmissionClean = document.createElement('button');
   inputYearAdmissionClean.classList.add('input-group-text', 'visually-hidden');
+  inputYearAdmissionClean.id = 'yearAdmission-filter-clean';
   inputYearAdmissionClean.textContent = 'x';
-
   containerYearAdmission.append(
     captionYearAdmission,
     inputYearAdmission,
@@ -184,8 +190,9 @@ export function createFilterForm() {
   captionYearEnding.classList.add('input-group-text');
   captionYearEnding.textContent = 'год окончания';
   const inputYearEnding = document.createElement('input');
-  inputYearEnding.classList.add('form-control', 'js-input');
-  inputYearEnding.id = 'filter-ending';
+  inputYearEnding.classList.add('form-control', 'js-filter-input');
+  inputYearEnding.name = 'yearEnding';
+  inputYearEnding.id = 'yearEnding-filter-input';
   inputYearEnding.type = 'number';
   inputYearEnding.placeholder = 'поиск по году окончания';
   inputYearEnding.ariaLabel = 'поиск по году окончания';
@@ -197,9 +204,10 @@ export function createFilterForm() {
   });
   const inputYearEndingFeedback = document.createElement('div');
   inputYearEndingFeedback.classList.add('js-feedback');
-  inputYearEndingFeedback.id = 'filter-ending-feedback';
+  inputYearEndingFeedback.id = 'yearEnding-filter-feedback';
   const inputYearEndingClean = document.createElement('button');
   inputYearEndingClean.classList.add('input-group-text', 'visually-hidden');
+  inputYearEndingClean.id = 'yearEnding-filter-clean';
   inputYearEndingClean.textContent = 'x';
   containerYearEnding.append(
     captionYearEnding,

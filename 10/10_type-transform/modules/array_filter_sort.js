@@ -13,21 +13,31 @@ export function arrayFormat(arrayInit) {
 }
 
 // фильтр
-export function filterArray(arrayTarget, arrayFilter) {
-  for (const objFilter of arrayFilter) {
+export function filterArray(arrayTarget, filterData) {
+  let newArrayFilter = arrayTarget;
+  for (const objFilter of filterData) {
     // ФИО
     if (objFilter.fieldName === 'fullName') {
-      if (objFilter.fieldValue) {
-        for (const objStident of arrayTarget) {
-
-        }
-
-      }
+      newArrayFilter = newArrayFilter.filter(item => item.fullName.toLowerCase().includes(objFilter.fieldValue.toLowerCase()))
     }
-
+    if (objFilter.fieldName === 'faculty') {
+      newArrayFilter = newArrayFilter.filter(item => item.faculty.toLowerCase().includes(objFilter.fieldValue.toLowerCase()))
+    }
   }
-
-
+  return newArrayFilter
 }
 
 
+// получение данных формы
+export function getDataFofm(classInput) {
+  let arrayInputs = Array.from(document.querySelectorAll(`.${classInput}`));
+  let arrayDataForm = [];
+  arrayDataForm.length = arrayInputs.length;
+  for (let i = 0; i < arrayDataForm.length; i++) {
+    arrayDataForm[i] = {
+      fieldName: arrayInputs[i].name,
+      fieldValue: arrayInputs[i].value,
+    }
+  }
+  return arrayDataForm;
+}
