@@ -1,3 +1,4 @@
+
 function createRow(objStudent, index, targetNode) {
   const rowBody = document.createElement('tr');
   const cellBody0 = document.createElement('th')
@@ -74,9 +75,6 @@ function createRow(objStudent, index, targetNode) {
     const btnSort = document.createElement('button');
     btnSort.name = `${objSorted.cellName}`
     btnSort.classList.add('js-table-sort', 'button-reset', 'd-flex', 'w-100');
-    btnSort.addEventListener('click', () => {
-      console.log(`я ${btnSort.name}`);
-    });
     const iconSort = document.createElement('span');
     iconSort.textContent = '!'
     const caption = document.createElement('span');

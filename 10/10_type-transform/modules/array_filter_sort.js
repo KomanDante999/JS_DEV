@@ -79,29 +79,61 @@ export let sortedFormData = [
     cellName: 'index',
     cellCaption: '№',
     sortedDirection: 0,
+    iconType: 'num',
   },
   {
     cellName: 'fullName',
     cellCaption: 'ФИО студента',
     sortedDirection: 0,
+    iconType: 'str',
+
   },
   {
     cellName: 'faculty',
     cellCaption: 'Факультет',
     sortedDirection: 0,
+    iconType: 'str',
   },
   {
     cellName: 'birthDateAge',
     cellCaption: 'Дата рождения (возраст)',
     sortedDirection: 0,
+    iconType: 'num',
   },
   {
     cellName: 'yearsStudy',
     cellCaption: 'Годы обучения (номер курса)',
     sortedDirection: 0,
+    iconType: 'num',
   },
-
 ]
 
+export function updateSortedData(arrayTarget, cellName) {
+  for (const objSort of arrayTarget) {
+    if (objSort.cellName === cellName) {
+      if (objSort.sortedDirection <=0) objSort.sortedDirection = 1;
+      else objSort.sortedDirection = -1;
+    }
+  }
+  return arrayTarget;
+}
+
+function sortedByField(nameField, sortedDirection) {
+  if (sortedDirection > 0) return (a,b) => a[nameField] > b[nameField] ? 1 : -1;
+  if (sortedDirection < 0) return (a,b) => a[nameField] < b[nameField] ? 1 : -1;
+}
+
+export function sortedArrayStudent(arrayTarget, sortedData, ) {
+  let newarrayTarget = arrayTarget;
+  newarrayTarget.sort(sortedByField('yearsStudy', 1));
+  // for (const objSort of sortedData) {
+    //   if (sortedData.sortedDirection !== 0) {
+      //   }
+      // }
+
+
+  console.log(newarrayTarget);
+  return newarrayTarget;
+}
 
 

@@ -49,6 +49,18 @@ export function getYearsStudy(yearAdmission) {
   return course + ' курс';
 }
 
+// задержка выполнения функции
+export function debounce(fn, ms) {
+  let isCooldown = false;
+  return function () {
+    if (isCooldown) return;
+    fn.apply(this, arguments);
+    isCooldown = true;
+    setTimeout(() => (isCooldown = false), ms);
+  };
+}
+
+
 // предотвращение срабатывания enter на кнопке
 // window.addEventListener('keydown', function(e) {
 //   if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {

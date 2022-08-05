@@ -4,7 +4,8 @@ import { createBtnAddStudent, createFilterForm, cleanFilterField, cleanFilterFie
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { initNewTable } from './modules/create_table.js';  // таблица
-import { arrayFormat, filterArray, getDataFofm, sortedFormData } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
+import { debounce } from './modules/servise-function.js';  // вспомогательные функции
+import { arrayFormat, filterArray, getDataFofm, sortedFormData, sortedArrayStudent, updateSortedData } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
 
 export let inputFormData = [];
 
@@ -26,9 +27,9 @@ export let inputFormData = [];
     // фильтрация
     arrayStudentsCurrent = filterArray(arrayStudentsCurrent, filterFormData);
     // сортировка
-    // arrayStudentsCurrent = sortedArray(arrayStudentsCurrent, sortedFormData);
+    arrayStudentsCurrent = sortedArrayStudent(arrayStudentsCurrent, sortedFormData);
     // отрисовка новой таблицы
-    console.log(arrayStudentsCurrent);
+    // console.log(arrayStudentsCurrent);
     initNewTable(arrayStudentsCurrent, sortedFormData, 'student-control-panel', 'js-table-students');
   }
 
@@ -184,9 +185,15 @@ export let inputFormData = [];
     container.append(btnAddStudent.wrap, filterForm.form);
 
     // таблица
-    updateTable()
-    // arrayStudentsFormat = arrayFormat(arrayStudentsInit);
-    // initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
+    updateTable();
+
+    for (const btnSorted of document.querySelectorAll('.js-table-sort')) {
+      btnSorted.addEventListener('click', () => {
+        updateSortedData(sortedFormData, btnSorted.name);
+        updateTable();
+
+      });
+    }
 
   });
 
