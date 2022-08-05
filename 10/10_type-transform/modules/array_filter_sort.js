@@ -72,3 +72,36 @@ export function getDataFofm(classInput) {
   }
   return arrayDataForm;
 }
+
+// данные сортировки
+export let sortedFormData = [
+  {
+    cellName: 'index',
+    cellCaption: '№',
+    sortedDirection: 0,
+  },
+  {
+    cellName: 'fullName',
+    cellCaption: 'ФИО студента',
+    sortedDirection: 0,
+  },
+  {
+    cellName: 'faculty',
+    cellCaption: 'Факультет',
+    sortedDirection: 0,
+  },
+  {
+    cellName: 'birthDateAge',
+    cellCaption: 'Дата рождения (возраст)',
+    sortedDirection: 0,
+  },
+  {
+    cellName: 'yearsStudy',
+    cellCaption: 'Годы обучения (номер курса)',
+    sortedDirection: 0,
+  },
+
+]
+
+
+

@@ -1,28 +1,35 @@
 import { arrayStudentDefault } from './modules/array-default.js'; // массив студентов по умолчанию
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
-import { createBtnAddStudent, createFilterForm, cleanFilterField } from './modules/create_filter-panel.js';  // панель фильтров
+import { createBtnAddStudent, createFilterForm, cleanFilterField, cleanFilterFieldAll } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
 import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
-import { creatTable, initNewTable } from './modules/create_table.js';  // таблица
-import { arrayFormat, filterArray, getDataFofm } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
+import { initNewTable } from './modules/create_table.js';  // таблица
+import { arrayFormat, filterArray, getDataFofm, sortedFormData } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
 
 export let inputFormData = [];
 
 (() => {
-
+  // основной масив (сохраняется)
   let arrayStudentsInit = [];
-  let arrayStudentsFormat = [];
-  let arrayStudentsFilters = [];
-  let arrayStudentsSortes = [];
+  // текущий массив
+  let arrayStudentsCurrent = [];
   // данные формы фильтров
   let filterFormData = [];
+  arrayStudentsInit = arrayStudentDefault.slice();
 
-  arrayStudentsInit = arrayStudentDefault;
-
-  // очиска одного поля фильтрации
-  function cleanFilterOneField(arrayFilter, fieldName, fieldJsClass) {
-    cleanFilterField(`${fieldName}`);
-    arrayFilter= getDataFofm(`${fieldJsClass}`);
+  // актуализация данных и отрисовка таблицы
+  function updateTable() {
+    // текущий массив из основного
+    arrayStudentsCurrent = arrayStudentsInit.slice();
+    // форматировани
+    arrayStudentsCurrent = arrayFormat(arrayStudentsCurrent);
+    // фильтрация
+    arrayStudentsCurrent = filterArray(arrayStudentsCurrent, filterFormData);
+    // сортировка
+    // arrayStudentsCurrent = sortedArray(arrayStudentsCurrent, sortedFormData);
+    // отрисовка новой таблицы
+    console.log(arrayStudentsCurrent);
+    initNewTable(arrayStudentsCurrent, sortedFormData, 'student-control-panel', 'js-table-students');
   }
 
 
@@ -85,9 +92,8 @@ export let inputFormData = [];
           feedbackNode: modalInputForm.inputFacultyFeedback,
         },
       ]
-
+      // валидация
       validInputForm();
-
       if (inputFormData.some(inputFormData => inputFormData.fieldValid === false)) {
         inputFormData.forEach(inputData => {
           if (inputData.fieldValid) {
@@ -96,7 +102,6 @@ export let inputFormData = [];
           else {
             invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText)
           }
-
         });
       }
       else {
@@ -110,9 +115,7 @@ export let inputFormData = [];
           faculty: modalInputForm.inputFaculty.value,
         }
         arrayStudentsInit.push(newStudent);
-        arrayStudentsFormat = arrayFormat(arrayStudentsInit);
-        // отрисовка новой таблицы
-        initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
+        updateTable();
         cleanInputForm();
       }
 
@@ -134,46 +137,56 @@ export let inputFormData = [];
     title.classList.add('h1', 'text-center');
     container.append(title);
 
-    // панель фильтров
+    // панель фильтров------------------------------------------------------
     const btnAddStudent = createBtnAddStudent('modal-input-form');
     const filterForm = createFilterForm();
-
-    // очтска фильтров
-    filterForm.inputFullNameClean.addEventListener('click', () => {
-      cleanFilterOneField(filterFormData, 'fullName', 'js-filter-input');
-    })
-    filterForm.inputFacultyClean.addEventListener('click', () => {
-      cleanFilterOneField(filterFormData, 'faculty', 'js-filter-input');
-    })
-    filterForm.inputBirthYearClean.addEventListener('click', () => {
-      cleanFilterOneField(filterFormData, 'birthYear', 'js-filter-input');
-    })
-    filterForm.inputYearAdmissionClean.addEventListener('click', () => {
-      cleanFilterOneField(filterFormData, 'yearAdmission', 'js-filter-input');
-    })
-    filterForm.inputYearEndingClean.addEventListener('click', () => {
-      cleanFilterOneField(filterFormData, 'yearEnding', 'js-filter-input');
-    })
-
+    // фильтрация по submit
     filterForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
+      // получение данных фильтра
       filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
 
-      // фильтрация таблицы
-      // arrayStudentsFilters = arrayStudentsFormat;
-      arrayStudentsFilters = filterArray(arrayStudentsFormat, filterFormData);
-      // console.log(arrayStudentsFilters);
-      // console.log(filterFormData);
-      // отрисовка новой таблицы
-      initNewTable(arrayStudentsFilters, 'student-control-panel', 'js-table-students');
-
-    })
+    // очистка отдельных фильтров
+    filterForm.fullName.clean.addEventListener('click', () => {
+      cleanFilterField(`fullName`);
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
+    filterForm.faculty.clean.addEventListener('click', () => {
+      cleanFilterField(`faculty`);
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
+    filterForm.birthYear.clean.addEventListener('click', () => {
+      cleanFilterField(`birthYear`);
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
+    filterForm.yearAdmission.clean.addEventListener('click', () => {
+      cleanFilterField(`yearAdmission`);
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
+    filterForm.yearEnding.clean.addEventListener('click', () => {
+      cleanFilterField(`yearEnding`);
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
+    // очистка всех фильтров
+    filterForm.btnCleanAll.addEventListener('click', () => {
+      cleanFilterFieldAll();
+      filterFormData = getDataFofm('js-filter-input');
+      updateTable();
+    });
 
     container.append(btnAddStudent.wrap, filterForm.form);
 
     // таблица
-    arrayStudentsFormat = arrayFormat(arrayStudentsInit);
-    initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
+    updateTable()
+    // arrayStudentsFormat = arrayFormat(arrayStudentsInit);
+    // initNewTable(arrayStudentsFormat, 'student-control-panel', 'js-table-students');
 
   });
 

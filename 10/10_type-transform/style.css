@@ -1,0 +1,8 @@
+.button-reset {
+  width: auto;
+  background-color: transparent;
+  border: none;
+}
+.button-reset:hover:focus:focus-visible {
+  outline: none;
+}
