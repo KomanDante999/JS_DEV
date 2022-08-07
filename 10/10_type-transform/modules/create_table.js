@@ -1,3 +1,5 @@
+import { updateTable } from '../main.js';
+import { sortedFormData, updateSortedData, headerDataTable, syncHeaderDataTable } from './array_filter_sort.js';
 
 function createRow(objStudent, index, targetNode) {
   const rowBody = document.createElement('tr');
@@ -68,17 +70,21 @@ function createRow(objStudent, index, targetNode) {
 // }
 
 
-  function createCellHead(objSorted, targetNode) {
+  function createCellHead(objHeader, targetNode) {
     const cell = document.createElement('th');
     cell.scope = 'col';
     cell.classList.add('px-2');
     const btnSort = document.createElement('button');
-    btnSort.name = `${objSorted.cellName}`
+    btnSort.name = `${objHeader.cellName}`
     btnSort.classList.add('js-table-sort', 'button-reset', 'd-flex', 'w-100');
+    btnSort.addEventListener('click', () => {
+      updateSortedData(sortedFormData, btnSort.name);
+      updateTable();
+    });
     const iconSort = document.createElement('span');
     iconSort.textContent = '!'
     const caption = document.createElement('span');
-    caption.textContent = `${objSorted.cellCaption}`;
+    caption.textContent = `${objHeader.cellCaption}`;
 
     btnSort.append(
       iconSort,
@@ -89,7 +95,8 @@ function createRow(objStudent, index, targetNode) {
 }
 
 // table
-function creatTable(arrayStudents, sortedData) {
+function creatTable(arrayStudents, sortedData, headerData) {
+  headerData = syncHeaderDataTable(headerData, sortedData);
   const table = document.createElement('table');
   table.id = 'js-table-students';
   table.classList.add('table', 'table-striped', 'table-success');
@@ -99,8 +106,8 @@ function creatTable(arrayStudents, sortedData) {
   const rowHead = document.createElement('tr');
   rowHead.classList.add('table-primary');
 
-  for (const objSort of sortedData) {
-    createCellHead(objSort, rowHead)
+  for (const objHeader of headerData) {
+    createCellHead(objHeader, rowHead)
   }
   head.append(rowHead);
 
@@ -119,8 +126,8 @@ function creatTable(arrayStudents, sortedData) {
   }
 }
 
-export function initNewTable(arrayStudents, sortedData, idContainer, idTable) {
-  const tableNew = creatTable(arrayStudents, sortedData);
+export function initNewTable(arrayStudents, sortedData, headerDataTable, idContainer, idTable) {
+  const tableNew = creatTable(arrayStudents, sortedData, headerDataTable);
   const container = document.getElementById(idContainer);
   const tableOld = document.getElementById(idTable);
   if (tableOld) {

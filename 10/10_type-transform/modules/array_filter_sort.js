@@ -73,8 +73,8 @@ export function getDataFofm(classInput) {
   return arrayDataForm;
 }
 
-// данные сортировки
-export let sortedFormData = [
+// данные для head table
+export let headerDataTable = [
   {
     cellName: 'index',
     cellCaption: '№',
@@ -86,7 +86,6 @@ export let sortedFormData = [
     cellCaption: 'ФИО студента',
     sortedDirection: 0,
     iconType: 'str',
-
   },
   {
     cellName: 'faculty',
@@ -95,7 +94,7 @@ export let sortedFormData = [
     iconType: 'str',
   },
   {
-    cellName: 'birthDateAge',
+    cellName: 'birthDate',
     cellCaption: 'Дата рождения (возраст)',
     sortedDirection: 0,
     iconType: 'num',
@@ -108,32 +107,73 @@ export let sortedFormData = [
   },
 ]
 
-export function updateSortedData(arrayTarget, cellName) {
-  for (const objSort of arrayTarget) {
-    if (objSort.cellName === cellName) {
-      if (objSort.sortedDirection <=0) objSort.sortedDirection = 1;
-      else objSort.sortedDirection = -1;
+// данные сортировки
+export let sortedFormData = [
+  {
+    cellName: 'fullName',
+    sortedDirection: 0,
+    order: 0,
+  },
+  {
+    cellName: 'faculty',
+    sortedDirection: 0,
+    order: 0,
+  },
+  {
+    cellName: 'birthDate',
+    sortedDirection: 0,
+    order: 0,
+  },
+  {
+    cellName: 'yearsStudy',
+    sortedDirection: 0,
+    order: 0,
+  },
+]
+// синхронизация иконок направления сортировки
+export function syncHeaderDataTable(headerData, sortedData) {
+  for (const objHeader of headerData) {
+    for (const objSort of sortedData) {
+      if (objHeader.cellName === objSort.cellName) {
+        objHeader.sortedDirection = objSort.sortedDirection;
+      }
     }
   }
-  return arrayTarget;
+  return headerData;
+}
+// направление и последовательность сортировки
+export function updateSortedData(arrayTarget, cellName) {
+  let max = 0;
+  arrayTarget.forEach(objSort => {
+    if (objSort.order > max) max = objSort.order
+  });
+  for (const objSort of arrayTarget) {
+    if (objSort.cellName === cellName) {
+      objSort.order = max + 1;
+      if (objSort.sortedDirection <=0) objSort.sortedDirection = 1;
+      else objSort.sortedDirection = -1;
+      return arrayTarget.sort((a,b) => a.order < b.order ? 1 : -1);
+    }
+  }
 }
 
+
+// правила сортировки
 function sortedByField(nameField, sortedDirection) {
   if (sortedDirection > 0) return (a,b) => a[nameField] > b[nameField] ? 1 : -1;
   if (sortedDirection < 0) return (a,b) => a[nameField] < b[nameField] ? 1 : -1;
 }
+// сортировка таблицы
+export function sortedArrayStudent(arrayTarget, sortedData) {
+  let newArrayTarget = arrayTarget;
+  // сортировка по первову полю
+  newArrayTarget.sort(sortedByField(sortedData[0].cellName, sortedData[0].sortedDirection));
 
-export function sortedArrayStudent(arrayTarget, sortedData, ) {
-  let newarrayTarget = arrayTarget;
-  newarrayTarget.sort(sortedByField('yearsStudy', 1));
-  // for (const objSort of sortedData) {
-    //   if (sortedData.sortedDirection !== 0) {
-      //   }
-      // }
+  // сортировка по следующим полям
 
-
-  console.log(newarrayTarget);
-  return newarrayTarget;
+  return newArrayTarget;
 }
+
+
 
 
