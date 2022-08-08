@@ -157,23 +157,88 @@ export function updateSortedData(arrayTarget, cellName) {
   }
 }
 
-
 // правила сортировки
 function sortedByField(nameField, sortedDirection) {
   if (sortedDirection > 0) return (a,b) => a[nameField] > b[nameField] ? 1 : -1;
   if (sortedDirection < 0) return (a,b) => a[nameField] < b[nameField] ? 1 : -1;
 }
+
+// функция вторичной сортировки
+function sortBy2Fields(params) {
+
+}
+
 // сортировка таблицы
 export function sortedArrayStudent(arrayTarget, sortedData) {
   let newArrayTarget = arrayTarget;
-  // сортировка по первову полю
+  // сортировка по 1-му полю
+  if (sortedData[0].sortedDirection === 0) {
+    console.log('не сортируем по 1-му полю!');
+    return newArrayTarget;
+  }
   newArrayTarget.sort(sortedByField(sortedData[0].cellName, sortedData[0].sortedDirection));
 
-  // сортировка по следующим полям
-
+  // сортировка по 2-му полю
+  if (sortedData[1].sortedDirection === 0) {
+    console.log('не сортируем по 2-му полю!');
+    return newArrayTarget;
+  }
+  let tempNewArrayTarget = [];
+  let temp = [];
+  temp.push(newArrayTarget[0])
+  for (let i = 1; i < newArrayTarget.length; i++) {
+    if (newArrayTarget[i][sortedData[0].cellName] === newArrayTarget[i - 1][sortedData[0].cellName]) {
+      temp.push(newArrayTarget[i]);
+    }
+    else {
+      temp.sort(sortedByField(sortedData[1].cellName, sortedData[1].sortedDirection));
+      tempNewArrayTarget = tempNewArrayTarget.concat(...temp);
+      temp = [];
+      temp.push(newArrayTarget[i]);
+    }
+  }
+  temp.sort(sortedByField(sortedData[1].cellName, sortedData[1].sortedDirection));
+  tempNewArrayTarget = tempNewArrayTarget.concat(...temp);
+  temp = [];
+  newArrayTarget = tempNewArrayTarget;
   return newArrayTarget;
 }
 
 
 
+// // сортировка таблицы
+// export function sortedArrayStudent(arrayTarget, sortedData) {
+//   let newArrayTarget = arrayTarget;
+//   // сортировка по 1-му полю
+//   if (sortedData[0].sortedDirection === 0) {
+//     console.log('не сортируем по 1-му полю!');
+//     return newArrayTarget;
+//   }
+//   newArrayTarget.sort(sortedByField(sortedData[0].cellName, sortedData[0].sortedDirection));
+
+//   // сортировка по 2-му полю
+//   if (sortedData[1].sortedDirection === 0) {
+//     console.log('не сортируем по 2-му полю!');
+//     return newArrayTarget;
+//   }
+//   let tempNewArrayTarget = [];
+//   let temp = [];
+//   temp.push(newArrayTarget[0])
+//   for (let i = 1; i < newArrayTarget.length; i++) {
+//     if (newArrayTarget[i][sortedData[0].cellName] === newArrayTarget[i - 1][sortedData[0].cellName]) {
+//       temp.push(newArrayTarget[i]);
+//     }
+//     else {
+//       temp.sort(sortedByField(sortedData[1].cellName, sortedData[1].sortedDirection));
+//       tempNewArrayTarget = tempNewArrayTarget.concat(...temp);
+//       temp = [];
+//       temp.push(newArrayTarget[i]);
+//     }
+//   }
+//   temp.sort(sortedByField(sortedData[1].cellName, sortedData[1].sortedDirection));
+//   tempNewArrayTarget = tempNewArrayTarget.concat(...temp);
+//   temp = [];
+//   newArrayTarget = tempNewArrayTarget;
+//   return newArrayTarget;
+// }
 
