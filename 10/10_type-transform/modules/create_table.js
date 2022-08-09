@@ -91,13 +91,23 @@ function createCellHead(objHeader, targetNode) {
     updateSortedData(sortedFormData, btnSort.name);
     updateTable();
   });
-  const iconSort = createIcon(objHeader.sortedDirection, objHeader.iconType);
+  const iconWrap = document.createElement('span');
+  const iconSort = createIcon(objHeader.sortedDirection, objHeader.cellType);
+  const indexSort = document.createElement('span');
+  if (objHeader.indexSort) {
+    indexSort.textContent = objHeader.indexSort;
+  }
+  indexSort.classList.add('text-primary', 'px-1')
   const caption = document.createElement('span');
   caption.textContent = `${objHeader.cellCaption}`;
 
+  iconWrap.append(
+    indexSort,
+    iconSort,
+  )
   btnSort.append(
     caption,
-    iconSort,
+    iconWrap,
   )
   cell.append(btnSort);
   targetNode.append(cell);
@@ -143,7 +153,6 @@ export function initNewTable(arrayStudents, sortedData, headerDataTable, idConta
     container.removeChild(tableOld);
   }
   container.append(tableNew.table);
-
 }
 
 

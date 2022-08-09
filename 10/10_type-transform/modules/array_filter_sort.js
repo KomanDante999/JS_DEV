@@ -79,31 +79,36 @@ export let headerDataTable = [
     cellName: 'index',
     cellCaption: '№',
     sortedDirection: NaN,
-    iconType: '',
+    cellType: '',
+    indexSort: 0,
   },
   {
     cellName: 'fullName',
     cellCaption: 'ФИО студента',
     sortedDirection: 0,
-    iconType: 'str',
+    cellType: 'str',
+    indexSort: 0,
   },
   {
     cellName: 'faculty',
     cellCaption: 'Факультет',
     sortedDirection: 0,
-    iconType: 'str',
+    cellType: 'str',
+    indexSort: 0,
   },
   {
     cellName: 'birthDate',
     cellCaption: 'Дата рождения (возраст)',
     sortedDirection: 0,
-    iconType: 'num',
+    cellType: 'num',
+    indexSort: 0,
   },
   {
     cellName: 'yearsStudy',
     cellCaption: 'Годы обучения (номер курса)',
     sortedDirection: 0,
-    iconType: 'num',
+    cellType: 'num',
+    indexSort: 0,
   },
 ]
 
@@ -112,31 +117,44 @@ export let sortedFormData = [
   {
     cellName: 'fullName',
     sortedDirection: 0,
+    cellType: 'str',
     order: 0,
   },
   {
     cellName: 'faculty',
     sortedDirection: 0,
+    cellType: 'str',
     order: 0,
   },
   {
     cellName: 'birthDate',
     sortedDirection: 0,
+    cellType: 'num',
     order: 0,
   },
   {
     cellName: 'yearsStudy',
     sortedDirection: 0,
+    cellType: 'num',
     order: 0,
   },
 ]
-// синхронизация иконок направления сортировки
+// синхронизация иконок направления и порядка сортировки
 export function syncHeaderDataTable(headerData, sortedData) {
   for (const objHeader of headerData) {
     for (const objSort of sortedData) {
       if (objHeader.cellName === objSort.cellName) {
         objHeader.sortedDirection = objSort.sortedDirection;
       }
+    }
+  }
+  // индекс порядка сортировки
+  let tempArray = sortedData;
+  tempArray.reverse();
+  for (let i = 0; i < tempArray.length; i++) {
+    let objHeader = headerData.find(headerData => headerData.cellName === tempArray[i].cellName);
+    if (tempArray[i].sortedDirection !== 0) {
+      objHeader.indexSort = i + 1;
     }
   }
   return headerData;
@@ -152,16 +170,24 @@ export function updateSortedData(arrayTarget, cellName) {
       objSort.order = max + 1;
       if (objSort.sortedDirection <=0) objSort.sortedDirection = 1;
       else objSort.sortedDirection = -1;
-      return arrayTarget.sort((a,b) => a.order < b.order ? 1 : -1);
+      return arrayTarget.sort((a,b) => a.order > b.order ? 1 : -1);
     }
   }
 }
 const collatore = new Intl.Collator('ru-RU')
 
 // правила сортировки
-function sortedByField(nameField, sortedDirection) {
-  if (sortedDirection > 0) return (a,b) => collatore.compare(a[nameField] , b[nameField] );
-  if (sortedDirection < 0) return (a,b) => collatore.compare(a[nameField] < b[nameField] ? 1 : -1);
+function sortedByField(nameField, sortedDirection, cellType) {
+  if (cellType === 'str') {
+    if (sortedDirection > 0) return (a,b) => collatore.compare(a[nameField], b[nameField]);
+    if (sortedDirection < 0) return (a,b) => collatore.compare(b[nameField], a[nameField]);
+  }
+  if (cellType === 'num') {
+    if (sortedDirection > 0) return (a,b) => a[nameField] > b[nameField] ? 1 : -1;
+    if (sortedDirection < 0) return (a,b) => a[nameField] < b[nameField] ? 1 : -1;
+  }
+
+
 }
 
 
@@ -169,22 +195,19 @@ function sortedByField(nameField, sortedDirection) {
 export function sortedArrayStudent(arrayTarget, sortedData) {
   let newArrayTarget = arrayTarget;
 
-  if (sortedData[1].sortedDirection !== 0) {
-    console.log('сортируем по 1-му и 2-му полю!');
-    newArrayTarget.sort(sortedByField(sortedData[1].cellName, sortedData[1].sortedDirection))
-    .reverse()
-
-    newArrayTarget.sort(sortedByField(sortedData[0].cellName, sortedData[0].sortedDirection));
-    return newArrayTarget;
-  }
-  if (sortedData[0].sortedDirection !== 0) {
-    console.log('сортируем по 1-му полю!');
-    newArrayTarget.sort(sortedByField(sortedData[0].cellName, sortedData[0].sortedDirection));
+  for (let i = 0; i < sortedData.length; i++) {
+      if (sortedData[i].sortedDirection !== 0) {
+        newArrayTarget.sort(sortedByField(sortedData[i].cellName, sortedData[i].sortedDirection, sortedData[i].cellType));
+        if (i < sortedData.length - 1) {
+          newArrayTarget.reverse()
+        }
+      }
+    }
     return newArrayTarget;
   }
 
-  return newArrayTarget;
-}
+
+
 
 
 
