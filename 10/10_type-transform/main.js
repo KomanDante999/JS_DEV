@@ -28,7 +28,6 @@ export function updateTable() {
   // сортировка
   arrayStudentsCurrent = sortedArrayStudent(arrayStudentsCurrent, sortedFormData);
   // отрисовка новой таблицы
-  // console.log(sortedFormData);
   initNewTable(arrayStudentsCurrent, sortedFormData, headerDataTable, 'student-control-panel', 'js-table-students');
 }
 (() => {
