@@ -2,7 +2,7 @@ import { arrayStudentDefault } from './modules/array-default.js'; // масси�
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
 import { createBtnAddStudent, createFilterForm, cleanFilterField, cleanFilterFieldAll } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
-import { createInputForm, inputFormData } from './modules/create_input-form.js';  // форма ввода в модальном окне
+import { createInputForm, inputFormData, updateInputFormData , cleaninputFormData, initNewInputForm} from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { initNewTable } from './modules/create_table.js';  // таблица
 import { debounce } from './modules/servise-function.js';  // вспомогательные функции
 import { arrayFormat, filterArray, getDataFofm, sortedFormData, sortedArrayStudent, updateSortedData, headerDataTable } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
@@ -13,7 +13,15 @@ let arrayStudentsInit = [];
 let arrayStudentsCurrent = [];
 // данные формы фильтров
 let filterFormData = [];
+
 arrayStudentsInit = arrayStudentDefault.slice();
+// отрисовка формы ввода данных
+function renderingInputForm(inputFormData, idContainer, idForm) {
+
+  updateInputFormData(inputFormData);
+  // валид
+  initNewInputForm(inputFormData, idContainer, idForm)
+}
 
 // актуализация данных и отрисовка таблицы
 export function updateTable() {
@@ -40,42 +48,35 @@ export function updateTable() {
     const modalInputForm = createInputForm(inputFormData);
     modalInputForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      // валидация
-      validInputForm();
-      if (inputFormData.some(inputFormData => inputFormData.fieldValid === false)) {
-        inputFormData.forEach(inputData => {
-          if (inputData.fieldValid) {
-            validInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
-          }
-          else {
-            invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
-          }
-        });
-      }
-      else {
+      renderingInputForm(inputFormData, ,'modal-input-form');
+
+      // if (inputFormData.some(inputFormData => inputFormData.fieldValid === false)) {
+      //   inputFormData.forEach(inputData => {
+      //     if (inputData.fieldValid) {
+      //       validInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
+      //     }
+      //     else {
+      //       invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
+      //     }
+      //   });
+      // }
+      // else {
         // добавление новой записи
-        const newStudent = {
-          surname: modalInputForm.inputName.value,
-          name: modalInputForm.inputSurname.value,
-          middleName: modalInputForm.inputMiddleName.value,
-          birthDate: modalInputForm.inputBirthDate.valueAsDate,
-          yearAdmission: modalInputForm.inputYearAdmission.valueAsNumber,
-          faculty: modalInputForm.inputFaculty.value,
-        }
-        arrayStudentsInit.push(newStudent);
-        updateTable();
-        cleanInputForm();
-      }
+        // }
+        // arrayStudentsInit.push(newStudent);
+        // updateTable();
+      // }
 
     });
 
     // модальное окно формы ввода
     const modalWrapForm = createModal('modal-input-form', modalInputForm.form);
     modalWrapForm.btnCloseX.addEventListener('click', () => {
-      cleanInputForm();
+      cleaninputFormData(inputFormData);
+      console.log('inputFormData clean', inputFormData);
     })
     modalWrapForm.btnClose.addEventListener('click', () => {
-      cleanInputForm();
+      inputFormData = cleaninputFormData(inputFormData);
     })
     container.append(modalWrapForm.wrap);
 

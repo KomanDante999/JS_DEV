@@ -37,7 +37,7 @@ export let inputFormData = [
     inputName: 'birthDate',
     inputValue: '',
     inputValid: 0,
-    inputType: 'text',
+    inputType: 'date',
     inputPlaceholder: 'дата роджения',
     captionText: 'дата роджения',
     feedbackText: '',
@@ -48,7 +48,7 @@ export let inputFormData = [
     inputName: 'yearAdmission',
     inputValue: '',
     inputValid: 0,
-    inputType: 'text',
+    inputType: 'number',
     inputPlaceholder: 'год поступления',
     captionText: 'год поступления',
     feedbackText: '',
@@ -67,6 +67,14 @@ export let inputFormData = [
   },
 ]
 
+export function cleaninputFormData(inputFormData) {
+  inputFormData.forEach(objData => {
+    objData.inputValue = '';
+    objData.inputValid = 0;
+    objData.feedbackText = '';
+  });
+  return inputFormData;
+}
 
 // input field
 function createInputField() {
@@ -117,6 +125,7 @@ function validTheme(validityData) {
   }
 }
 
+// форма ввола данных студентов
 export function createInputForm(inputFormData) {
   const form = document.createElement('form');
   form.id = 'modal-input-form';
@@ -136,8 +145,7 @@ export function createInputForm(inputFormData) {
     inputField.input.placeholder = `${objInput.inputPlaceholder}`;
     inputField.input.ariaLabel = `${objInput.inputPlaceholder}`;
     validTheme(objInput);
-
-    row.append(inputField)
+    row.append(inputField.wrap);
   }
 
   // submit
@@ -156,6 +164,26 @@ export function createInputForm(inputFormData) {
   };
 }
 
+// опрос формы ввода
+export function updateInputFormData(inputFormData) {
+  const inputs = document.querySelectorAll('.js-input');
+  for (const input of inputs) {
+    let i = inputFormData.findIndex(data => data.inputName === input.name);
+    inputFormData[i].inputValue = input.value;
+  }
+  return inputFormData;
+}
+
+// замена формы ввода
+export function initNewInputForm(inputFormData, idContainer, idForm) {
+  const formOld = document.getElementById(idForm);
+  const formNew = createInputForm(inputFormData);
+  const container = document.getElementById(idContainer);
+  if (formOld) {
+    container.removeChild(formOld);
+  }
+  container.append(formNew.form);
+}
 
 
 
