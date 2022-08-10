@@ -2,12 +2,10 @@ import { arrayStudentDefault } from './modules/array-default.js'; // масси�
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
 import { createBtnAddStudent, createFilterForm, cleanFilterField, cleanFilterFieldAll } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
-import { createInputForm, invalidInputTheme, validInputTheme, cleanInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
+import { createInputForm, inputFormData } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { initNewTable } from './modules/create_table.js';  // таблица
 import { debounce } from './modules/servise-function.js';  // вспомогательные функции
 import { arrayFormat, filterArray, getDataFofm, sortedFormData, sortedArrayStudent, updateSortedData, headerDataTable } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
-
-export let inputFormData = [];
 
 // основной масив (сохраняется)
 let arrayStudentsInit = [];
@@ -36,71 +34,21 @@ export function updateTable() {
   document.addEventListener('DOMContentLoaded', () => {
     // контейнер
     const container = document.getElementById('student-control-panel');
-    container.classList.add('container');
+    container.classList.add('container', 'container-my');
 
     // форма ввода в модальном окне
-    const modalInputForm = createInputForm();
+    const modalInputForm = createInputForm(inputFormData);
     modalInputForm.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      inputFormData = [
-        {
-          fieldName: 'surname',
-          fieldValue: modalInputForm.inputSurname.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputSurname,
-          feedbackNode: modalInputForm.inputSurnameFeedback,
-        },
-        {
-          fieldName: 'name',
-          fieldValue: modalInputForm.inputName.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputName,
-          feedbackNode: modalInputForm.inputNameFeedback,
-        },
-        {
-          fieldName: 'middleName',
-          fieldValue: modalInputForm.inputMiddleName.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputMiddleName,
-          feedbackNode: modalInputForm.inputMiddleNameFeedback,
-        },
-        {
-          fieldName: 'birthDate',
-          fieldValue: modalInputForm.inputBirthDate.valueAsDate,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputBirthDate,
-          feedbackNode: modalInputForm.inputBirthDateFeedback,
-        },
-        {
-          fieldName: 'yearAdmission',
-          fieldValue: modalInputForm.inputYearAdmission.valueAsNumber,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputYearAdmission,
-          feedbackNode: modalInputForm.inputYearAdmissionFeedback,
-        },
-        {
-          fieldName: 'faculty',
-          fieldValue: modalInputForm.inputFaculty.value,
-          fieldValid: false,
-          feedbackText: '',
-          inputNode: modalInputForm.inputFaculty,
-          feedbackNode: modalInputForm.inputFacultyFeedback,
-        },
-      ]
       // валидация
       validInputForm();
       if (inputFormData.some(inputFormData => inputFormData.fieldValid === false)) {
         inputFormData.forEach(inputData => {
           if (inputData.fieldValid) {
-            validInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText)
+            validInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
           }
           else {
-            invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText)
+            invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
           }
         });
       }

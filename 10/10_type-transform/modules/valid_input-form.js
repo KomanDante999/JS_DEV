@@ -1,4 +1,57 @@
-import { inputFormData } from '../main.js';  // данные формы ввода
+
+export let inputFormData = [
+  {
+    fieldName: 'surname',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+  {
+    fieldName: 'name',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+  {
+    fieldName: 'middleName',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+  {
+    fieldName: 'birthDate',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+  {
+    fieldName: 'yearAdmission',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+  {
+    fieldName: 'faculty',
+    fieldValue: '',
+    fieldValid: false,
+    feedbackText: '',
+    inputNode: '',
+    feedbackNode: '',
+  },
+]
+
+
+
 
 export function validInputForm() {
   for (const objData of inputFormData) {
