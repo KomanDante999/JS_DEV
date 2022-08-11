@@ -29,6 +29,16 @@ export function updateTable() {
   // отрисовка новой таблицы
   initNewTable(arrayStudentsCurrent, sortedFormData, headerDataTable, 'student-control-panel', 'js-table-students');
 }
+
+export function processingSubmitByFormInput() {
+  console.log('submit');
+  updateInputFormData(inputFormData);
+  validInputForm(inputFormData);
+
+  renderingInputForm(inputFormData, 'modal-input-form','modal-window-body');
+}
+
+
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     // контейнер
@@ -76,15 +86,7 @@ export function updateTable() {
     btnAddStudent.btnRunModal.addEventListener('click', () => {
       // очиска данных формы ввода
       cleanInputFormData(inputFormData);
-      renderingInputForm(inputFormData, 'modal-input-form','modal-window-body' )
-      // // удаление старой формы ввода
-      // const oldInputForm = document.getElementById('modal-input-form')
-      // if (oldInputForm) {
-      //   modalWrapForm.body.removeChild(oldInputForm)
-      // }
-      // // создание формы ввода
-      // const modalInputForm = createInputForm(inputFormData)
-      // modalWrapForm.body.append(modalInputForm.form)
+      renderingInputForm(inputFormData, 'modal-input-form','modal-window-body');
     })
 
 

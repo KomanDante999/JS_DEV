@@ -1,3 +1,5 @@
+import { processingSubmitByFormInput } from '../main.js';
+
 export let inputFormData = [
   {
     wrapClass: 'col-10',
@@ -101,26 +103,26 @@ function createInputField() {
     }
 }
 
-function validTheme(validityData) {
-  switch (validityData) {
+function validTheme(validityData, input, feedback) {
+  switch (validityData.inputValid) {
     case -1:
-      inputField.input.classList.remove('is-valid');
-      inputField.input.classList.add('is-invalid');
-      inputField.feedback.remove('valid-feedback');
-      inputField.feedback.add('invalid-feedback');
-      inputField.feedback = validityData.feedbackText;
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      feedback.classList.remove('valid-feedback');
+      feedback.classList.add('invalid-feedback');
+      feedback.textContent = validityData.feedbackText;
       break;
     case 1:
-      inputField.input.classList.remove('is-invalid');
-      inputField.input.classList.add('is-valid');
-      inputField.feedback.remove('invalid-feedback');
-      inputField.feedback.add('valid-feedback');
-      inputField.feedback = validityData.feedbackText;
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      feedback.classList.remove('invalid-feedback');
+      feedback.classList.add('valid-feedback');
+      feedback.textContent = validityData.feedbackText;
       break;
     case 0:
-      inputField.input.remove('is-invalid', 'is-valid')
-      inputField.feedback.remove('valid-feedback', 'invalid-feedback')
-      inputField.feedback = validityData.feedbackText;
+      input.classList.remove('is-invalid', 'is-valid')
+      feedback.classList.remove('valid-feedback', 'invalid-feedback')
+      feedback.textContent = validityData.feedbackText;
     break;
   }
 }
@@ -145,7 +147,7 @@ export function createInputForm(inputFormData) {
     inputField.input.type = `${objInput.inputType}`;
     inputField.input.placeholder = `${objInput.inputPlaceholder}`;
     inputField.input.ariaLabel = `${objInput.inputPlaceholder}`;
-    validTheme(objInput);
+    validTheme(objInput, inputField.input, inputField.feedback);
     row.append(inputField.wrap);
   }
 
@@ -185,8 +187,13 @@ export function renderingInputForm(inputFormData, idInputForm, idContainer) {
   }
   // создание формы ввода
   const modalInputForm = createInputForm(inputFormData);
+  modalInputForm.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    processingSubmitByFormInput();
+  })
   container.append(modalInputForm.form);
-
+  //?????
+  return modalInputForm;
 }
 
 

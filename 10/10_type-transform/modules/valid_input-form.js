@@ -1,38 +1,41 @@
 
 
-export function validInputForm() {
+export function validInputForm(inputFormData) {
   for (const objData of inputFormData) {
-    // проверка на пустоту
-    if (objData.fieldValue === '' || objData.fieldValue === NaN || objData.fieldValue === null) {
-      objData.fieldValid = false;
-      objData.feedbackText = 'заполните поле';
-    }
-    else {
-      switch (objData.fieldName) {
+      switch (objData.inputName) {
         case 'surname':
-          objData.fieldValue = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).value;
-          objData.fieldValid = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).valid;
-          objData.feedbackText = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).feedback;
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
           break;
-
-          case 'name':
-            objData.fieldValue = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).value;
-            objData.fieldValid = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).valid;
-            objData.feedbackText = rulesByName(objData.fieldValue, objData.fieldValid, objData.feedbackText).feedback;
-          break;
-
-
-        default:
-          objData.fieldValid = true;
-          objData.feedbackText = '';
-
-          break;
+        case 'name':
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+        break;
+        case 'middleName':
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+        break;
+        case 'birthDate':
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+        break;
+        case 'yearAdmission':
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+        break;
+        case 'faculty':
+          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+        break;
       }
-
-
     }
-  }
-  // console.log(inputFormData);
+  return inputFormData;
 }
 
 // правила обработки полей
@@ -40,26 +43,28 @@ export function validInputForm() {
 function rulesByName(value, valid, feedback) {
   // убираем концевые пробелы
   value = value.trim()
-  // пробелы
-  if (value.includes(' ')) {
-    valid = false;
-    feedback = 'пробелы недопустимы';
-    return {
-      value,
-      valid,
-      feedback,
-    }
+  let tempStr = value;
+  // пустая строка
+  if (value === '') {
+    valid = -1;
+    feedback = 'заполните это поле';
+    return {value, valid, feedback,}
   }
-  else {
-    valid = true;
-    feedback = '';
-    return {
-      value,
-      valid,
-      feedback,
-    }
+  // заглавные и строчные буквы
+  tempStr = value + value[0];
+  value = tempStr
+
+  // пробелы между словами
+  if (value.includes(' ')) {
+    valid = -1;
+    feedback = 'пробелы недопустимы';
+    return {value, valid, feedback,}
   }
 
+  // УСПЕШНАЯ ВАЛИДАЦИЯ
+  valid = 1;
+  feedback = '';
+  return {value, valid, feedback,}
 }
 
 
