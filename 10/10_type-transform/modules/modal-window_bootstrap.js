@@ -1,5 +1,5 @@
   // шаблон модального окна (оболочка) bootstrap
-  export function createModal(modalID, contentBody) {
+  export function createModal(modalID) {
     const wrap = document.createElement('div');
     wrap.classList.add('modal', 'fade');
     wrap.id = `${modalID}`;
@@ -23,6 +23,7 @@
     btnCloseX.setAttribute('data-bs-dismiss', 'modal');
     btnCloseX.ariaLabel = "Close";
     const body = document.createElement('div');
+    body.id = `${modalID}-body`;
     body.classList.add('modal-body');
     const footer = document.createElement('div');
     footer.classList.add('modal-footer');
@@ -32,13 +33,13 @@
     btnClose.textContent = 'Закрыть форму';
 
     header.append(title, btnCloseX);
-    body.append(contentBody);
     footer.append(btnClose);
     content.append(header, body, footer);
     dialog.append(content);
     wrap.append(dialog);
     return {
       wrap,
+      body,
       content,
       btnCloseX,
       btnClose,

@@ -67,7 +67,7 @@ export let inputFormData = [
   },
 ]
 
-export function cleaninputFormData(inputFormData) {
+export function cleanInputFormData(inputFormData) {
   inputFormData.forEach(objData => {
     objData.inputValue = '';
     objData.inputValid = 0;
@@ -127,6 +127,7 @@ function validTheme(validityData) {
 
 // форма ввола данных студентов
 export function createInputForm(inputFormData) {
+  console.log('что получает конструктор',inputFormData);
   const form = document.createElement('form');
   form.id = 'modal-input-form';
   form.name = 'modal-input-form';
@@ -174,16 +175,20 @@ export function updateInputFormData(inputFormData) {
   return inputFormData;
 }
 
-// замена формы ввода
-export function initNewInputForm(inputFormData, idContainer, idForm) {
-  const formOld = document.getElementById(idForm);
-  const formNew = createInputForm(inputFormData);
+// отрисовка формы ввода
+export function renderingInputForm(inputFormData, idInputForm, idContainer) {
+  // удаление старой формы ввода
+  const oldInputForm = document.getElementById(idInputForm);
   const container = document.getElementById(idContainer);
-  if (formOld) {
-    container.removeChild(formOld);
+  if (oldInputForm) {
+    container.removeChild(oldInputForm);
   }
-  container.append(formNew.form);
+  // создание формы ввода
+  const modalInputForm = createInputForm(inputFormData);
+  container.append(modalInputForm.form);
+
 }
+
 
 
 
