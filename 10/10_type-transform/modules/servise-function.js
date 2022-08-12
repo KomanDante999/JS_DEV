@@ -60,6 +60,12 @@ export function debounce(fn, ms) {
   };
 }
 
+// приведение имени к стандартному виду Имя
+export function UpLowByString(str) {
+  str = str.toString().trim()
+  return str.slice(0, 1).toLocaleUpperCase() + str.slice(1).toLocaleLowerCase();
+}
+
 
 // предотвращение срабатывания enter на кнопке
 // window.addEventListener('keydown', function(e) {
