@@ -19,6 +19,24 @@ export function formatNumber00(number) {
   return numberSign + Math.abs(Math.trunc(number));
 }
 
+// представление DATE в 'yyyy-mm-dd'
+export function formatDateYYYYMMDD(dateValue, order = 'ymd', separator = '-') {
+  if (!dateValue) {
+    return ''
+  }
+  if (order === 'ymd') {
+    return [dateValue.getFullYear().toString(), (dateValue.getMonth() + 1).toString(), dateValue.getDate().toString()]
+    .map(elem => {if (elem.length < 2) {elem = '0' + elem} return elem})
+    .join(`${separator}`)
+  }
+  if (order === 'dmy') {
+    return [dateValue.getDate().toString(), (dateValue.getMonth() + 1).toString(), dateValue.getFullYear().toString()]
+    .map(elem => {if (elem.length < 2) {elem = '0' + elem} return elem})
+    .join(`${separator}`)
+  }
+
+}
+
 // формат лет/годов
 export function formatAge(number) {
     if (number % 100 > 10 && number % 100 < 20) {
@@ -76,3 +94,30 @@ export function UpLowByString(str) {
 //       }
 //   }
 // }, true);
+
+
+
+// получение уникального id
+function getUniqId(array, lowLimit) {
+  let maxId = lowLimit;
+  for (const item of array) {
+    if (item.id > maxId) {
+      maxId = item.id;
+    }
+  }
+  return maxId + 1;
+}
+
+
+// сохранение данных в storage
+export function saveStorage(array, keyName) {
+  localStorage.setItem(keyName, JSON.stringify(array))
+}
+
+// восстановление данных из storage
+export function restoredStorage(keyName) {
+  let localData = localStorage.getItem(keyName);
+  if (localData !== null && localData !== '') {
+    return JSON.parse(localData);
+  }
+}

@@ -1,4 +1,4 @@
-import { getAge, formatNumber00, formatAge, getYearsStudy } from './servise-function.js'; // вспомогательные функции
+import { getAge, formatAge, getYearsStudy, formatDateYYYYMMDD } from './servise-function.js'; // вспомогательные функции
 
 // форматирование масива для таблицы
 export function arrayFormat(arrayInit) {
@@ -6,7 +6,7 @@ export function arrayFormat(arrayInit) {
 
   for (const objStudent of arrayFormat) {
     objStudent.fullName = `${objStudent.surname} ${objStudent.name} ${objStudent.middleName}`;
-    objStudent.birthDateAge = `${formatNumber00(objStudent.birthDate.getDate())}.${formatNumber00(objStudent.birthDate.getMonth() + 1)}.${objStudent.birthDate.getFullYear()} (${getAge(objStudent.birthDate)} ${formatAge(getAge(objStudent.birthDate))})`;
+    objStudent.birthDateAge = `${formatDateYYYYMMDD(objStudent.birthDate, 'dmy', '.')} (${getAge(objStudent.birthDate)} ${formatAge(getAge(objStudent.birthDate))})`;
     objStudent.yearsStudy = `${objStudent.yearAdmission} - ${objStudent.yearAdmission + 4} (${getYearsStudy(objStudent.yearAdmission)})`;
   }
   return arrayFormat;
@@ -186,10 +186,7 @@ function sortedByField(nameField, sortedDirection, cellType) {
     if (sortedDirection > 0) return (a,b) => a[nameField] > b[nameField] ? 1 : -1;
     if (sortedDirection < 0) return (a,b) => a[nameField] < b[nameField] ? 1 : -1;
   }
-
-
 }
-
 
 // сортировка таблицы
 export function sortedArrayStudent(arrayTarget, sortedData) {
@@ -206,8 +203,19 @@ export function sortedArrayStudent(arrayTarget, sortedData) {
     return newArrayTarget;
   }
 
-
-
+// восстановление из Storage (восстановление type Date)
+export function rectoreStorage(keyStorage) {
+  let localData = localStorage.getItem(keyStorage);
+  let temp = [];
+  if (localData !== null && localData !== '') {
+    temp = JSON.parse(localData);
+  }
+  if (temp) {
+    temp.map(objData => {objData.birthDate = new Date(objData.birthDate)});
+    console.log('temp', temp);
+  }
+  return temp
+}
 
 
 

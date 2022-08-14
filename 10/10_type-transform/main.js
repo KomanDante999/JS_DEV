@@ -2,24 +2,33 @@ import { arrayStudentDefault } from './modules/array-default.js'; // масси�
 import { createModal } from './modules/modal-window_bootstrap.js';  // оболочка модального окна bootstrap
 import { createBtnAddStudent, createFilterForm, cleanFilterField, cleanFilterFieldAll } from './modules/create_filter-panel.js';  // панель фильтров
 import { validInputForm } from './modules/valid_input-form.js';  // валидация формы ввода
-import { createInputForm, inputFormData, updateInputFormData , cleanInputFormData, renderingInputForm } from './modules/create_input-form.js';  // форма ввода в модальном окне
+import { inputFormData, updateInputFormData , cleanInputFormData, renderingInputForm, addNewEntry } from './modules/create_input-form.js';  // форма ввода в модальном окне
 import { initNewTable } from './modules/create_table.js';  // таблица
-import { debounce } from './modules/servise-function.js';  // вспомогательные функции
-import { arrayFormat, filterArray, getDataFofm, sortedFormData, sortedArrayStudent, updateSortedData, headerDataTable } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
+import { saveStorage } from './modules/servise-function.js';  // вспомогательные функции
+import { arrayFormat, filterArray, getDataFofm, sortedFormData, sortedArrayStudent, headerDataTable, rectoreStorage } from './modules/array_filter_sort.js';  // фильтрация и сортировка массива
 
 // основной масив (сохраняется)
 let arrayStudentsInit = [];
-// текущий массив
+// текущий массив (с которым все и происходит)
 let arrayStudentsCurrent = [];
 // данные формы фильтров
 let filterFormData = [];
+// имя ключа в Storage
+const keyStorage = 'arrayStudenSave'
 
-arrayStudentsInit = arrayStudentDefault.slice();
+// arrayStudentsInit = arrayStudentDefault.slice();
 
 // актуализация данных и отрисовка таблицы
 export function updateTable() {
+  arrayStudentsInit = arrayStudentDefault;
+  // востановление из Storage
+  let tempRestore = rectoreStorage(keyStorage)
+  if (tempRestore) {
+    arrayStudentsInit = tempRestore
+  }
+  console.log('arrayStudentsInit', arrayStudentsInit);
   // текущий массив из основного
-  arrayStudentsCurrent = arrayStudentsInit.slice();
+  arrayStudentsCurrent = arrayStudentsInit;
   // форматировани
   arrayStudentsCurrent = arrayFormat(arrayStudentsCurrent);
   // фильтрация
@@ -31,9 +40,18 @@ export function updateTable() {
 }
 
 export function processingSubmitByFormInput() {
-  console.log('submit');
   updateInputFormData(inputFormData);
   validInputForm(inputFormData);
+  // успешная валидация всех полей
+  if (inputFormData.every(objData => objData.inputValid === 1)) {
+    // добавление новой записи в таблицу
+    addNewEntry(inputFormData, arrayStudentsInit);
+    saveStorage(arrayStudentsInit, keyStorage)
+    // очиска данных формы ввода
+    cleanInputFormData(inputFormData);
+    // отрисовка таблицы
+    updateTable()
+  }
 
   renderingInputForm(inputFormData, 'modal-input-form','modal-window-body');
 }
@@ -55,32 +73,6 @@ export function processingSubmitByFormInput() {
     const modalWrapForm = createModal('modal-window');
     container.append(modalWrapForm.wrap);
 
-    // форма ввода в модальном окне
-    // const modalInputForm = createInputForm(inputFormData);
-    // modalInputForm.form.addEventListener('submit', (e) => {
-    //   e.preventDefault();
-      // renderingInputForm(inputFormData,'modal-window-body' ,'modal-input-form');
-
-      // if (inputFormData.some(inputFormData => inputFormData.fieldValid === false)) {
-      //   inputFormData.forEach(inputData => {
-      //     if (inputData.fieldValid) {
-      //       validInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
-      //     }
-      //     else {
-      //       invalidInputTheme(inputData.inputNode, inputData.feedbackNode, inputData.feedbackText, inputData.fieldValue)
-      //     }
-      //   });
-      // }
-      // else {
-        // добавление новой записи
-        // }
-        // arrayStudentsInit.push(newStudent);
-        // updateTable();
-      // }
-
-    // });
-    // modalWrapForm.body.append(modalInputForm.form);
-
     // кнопка вызова модального окна
     const btnAddStudent = createBtnAddStudent('modal-window');
     btnAddStudent.btnRunModal.addEventListener('click', () => {
@@ -88,7 +80,6 @@ export function processingSubmitByFormInput() {
       cleanInputFormData(inputFormData);
       renderingInputForm(inputFormData, 'modal-input-form','modal-window-body');
     })
-
 
     // панель фильтров------------------------------------------------------
     const filterForm = createFilterForm();

@@ -1,4 +1,4 @@
-import { UpLowByString } from './servise-function.js';
+import { getAge, formatAge } from './servise-function.js';
 
 export function validInputForm(inputFormData) {
   for (const objData of inputFormData) {
@@ -24,14 +24,14 @@ export function validInputForm(inputFormData) {
           objData.feedbackText = rulesByBirthDate(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
         break;
         case 'yearAdmission':
-          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
-          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
-          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+          objData.inputValue = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
         break;
         case 'faculty':
-          objData.inputValue = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).value;
-          objData.inputValid = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
-          objData.feedbackText = rulesByName(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+          objData.inputValue = rulesByFaculty(objData.inputValue, objData.inputValid, objData.feedbackText).value;
+          objData.inputValid = rulesByFaculty(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
+          objData.feedbackText = rulesByFaculty(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
         break;
       }
     }
@@ -44,12 +44,11 @@ export function validInputForm(inputFormData) {
 function rulesByName(value, valid, feedback) {
   value = value.trim()
   // пустая строка
-  if (value === '') {
+  if (!value) {
     valid = -1;
     feedback = 'заполните это поле';
     return {value, valid, feedback,}
   }
-
   // только кириллица и " ", "-", "_"
   value = [...value]
   .filter(element => element.codePointAt(0) >= 1024 && element.codePointAt(0) <= 1105
@@ -57,10 +56,8 @@ function rulesByName(value, valid, feedback) {
   || element.codePointAt(0) === 45
   || element.codePointAt(0) === 95)
   .join('');
-
   // преобразование к правильному виду (одинарное имя)
   value = value.slice(0, 1).toLocaleUpperCase() + value.slice(1).toLocaleLowerCase()
-
   // преобразование к правильному двойному(тройному и т.д.) имени
   // символы "-", "_", " " интерпретируются как разделитель
   if (value.includes('-') || value.includes('_') || value.includes(' ')) {
@@ -72,7 +69,6 @@ function rulesByName(value, valid, feedback) {
     .map(str => str.slice(0, 1).toLocaleUpperCase() + str.slice(1).toLocaleLowerCase())
     .join('-');
   }
-
   // пробелы между словами как ошибка
   // if (value.includes(' ')) {
   //   valid = -1;
@@ -90,7 +86,7 @@ function rulesByName(value, valid, feedback) {
 function rulesByMiddleName(value, valid, feedback) {
   value = value.trim()
   // пустая строка
-  if (value === '') {
+  if (!value) {
     valid = -1;
     feedback = 'заполните это поле';
     return {value, valid, feedback,}
@@ -125,15 +121,32 @@ function rulesByMiddleName(value, valid, feedback) {
   return {value, valid, feedback,}
 }
 
-// дата рождения--------------------------------------
+// дата рождения (от 1900 до текеущего года - 14 лет)--------------------------------------
 function rulesByBirthDate(value, valid, feedback) {
-  console.log('BirthDate',value);
-  if (value === '') {
+  if (!value) {
     valid = -1;
     feedback = 'заполните это поле';
     return {value, valid, feedback,}
   }
+  // endDate = endDate - 31600800000 * 14;
+  // нижняя граница
+  if (value < new Date('1900-1-1')) {
+    valid = -1;
+    feedback = `студенту ${getAge(value)} ${formatAge(value)}!!! Cтолько не живут!`;
+    return {value, valid, feedback,}
+  }
+  // верхняя граница
+  if (value > new Date()) {
+    valid = -1;
+    feedback = `студент ещё не родился!!!`;
+    return {value, valid, feedback,}
+  }
 
+  if (getAge(value) < 14) {
+    valid = -1;
+    feedback = `студенту ${getAge(value)} ${formatAge(value)}!!! Надо закончить школу!`;
+    return {value, valid, feedback,}
+  }
 
   // УСПЕШНАЯ ВАЛИДАЦИЯ
   valid = 1;
@@ -141,4 +154,61 @@ function rulesByBirthDate(value, valid, feedback) {
   return {value, valid, feedback,}
 }
 
+// год поступления--------------------------------------
+function rulesByYearAdmission(value, valid, feedback) {
+  if (!value) {
+    valid = -1;
+    feedback = 'заполните это поле';
+    return {value, valid, feedback,}
+  }
+  if (value < 2000) {
+    valid = -1;
+    feedback = 'дата поступления не ранее 2000 г.';
+    return {value, valid, feedback,}
+  }
+  if (value > new Date().getFullYear()) {
+    valid = -1;
+    feedback = 'этот год еще не наступил';
+    return {value, valid, feedback,}
+  }
+  // УСПЕШНАЯ ВАЛИДАЦИЯ
+  valid = 1;
+  feedback = '';
+  return {value, valid, feedback,}
+}
 
+// факультет
+function rulesByFaculty(value, valid, feedback) {
+  value = value.trim()
+  // пустая строка
+  if (!value) {
+    valid = -1;
+    feedback = 'заполните это поле';
+    return {value, valid, feedback,}
+  }
+  // в нижний регистр
+  value = value.toLocaleLowerCase()
+  // только кириллица и " ", "-", "_"
+  value = [...value]
+  .filter(element => element.codePointAt(0) >= 1024 && element.codePointAt(0) <= 1105
+  || element.codePointAt(0) === 32
+  || element.codePointAt(0) === 45
+  || element.codePointAt(0) === 95)
+  .join('');
+
+  // преобразование к двойному(тройному и т.д.) названию
+  // символы "-", "_", " " интерпретируются как разделитель
+  if (value.includes('-') || value.includes('_') || value.includes(' ')) {
+    value = value
+    .replace(/\-/g, ' ')
+    .replace(/\_/g, ' ')
+    .split(' ')
+    .filter(str => str.trim().length > 0)
+    .join('-');
+  }
+
+  // УСПЕШНАЯ ВАЛИДАЦИЯ
+  valid = 1;
+  feedback = '';
+  return {value, valid, feedback,}
+}

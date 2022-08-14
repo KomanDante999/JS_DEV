@@ -1,4 +1,5 @@
 import { processingSubmitByFormInput } from '../main.js';
+import { formatDateYYYYMMDD } from './servise-function.js';
 
 export let inputFormData = [
   {
@@ -129,7 +130,6 @@ function validTheme(validityData, input, feedback) {
 
 // форма ввола данных студентов
 export function createInputForm(inputFormData) {
-  console.log('что получает конструктор',inputFormData);
   const form = document.createElement('form');
   form.id = 'modal-input-form';
   form.name = 'modal-input-form';
@@ -142,9 +142,17 @@ export function createInputForm(inputFormData) {
     const inputField = createInputField();
     inputField.wrap.classList.add(`${objInput.wrapClass}`);
     inputField.caption.textContent = `${objInput.captionText}`;
-    inputField.input.name = `${objInput.inputName}`;
-    inputField.input.value = `${objInput.inputValue}`;
     inputField.input.type = `${objInput.inputType}`;
+    inputField.input.name = `${objInput.inputName}`;
+    switch (objInput.inputName) {
+      case 'birthDate':
+        inputField.input.value = formatDateYYYYMMDD(objInput.inputValue);
+        break;
+
+      default:
+        inputField.input.value = objInput.inputValue;
+        break;
+    }
     inputField.input.placeholder = `${objInput.inputPlaceholder}`;
     inputField.input.ariaLabel = `${objInput.inputPlaceholder}`;
     validTheme(objInput, inputField.input, inputField.feedback);
@@ -172,7 +180,21 @@ export function updateInputFormData(inputFormData) {
   const inputs = document.querySelectorAll('.js-input');
   for (const input of inputs) {
     let i = inputFormData.findIndex(data => data.inputName === input.name);
-    inputFormData[i].inputValue = input.value;
+    switch (input.type) {
+      case 'date':
+        inputFormData[i].inputValue = input.valueAsDate;
+        break;
+      case 'number':
+        inputFormData[i].inputValue = input.valueAsNumber;
+        break;
+      case 'text':
+        inputFormData[i].inputValue = input.value;
+        break;
+
+        default:
+        inputFormData[i].inputValue = input.value;
+        break;
+    }
   }
   return inputFormData;
 }
@@ -192,11 +214,16 @@ export function renderingInputForm(inputFormData, idInputForm, idContainer) {
     processingSubmitByFormInput();
   })
   container.append(modalInputForm.form);
-  //?????
-  return modalInputForm;
 }
 
-
-
+// добавление новой записи из формы ввода в таблицу
+export function addNewEntry(inputFormData, arrayStudentsInit) {
+  const newEntry = {};
+  for (const objData of inputFormData) {
+    newEntry[objData.inputName] = objData.inputValue
+  }
+  arrayStudentsInit.push(newEntry);
+  return arrayStudentsInit;
+}
 
 
