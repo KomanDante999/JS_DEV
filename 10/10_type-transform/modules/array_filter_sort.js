@@ -209,10 +209,8 @@ export function rectoreStorage(keyStorage) {
   let temp = [];
   if (localData !== null && localData !== '') {
     temp = JSON.parse(localData);
-  }
-  if (temp) {
     temp.map(objData => {objData.birthDate = new Date(objData.birthDate)});
-    console.log('temp', temp);
+    return temp
   }
   return temp
 }

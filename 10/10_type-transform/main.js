@@ -23,10 +23,9 @@ export function updateTable() {
   arrayStudentsInit = arrayStudentDefault;
   // востановление из Storage
   let tempRestore = rectoreStorage(keyStorage)
-  if (tempRestore) {
+  if (tempRestore.length > 0) {
     arrayStudentsInit = tempRestore
   }
-  console.log('arrayStudentsInit', arrayStudentsInit);
   // текущий массив из основного
   arrayStudentsCurrent = arrayStudentsInit;
   // форматировани

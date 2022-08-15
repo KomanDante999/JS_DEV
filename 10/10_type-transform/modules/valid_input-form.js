@@ -24,9 +24,15 @@ export function validInputForm(inputFormData) {
           objData.feedbackText = rulesByBirthDate(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
         break;
         case 'yearAdmission':
-          objData.inputValue = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).value;
-          objData.inputValid = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).valid;
-          objData.feedbackText = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText).feedback;
+          let tempBirthDate = null;
+          for (const obj of inputFormData) {
+            if (obj.inputName === 'birthDate') {
+              tempBirthDate = obj.inputValue
+            }
+          }
+          objData.inputValue = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText, tempBirthDate).value;
+          objData.inputValid = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText, tempBirthDate).valid;
+          objData.feedbackText = rulesByYearAdmission(objData.inputValue, objData.inputValid, objData.feedbackText, tempBirthDate).feedback;
         break;
         case 'faculty':
           objData.inputValue = rulesByFaculty(objData.inputValue, objData.inputValid, objData.feedbackText).value;
@@ -46,7 +52,7 @@ function rulesByName(value, valid, feedback) {
   // пустая строка
   if (!value) {
     valid = -1;
-    feedback = 'заполните это поле';
+    feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
   // только кириллица и " ", "-", "_"
@@ -88,7 +94,7 @@ function rulesByMiddleName(value, valid, feedback) {
   // пустая строка
   if (!value) {
     valid = -1;
-    feedback = 'заполните это поле';
+    feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
 
@@ -125,29 +131,27 @@ function rulesByMiddleName(value, valid, feedback) {
 function rulesByBirthDate(value, valid, feedback) {
   if (!value) {
     valid = -1;
-    feedback = 'заполните это поле';
+    feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
   // endDate = endDate - 31600800000 * 14;
   // нижняя граница
   if (value < new Date('1900-1-1')) {
     valid = -1;
-    feedback = `студенту ${getAge(value)} ${formatAge(value)}!!! Cтолько не живут!`;
+    feedback = `Студенту ${getAge(value)} ${formatAge(value)}!!! Cтолько не живут!`;
     return {value, valid, feedback,}
   }
   // верхняя граница
   if (value > new Date()) {
     valid = -1;
-    feedback = `студент ещё не родился!!!`;
+    feedback = `Студент ещё не родился!!!`;
     return {value, valid, feedback,}
   }
-
   if (getAge(value) < 14) {
     valid = -1;
-    feedback = `студенту ${getAge(value)} ${formatAge(value)}!!! Надо закончить школу!`;
+    feedback = `Студенту ${getAge(value)} ${formatAge(value)}!!! Надо закончить школу!`;
     return {value, valid, feedback,}
   }
-
   // УСПЕШНАЯ ВАЛИДАЦИЯ
   valid = 1;
   feedback = '';
@@ -155,22 +159,32 @@ function rulesByBirthDate(value, valid, feedback) {
 }
 
 // год поступления--------------------------------------
-function rulesByYearAdmission(value, valid, feedback) {
+function rulesByYearAdmission(value, valid, feedback, tempBirthDate) {
   if (!value) {
     valid = -1;
-    feedback = 'заполните это поле';
+    feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
   if (value < 2000) {
     valid = -1;
-    feedback = 'дата поступления не ранее 2000 г.';
+    feedback = 'Дата поступления не ранее 2000 г.';
     return {value, valid, feedback,}
   }
   if (value > new Date().getFullYear()) {
     valid = -1;
-    feedback = 'этот год еще не наступил';
+    feedback = 'Этот год еще не наступил';
     return {value, valid, feedback,}
   }
+  if (tempBirthDate) {
+    let ageAdmission = value - tempBirthDate.getFullYear()
+    if (ageAdmission < 14) {
+      valid = -1;
+      feedback = `Студенту на момент поступления ${ageAdmission} ${formatAge(ageAdmission)}!!! Надо закончить школу!`;
+      return {value, valid, feedback,}
+    }
+
+  }
+
   // УСПЕШНАЯ ВАЛИДАЦИЯ
   valid = 1;
   feedback = '';
@@ -183,7 +197,7 @@ function rulesByFaculty(value, valid, feedback) {
   // пустая строка
   if (!value) {
     valid = -1;
-    feedback = 'заполните это поле';
+    feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
   // в нижний регистр
