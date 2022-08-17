@@ -20,7 +20,7 @@
       const data = await response.json();
       console.log('data', data);
     }
-    loadTodoItems();
+    // loadTodoItems();
     async function createTodoItem() {
       const response = await fetch('http://localhost:3000/api/todos', {
         method: 'POST',
@@ -34,7 +34,37 @@
       console.log('data', data);
     }
     // createTodoItem();
-
+    async function getTodoItem() {
+      const response = await fetch('http://localhost:3000/api/todos/1660701782379')
+        const data = await response.json();
+        console.log('data', data);
+      }
+      // getTodoItem()
+      async function markTodoAsDone() {
+        const response = await fetch('http://localhost:3000/api/todos/1660701782379', {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            // name: 'Здрасьте!',
+          // owner: 'Serge999',
+          done: true,
+        })
+      });
+      const data = await response.json();
+      console.log('data', data);
+    }
+    // markTodoAsDone()
+    async function markTodoAsDone() {
+      const response = await fetch('http://localhost:3000/api/todos/1660701782379', {
+        method: 'DELETE',
+    });
+    if (response.status === 404) {
+      console.log('нет дела!!!',);
+    }
+    const data = await response.json();
+    console.log('data', data);
+    }
+    markTodoAsDone()
   </script>
 </head>
 <body>
