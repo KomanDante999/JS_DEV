@@ -50,7 +50,7 @@ async function loadListPage() {
   return listPade;
 }
 
-function createPagination(currentPage, totalPege) {
+function createPagination(currentPage, totalPage) {
 
 }
 
