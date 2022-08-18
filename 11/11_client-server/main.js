@@ -1,3 +1,5 @@
+import { createPagination, listPagination, updatePagination } from './modules/pagination.js';
+
 // async function loadTodoItems() {
 //   const response = await fetch('http://localhost:3000/api/todos');
 //   const data = await response.json();
@@ -43,15 +45,12 @@
 //   console.log(data);
 // }
 
+
 async function loadListPage() {
   const response = await fetch('https://gorest.co.in/public-api/posts?page=0');
   const listPade = await response.json() ;
   console.log('listPade', listPade);
   return listPade;
-}
-
-function createPagination(currentPage, totalPage) {
-
 }
 
 function createListArticle(currentPage, totalPege) {
@@ -68,8 +67,16 @@ const container = document.getElementById('blog-list');
 container.classList.add('container');
 loadListPage()
 
+const paginator = createPagination(listPagination);
+container.append(paginator);
 
-
+const buttonsPaginator = document.querySelectorAll('.js-paginator-btn');
+for (const button of buttonsPaginator) {
+  button.addEventListener('click', () => {
+    console.log('', );
+    updatePagination(listPagination);
+  });
+}
 
 
 })
