@@ -2,27 +2,56 @@ export const listPagination = [
   {
     name: 'prev',
     status: 'disabled',
-    value: '&laquo;',
+    value: -1,
+    text: '&laquo;',
+  },
+  {
+    name: 'first',
+    status: 'disabled',
+    value: 1,
+    text: 1,
+  },
+  {
+    name: 'spase',
+    status: 'disabled',
+    value: 0,
+    text: '...',
   },
   {
     name: 'left',
     status: 'active',
-    value: '1',
+    value: 1,
+    text: 1,
   },
   {
     name: 'middle',
     status: 'free',
-    value: '2',
+    value: 2,
+    text: 2,
   },
   {
     name: 'rigt',
     status: 'free',
-    value: '3',
+    value: 3,
+    text: 3,
+  },
+  {
+    name: 'spase',
+    status: 'disabled',
+    value: 0,
+    text: '...',
+  },
+  {
+    name: 'last',
+    status: 'free',
+    value: 10,
+    text: 10,
   },
   {
     name: 'next',
     status: 'free',
-    value: '&raquo;',
+    value: 1,
+    text: '&raquo;',
   },
 ]
 
@@ -40,7 +69,7 @@ export function createPagination(arrayPropertys) {
     btn.classList.add('page-link', 'js-paginator-btn');
     btn.name = `${objProp.name}`;
     const content = document.createElement('span');
-    content.innerHTML = `${objProp.value}`;
+    content.innerHTML = `${objProp.text}`;
     content.setAttribute('aria-hidden', 'true')
 
     btn.append(content);
@@ -67,10 +96,29 @@ export function updatePagination(arrayPropertys) {
   for (const objProp of arrayPropertys) {
     for (const button of buttons) {
       if (button.name.includes(`${objProp.name}`)) {
-        button.firstChild.innerHTML = `${objProp.value}`;
-        console.log(button.firstChild, `${objProp.value}`);
+        button.firstChild.innerHTML = `${objProp.text}`;
       }
     }
   }
-
 }
+
+// get current page
+export function updateListPagination(btnName, arrayPropertys) {
+  // currenPage
+  let currenPage;
+  for (const objProp of arrayPropertys) {
+    if (objProp.status === 'active') {
+      currenPage = objProp.value;
+    }
+  }
+  // newCurrenPage
+  let newCurrenPage;
+  for (const objProp of arrayPropertys) {
+    if (objProp.name === btnName) {
+      newCurrenPage = objProp.value;
+    }
+  }
+  console.log('currenPage',currenPage);
+  console.log('newCurrenPage',newCurrenPage);
+}
+

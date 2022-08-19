@@ -1,61 +1,7 @@
-import { createPagination, listPagination, updatePagination } from './modules/pagination.js';
+import { createPagination, listPagination, updatePagination, updateListPagination,  } from './modules/pagination.js';
 
-// async function loadTodoItems() {
-//   const response = await fetch('http://localhost:3000/api/todos');
-//   const data = await response.json();
-//   console.log(data);
-// }
-
-// async function createTodoItem() {
-//   const response = await fetch('http://localhost:3000/api/todos', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({
-//       name: 'Сходить за хлебом',
-//       owner: 'Тимофей'
-//     })
-//   });
-//   const data = await response.json();
-//   console.log(data);
-// }
-
-// async function getTodoItem() {
-//   const response = await fetch('http://localhost:3000/api/todos/1608029025426');
-//   const data = await response.json();
-//   console.log(data);
-// }
-
-// async function markTodoAsDone() {
-//   const response = await fetch('http://localhost:3000/api/todos/1608029025426', {
-//     method: 'PATCH',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({ done: true })
-//   });
-//   const data = await response.json();
-//   console.log(data);
-// }
-
-// async function deleteTodoItem() {
-//   const response = await fetch('http://localhost:3000/api/todos/1608029025426', {
-//     method: 'DELETE',
-//   });
-//   if (response.status === 404)
-//     console.log('Не удалось удалить дело, так как его не существует');
-//   const data = await response.json();
-//   console.log(data);
-// }
-
-
-async function loadListPage() {
-  const response = await fetch('https://gorest.co.in/public-api/posts?page=0');
-  const listPade = await response.json() ;
-  console.log('listPade', listPade);
-  return listPade;
-}
-
-function createListArticle(currentPage, totalPege) {
-
-}
+// let currentPage = 1;
+// let totalPage = 10;
 
 
 
@@ -65,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const container = document.getElementById('blog-list');
 container.classList.add('container');
-loadListPage()
 
 const paginator = createPagination(listPagination);
 container.append(paginator);
@@ -73,8 +18,18 @@ container.append(paginator);
 const buttonsPaginator = document.querySelectorAll('.js-paginator-btn');
 for (const button of buttonsPaginator) {
   button.addEventListener('click', () => {
-    console.log('', );
+    console.log('name', button.name);
+    // обновление данных пагинатора
+    updateListPagination(button.name,listPagination)
+
+    // получение данных с сервера
+
+    // синхронизация
+
+    // обновление пагинатора
     updatePagination(listPagination);
+
+    // обновление списка
   });
 }
 
