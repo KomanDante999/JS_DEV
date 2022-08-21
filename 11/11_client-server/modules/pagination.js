@@ -1,59 +1,71 @@
-export const listPagination = [
-  {
-    name: 'prev',
-    status: 'disabled',
-    value: -1,
-    text: '&laquo;',
-  },
-  {
-    name: 'first',
-    status: 'disabled',
-    value: 1,
-    text: 1,
-  },
-  {
-    name: 'spase',
-    status: 'disabled',
-    value: 0,
-    text: '...',
-  },
-  {
-    name: 'left',
-    status: 'active',
-    value: 1,
-    text: 1,
-  },
-  {
-    name: 'middle',
-    status: 'free',
-    value: 2,
-    text: 2,
-  },
-  {
-    name: 'rigt',
-    status: 'free',
-    value: 3,
-    text: 3,
-  },
-  {
-    name: 'spase',
-    status: 'disabled',
-    value: 0,
-    text: '...',
-  },
-  {
-    name: 'last',
-    status: 'free',
-    value: 10,
-    text: 10,
-  },
-  {
-    name: 'next',
-    status: 'free',
-    value: 1,
-    text: '&raquo;',
-  },
-]
+export function createListPagination(totalPage) {
+  return [
+    {
+      name: 'prev',
+      status: 'disabled',
+      value: -1,
+      text: '&laquo;',
+      type: 'arrow',
+    },
+    {
+      name: 'first',
+      status: 'disabled',
+      value: 1,
+      text: 1,
+      type: 'number',
+    },
+    {
+      name: 'spase',
+      status: 'disabled',
+      value: 0,
+      text: '...',
+      type: '',
+    },
+    {
+      name: 'left',
+      status: 'active',
+      value: 1,
+      text: 1,
+      type: 'number',
+    },
+    {
+      name: 'middle',
+      status: 'free',
+      value: 2,
+      text: 2,
+      type: 'number',
+    },
+    {
+      name: 'rigt',
+      status: 'free',
+      value: 3,
+      text: 3,
+      type: 'number',
+    },
+    {
+      name: 'spase',
+      status: 'disabled',
+      value: 0,
+      text: '...',
+      type: '',
+    },
+    {
+      name: 'last',
+      status: 'free',
+      value: totalPage,
+      text: totalPage,
+      type: 'number',
+    },
+    {
+      name: 'next',
+      status: 'free',
+      value: 1,
+      text: '&raquo;',
+      type: 'arrow',
+    },
+  ]
+}
+
 
 export function createPagination(arrayPropertys) {
   const nav = document.createElement('nav');
@@ -103,7 +115,7 @@ export function updatePagination(arrayPropertys) {
 }
 
 // get current page
-export function updateListPagination(btnName, arrayPropertys) {
+export function updateListPagination(btnName, arrayPropertys, totalPage) {
   // currenPage
   let currenPage;
   for (const objProp of arrayPropertys) {
@@ -115,10 +127,119 @@ export function updateListPagination(btnName, arrayPropertys) {
   let newCurrenPage;
   for (const objProp of arrayPropertys) {
     if (objProp.name === btnName) {
-      newCurrenPage = objProp.value;
+      switch (objProp.type) {
+        case 'arrow':
+          newCurrenPage = currenPage + objProp.value;
+          break;
+          case 'number':
+            newCurrenPage = objProp.value;
+            break;
+          }
+        }
+      }
+
+  // rules of button paginator
+  // start page
+  if (newCurrenPage === 1) {
+    for (const objProp of arrayPropertys) {
+      switch (objProp.name) {
+        case 'prev':
+          objProp.status = 'disabled';
+          break;
+        case 'first':
+          objProp.status = 'disabled';
+          break;
+        case 'left':
+          objProp.status = 'active';
+          objProp.value = newCurrenPage;
+          objProp.text = newCurrenPage;
+          break;
+        case 'middle':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage + 1;
+          objProp.text = newCurrenPage + 1;
+          break;
+        case 'rigt':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage + 2;
+          objProp.text = newCurrenPage + 2;
+          break;
+        case 'last':
+          objProp.status = 'free';
+          break;
+        case 'next':
+          objProp.status = 'free';
+          break;
+      }
     }
   }
-  console.log('currenPage',currenPage);
-  console.log('newCurrenPage',newCurrenPage);
+  // end page
+  if (newCurrenPage === totalPage) {
+    for (const objProp of arrayPropertys) {
+      switch (objProp.name) {
+        case 'prev':
+          objProp.status = 'free';
+          break;
+        case 'first':
+          objProp.status = 'free';
+          break;
+        case 'left':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage - 2;
+          objProp.text = newCurrenPage - 2;
+          break;
+        case 'middle':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage - 1;
+          objProp.text = newCurrenPage - 1;
+          break;
+        case 'rigt':
+          objProp.status = 'active';
+          objProp.value = newCurrenPage;
+          objProp.text = newCurrenPage;
+          break;
+        case 'last':
+          objProp.status = 'disabled';
+          break;
+        case 'next':
+          objProp.status = 'disabled';
+          break;
+      }
+    }
+  }
+  // intermediate page
+  if (newCurrenPage > 1 && newCurrenPage < totalPage) {
+    for (const objProp of arrayPropertys) {
+      switch (objProp.name) {
+        case 'prev':
+          objProp.status = 'free';
+          break;
+        case 'first':
+          objProp.status = 'free';
+          break;
+        case 'left':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage - 1;
+          objProp.text = newCurrenPage - 1;
+          break;
+        case 'middle':
+          objProp.status = 'active';
+          objProp.value = newCurrenPage;
+          objProp.text = newCurrenPage;
+          break;
+        case 'rigt':
+          objProp.status = 'free';
+          objProp.value = newCurrenPage + 1;
+          objProp.text = newCurrenPage + 1;
+          break;
+        case 'last':
+          objProp.status = 'free';
+          break;
+        case 'next':
+          objProp.status = 'free';
+          break;
+      }
+    }
+  }
 }
 

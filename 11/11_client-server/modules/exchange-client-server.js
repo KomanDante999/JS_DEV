@@ -44,9 +44,15 @@
 // }
 
 
-async function loadListPage() {
-  const response = await fetch('https://gorest.co.in/public-api/posts?page=0');
-  const listPade = await response.json() ;
-  console.log('listPade', listPade);
-  return listPade;
+export async function loadDataFromServer() {
+  let page = new URLSearchParams(document.location.search).get("page")
+  console.log('page', page);
+  const response = await fetch(`https://gorest.co.in/public-api/posts?page=1`, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'}
+  })
+  .then(res => res.json())
+  .then(body => Object.assign(body));
+
+  return response;
 }
