@@ -1,6 +1,7 @@
 import { createPagination, createListPagination, updatePagination, updateListPagination,  } from './modules/pagination.js';
 import { loadDataFromServer } from './modules/exchange-client-server.js';
 import { createUrlRequest } from './modules/api-by-Go-Rest.js';
+import { createArticleList } from './modules/articles-list.js';
 
 let currentPage = 1;
 let totalPage = 100;
@@ -13,11 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // data
 // let urlServer = createUrlRequest();
 let dataPageServer = loadDataFromServer();
-// dataPageServer = Array.from(dataPageServer)
+
 console.log('dataPageServer', dataPageServer);
 
 
-totalPage = dataPageServer.meta.pagination.pages
+// totalPage = dataPageServer.meta.pagination.pages
 console.log('totalPage', totalPage);
 const listPagination = createListPagination(totalPage)
 

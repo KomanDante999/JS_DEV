@@ -54,5 +54,7 @@ export async function loadDataFromServer() {
   .then(res => res.json())
   .then(body => Object.assign(body));
 
+  console.log('response', response);
+
   return response;
 }
