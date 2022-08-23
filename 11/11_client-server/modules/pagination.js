@@ -1,4 +1,4 @@
-export function createListPagination(totalPage) {
+export function createPaginationData(totalPage) {
   return [
     {
       name: 'prev',

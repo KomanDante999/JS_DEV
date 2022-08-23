@@ -1,4 +1,4 @@
-import { createPagination, createListPagination, updatePagination, updateListPagination,  } from './modules/pagination.js';
+import { createPagination, createPaginationData, updatePagination, updateListPagination,  } from './modules/pagination.js';
 import { loadDataFromServer } from './modules/exchange-client-server.js';
 import { createUrlRequest } from './modules/api-by-Go-Rest.js';
 import { createArticleList } from './modules/articles-list.js';
@@ -10,22 +10,20 @@ let totalPage = 100;
 
 
 (() => {
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 // data
-// let urlServer = createUrlRequest();
-let dataPageServer = loadDataFromServer();
-
+let urlServer = createUrlRequest(currentPage);
+let dataPageServer = await loadDataFromServer(urlServer);
 console.log('dataPageServer', dataPageServer);
 
-
-// totalPage = dataPageServer.meta.pagination.pages
+totalPage = dataPageServer.meta.pagination.pages
 console.log('totalPage', totalPage);
-const listPagination = createListPagination(totalPage)
+const paginationData = createPaginationData(totalPage)
 
 const container = document.getElementById('blog-list');
 container.classList.add('container');
 
-const paginator = createPagination(listPagination);
+const paginator = createPagination(paginationData);
 container.append(paginator);
 
 

@@ -44,10 +44,8 @@
 // }
 
 
-export async function loadDataFromServer() {
-  let page = new URLSearchParams(document.location.search).get("page")
-  console.log('page', page);
-  const response = await fetch(`https://gorest.co.in/public-api/posts?page=1`, {
+export async function loadDataFromServer(urlServer) {
+  const response = await fetch(`${urlServer}`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json'}
   })
