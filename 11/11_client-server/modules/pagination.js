@@ -114,8 +114,8 @@ export function updatePagination(arrayPropertys) {
   }
 }
 
-// get current page
-export function updateListPagination(btnName, arrayPropertys, totalPage) {
+
+export function updatePaginationData(btnName, arrayPropertys, totalPage) {
   // currenPage
   let currenPage;
   for (const objProp of arrayPropertys) {
@@ -243,3 +243,10 @@ export function updateListPagination(btnName, arrayPropertys, totalPage) {
   }
 }
 
+export function getCurrentPage(arrayPropertys) {
+  for (const objProp of arrayPropertys) {
+    if (objProp.status === 'active') {
+      return objProp.value;
+    }
+  }
+}
