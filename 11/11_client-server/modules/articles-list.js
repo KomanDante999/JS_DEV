@@ -27,11 +27,6 @@ export function createArticleList(articlesData) {
       linkArticle.textContent = `${item.title}`;
       linkArticle.href = `${item.url}`;
       linkArticle.target = `${item.target}`;
-      // linkArticle.addEventListener('click', () => {
-      //   updateArticleData(linkArticle.id, articlesData);
-      //   updateArticleList()
-
-      // })
       // color
       switch (i) {
         case 0:
@@ -62,31 +57,33 @@ export function createArticleList(articlesData) {
   return wrap
 }
 
-function updateArticleData(idLink, articlesData) {
+export function updateArticleData(idLink, articlesData) {
+  console.log('idLink', idLink);
   for (const item of articlesData) {
     if (item.status === 'active') item.status = 'visible';
-    if (item.id === idLink) item.status = 'active';
+    if (item.id == idLink) item.status = 'active';
   }
+  return articlesData;
 }
 
-function updateArticleList(articlesData, linkClassName) {
-  let links = document.querySelectorAll(`.${linkClassName}`);
+export function updateArticleList(links, articlesData) {
   for (const link of links) {
     for (const item of articlesData) {
-      if (link.id === item.id) {
+      if (link.id == item.id) {
         switch (item.status) {
           case 'active':
             link.classList.add('active');
             break;
+          // case 'visible':
+          //   link.classList.add('list-group-item-light');
+          //   break;
 
             default:
             link.classList.remove('active');
             break;
         }
-
       }
     }
-
   }
 }
 
