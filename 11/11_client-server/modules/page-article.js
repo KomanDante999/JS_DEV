@@ -10,3 +10,20 @@ export function createPage(dataPage) {
   return wrap;
 }
 
+export function createCommets(dataComments) {
+  const wrap = document.createElement('ul');
+  wrap.classList.add('list-group')
+  for (const commentObj of dataComments) {
+    const comment = document.createElement('li');
+    comment.classList.add('list-group-item', 'list-group-item-success');
+    const user = document.createElement('a');
+    user.textContent = `${commentObj.name}`;
+    user.href = `${commentObj.email}`;
+    const bodyComment = document.createElement('p');
+    bodyComment.textContent = `${commentObj.body}`;
+
+    comment.append(user, bodyComment);
+    wrap.append(comment)
+  }
+  return wrap;
+}

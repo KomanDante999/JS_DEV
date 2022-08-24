@@ -15,12 +15,9 @@ let dataRestServer = [];
   // ? checking status of servers
 
   postsUrlServer = createUrlRequest(dataRestServer, 'GoRest', 'posts', currentPage);
-  console.log('postsUrlServer',postsUrlServer);
   dataPagesServer = await loadDataFromServer(postsUrlServer);
-  console.log('dataPagesServer', dataPagesServer);
 
   let articleData = createArticleDataByGoRest(dataPagesServer);
-  console.log('articleData',articleData);
 
   totalPage = dataPagesServer.meta.pagination.pages
   const paginationData = createPaginationData(totalPage)
@@ -58,7 +55,7 @@ let dataRestServer = [];
       // получение данных с сервера
       dataRestServer = restServersApi();
       // ? checking status of servers
-      postsUrlServer = createUrlRequest(dataRestServer[0].domen, dataRestServer[0].uriPosts, currentPage);
+      postsUrlServer = createUrlRequest(dataRestServer, 'GoRest', 'posts', currentPage);
       dataPagesServer = await loadDataFromServer(postsUrlServer);
       // отрисовка нового списка
       articleData = createArticleDataByGoRest(dataPagesServer);

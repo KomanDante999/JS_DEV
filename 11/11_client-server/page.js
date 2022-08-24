@@ -1,33 +1,33 @@
 import { getIdPageFromUrl, loadDataFromServer } from './modules/exchange-client-server.js';
 import { createUrlRequest, restServersApi } from './modules/changes-rest-api-server.js';
-import { createPage } from './modules/page-article.js';
+import { createPage, createCommets } from './modules/page-article.js';
 
 let dataRestServer = [];
 let dataPage = [];
-let commentsPade = [];
+let commentsPadeData = [];
+let pageUrlServer = '';
+let commentsUrlServer = '';
 
 (() => {
   document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('page-article-container');
     container.classList.add('container');
 
+    // article
     const pageId = getIdPageFromUrl();
     dataRestServer = restServersApi();
     // ? checking status of servers
-    const pageUrlServer = createUrlRequest(dataRestServer[0].domen, dataRestServer[0].uriPage, pageId);
+    pageUrlServer = createUrlRequest(dataRestServer, 'GoRest', 'page', pageId);
     dataPage = await loadDataFromServer(pageUrlServer);
-
-    const commentsId = dataPage.data.user_id;
-    let commentsUrlServer = createUrlRequest(dataRestServer[0].domen, dataRestServer[0].uriComments, commentsId);
-    console.log('commentsUrlServer',commentsUrlServer);
-
-    commentsPade = await loadDataFromServer(commentsUrlServer)
-    console.log('commentsPade',commentsPade);
-
     const article = createPage(dataPage);
-
-
     container.append(article);
+
+    // comments
+    commentsUrlServer = createUrlRequest(dataRestServer, 'GoRest', 'comments', pageId);
+
+    commentsPadeData = await loadDataFromServer(commentsUrlServer);
+    const comments = createCommets(commentsPadeData.data)
+    container.append(comments);
   })
 })()
 

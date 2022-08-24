@@ -58,7 +58,6 @@ export function createArticleList(articlesData) {
 }
 
 export function updateArticleData(idLink, articlesData) {
-  console.log('idLink', idLink);
   for (const item of articlesData) {
     if (item.status === 'active') item.status = 'visible';
     if (item.id == idLink) item.status = 'active';
