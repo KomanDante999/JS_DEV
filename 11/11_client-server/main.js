@@ -1,19 +1,22 @@
 import { createPagination, createPaginationData, updatePagination, updatePaginationData, getCurrentPage,  } from './modules/pagination.js';
 import { loadDataFromServer } from './modules/exchange-client-server.js';
-import { createUrlRequest } from './modules/changes-rest-api-server.js';
+import { createUrlRequest, restServersApi } from './modules/changes-rest-api-server.js';
 import { createArticleList, createArticleDataByGoRest, changeArticleList, updateArticleData, updateArticleList} from './modules/articles-list.js';
 
 let currentPage = 1;
 let totalPage = 100;
-let urlServer = '';
+let postsUrlServer = '';
 let dataPagesServer = [];
+let dataRestServer = [];
 (() => {
   document.addEventListener('DOMContentLoaded', async () => {
   // get data for elements---------------------------
-  urlServer = createUrlRequest(currentPage);
-  // urlServer = 'https://jsonplaceholder.typicode.com/posts'
-  // urlServer = 'https://24pullrequests.com/users.json?page=2'
-  dataPagesServer = await loadDataFromServer(urlServer);
+  dataRestServer = restServersApi();
+  // ? checking status of servers
+
+  postsUrlServer = createUrlRequest(dataRestServer, 'GoRest', 'posts', currentPage);
+  console.log('postsUrlServer',postsUrlServer);
+  dataPagesServer = await loadDataFromServer(postsUrlServer);
   console.log('dataPagesServer', dataPagesServer);
 
   let articleData = createArticleDataByGoRest(dataPagesServer);
@@ -53,8 +56,10 @@ let dataPagesServer = [];
       updatePaginationData(button.name, paginationData, totalPage);
       currentPage =  getCurrentPage(paginationData);
       // получение данных с сервера
-      urlServer = createUrlRequest(currentPage);
-      dataPagesServer = await loadDataFromServer(urlServer);
+      dataRestServer = restServersApi();
+      // ? checking status of servers
+      postsUrlServer = createUrlRequest(dataRestServer[0].domen, dataRestServer[0].uriPosts, currentPage);
+      dataPagesServer = await loadDataFromServer(postsUrlServer);
       // отрисовка нового списка
       articleData = createArticleDataByGoRest(dataPagesServer);
       changeArticleList('container-article-list', 'articles-list', articleData);
