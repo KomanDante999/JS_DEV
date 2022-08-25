@@ -1,0 +1,55 @@
+/* common  */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+:root {
+  --pd-cont: 20px; /* padding container */
+
+}
+
+.container {
+  min-width: 290px;
+  max-width: 1326px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: var(--pd-cont);
+  padding-left: var(--pd-cont);
+}
+
+/* button style */
+.btn-secondary {}
+
+/* body */
+.aurora-crm {
+  font-family: '';
+}
+
+/* header */
+.header {}
+.header__container {}
+.header__logo {}
+.header__search {}
+
+/* main */
+.main {}
+.main__container {}
+.main__subtitle {}
+.main__table {}
+
+/* footer */
+.footer {}
+.footer__container {}
+.footer__btn {}
+.btn-addclient {}
+.btn-addclient__content {}
+.btn-addclient__icon {}
+.btn-addclient__caption {}
+
