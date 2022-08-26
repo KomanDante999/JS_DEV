@@ -1,5 +1,5 @@
 import { exchangeDataFromServer } from '../modules/server-api.js';
-import { createHeader, createMain, createFooter } from '../modules/html-layout.js';
+import { createHeader, createMain, createFooter } from '../modules/layout.js';
 
 let clientsDataFromServer = [];
 

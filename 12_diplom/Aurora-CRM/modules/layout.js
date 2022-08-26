@@ -10,7 +10,7 @@ export function createHeader() {
   logo.classList.add('header__logo');
   logo.innerHTML = logoSvg;
   const searchContainer = document.createElement('div');
-  searchContainer.classList.add('header__search');
+  searchContainer.classList.add('header__search', 'search-form');
 
   container.append(logo, searchContainer);
   wrap.append(container)
