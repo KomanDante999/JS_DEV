@@ -88,3 +88,8 @@ input::-webkit-input-placeholder {
   text-align: inherit;
 }
 
+button:disabled {
+  background-color: inherit;
+  color: inherit;
+  border-color: inherit;
+}

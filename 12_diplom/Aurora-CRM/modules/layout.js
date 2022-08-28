@@ -43,7 +43,7 @@ export function createFooter() {
   const container = document.createElement('div');
   container.classList.add('footer__container', 'container');
   const btn = document.createElement('button');
-  btn.classList.add('footer__btn', 'btn-addclient', 'btn-secondary');
+  btn.classList.add('footer__btn', 'btn-addclient', 'btn', 'btn-secondary');
   const btnContent = document.createElement('span');
   btnContent.classList.add('btn-addclient__content');
   const btnIcon = document.createElement('span');
