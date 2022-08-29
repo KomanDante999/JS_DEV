@@ -19,6 +19,11 @@ let clientsDataFromServer = [];
     const table = createTableWrap(dataTableHeader);
     main.tableContainer.append(table.table);
 
+    const btnAddContact = footer.btn;
+    btnAddContact.addEventListener('click', () => {
+
+    })
+
     container.append(header.wrap, main.wrap, footer.wrap);
 
 
