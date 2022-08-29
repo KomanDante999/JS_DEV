@@ -62,14 +62,11 @@
   color: var(--color-white);
 }
 
-
-
 .btn-disabled:focus,
 .btn-disabled:hover,
 .btn-disabled:active {
   cursor: auto;
 }
-
 
 /* body */
 .aurora-crm {

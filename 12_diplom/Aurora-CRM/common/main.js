@@ -2,6 +2,7 @@ import { exchangeDataFromServer } from '../modules/server-api.js';
 import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
+import { createModalWindow } from "../modules/modal-window.js";
 
 let clientsDataFromServer = [];
 
@@ -21,7 +22,7 @@ let clientsDataFromServer = [];
 
     const btnAddContact = footer.btn;
     btnAddContact.addEventListener('click', () => {
-
+      createModalWindow()
     })
 
     container.append(header.wrap, main.wrap, footer.wrap);
