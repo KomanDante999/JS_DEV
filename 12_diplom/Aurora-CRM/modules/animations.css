@@ -21,8 +21,6 @@
 }
 
 
-
-
 /* close */
 @keyframes vanish {
   0% {
@@ -33,13 +31,13 @@
   }
 }
 
-@keyframes vanish-popup {
+@keyframes vanish-popup-rotate {
   0% {
     opacity: 1;
-    transform: translateY(0);
+    transform: perspective(600px) translateY(0) rotateX(0deg);
   }
   100% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: perspective(600px) translateY(-100%) rotateX(45deg);
   }
 }

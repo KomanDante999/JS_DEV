@@ -1,5 +1,5 @@
 :root {
-  --animation-duration: 800ms;
+  --animation-duration: 600ms;
 }
 
 .over-hidden {
@@ -21,11 +21,15 @@
   padding-top: 50px;
 }
 
-.modal-window__opening {
+.modal-window_opening {
   animation-name: emergence;
   animation-duration: var(--animation-duration);
 }
 
+.modal-window_closing {
+  animation-name: vanish;
+  animation-duration: var(--animation-duration);
+}
 
 .modal-window__container {
   z-index: 10001;
@@ -33,6 +37,7 @@
   height: 200px;
   position: relative;
   background-color: white;
+  box-shadow: 0px 0px 35px 0px hsla(0, 0%, 0%, 0.15);
 }
 
 .modal-window__container_opening {
@@ -40,8 +45,27 @@
   animation-duration: var(--animation-duration);
 }
 
+.modal-window__container_closing {
+  animation-name: vanish-popup-rotate;
+  animation-duration: var(--animation-duration);
+}
+
 .modal-window__btn-close {
   position: absolute;
   top: 15px;
   right: 15px;
+  color: var(--color-gray-text);
+  transition-property: transform color;
+  transition-timing-function: ease;
+  transition-duration: 300ms;
+}
+
+.modal-window__btn-close:focus,
+.modal-window__btn-close:hover {
+  color: var(--color-btn-hov);
+  transform: translate(-2px, -2px);
+}
+
+.modal-window__btn-close:active {
+  color: var(--color-btn-act);
 }
