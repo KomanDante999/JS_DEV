@@ -1,0 +1,45 @@
+/* open */
+@keyframes emergence {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes emergence-dropdown-rotate {
+  0% {
+    opacity: 0;
+    transform: perspective(600px) translateY(-100%) rotateX(45deg);
+
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(600px) translateY(0) rotateX(0deg);
+  }
+}
+
+
+
+
+/* close */
+@keyframes vanish {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes vanish-popup {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}

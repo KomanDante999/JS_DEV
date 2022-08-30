@@ -1,9 +1,13 @@
+:root {
+  --animation-duration: 800ms;
+}
 
 .over-hidden {
   overflow: hidden;
 }
 
 .modal-window {
+  z-index: 10000;
   position: fixed;
   display: flex;
   justify-content: center;
@@ -12,15 +16,28 @@
   width: 100%;
   height: 100%;
   background-color: hsla(0, 0%, 20%, .6);
-  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 50px;
 }
 
+.modal-window__opening {
+  animation-name: emergence;
+  animation-duration: var(--animation-duration);
+}
+
+
 .modal-window__container {
-  width: 200px;
+  z-index: 10001;
+  width: 400px;
   height: 200px;
   position: relative;
   background-color: white;
-  z-index: 1001;
+}
+
+.modal-window__container_opening {
+  animation-name: emergence-dropdown-rotate;
+  animation-duration: var(--animation-duration);
 }
 
 .modal-window__btn-close {

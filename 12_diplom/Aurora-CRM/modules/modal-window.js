@@ -4,14 +4,10 @@ export function createModalWindow() {
   const body = document.querySelector('body');
   body.classList.add('over-hidden');
   const overlay = document.createElement('div');
-  overlay.classList.add('modal-window');
+  overlay.classList.add('modal-window', 'modal-window__opening');
   overlay.id = 'modal-window';
-  overlay.addEventListener('click', () => {
-    removeModalWindow('modal-window');
-
-  })
   const container = document.createElement('div');
-  container.classList.add('modal-window__container');
+  container.classList.add('modal-window__container', 'modal-window__container_opening');
   const btnClose = document.createElement('button');
   btnClose.classList.add('modal-window__btn-close');
   btnClose.innerHTML = iconBtnClose;
@@ -19,6 +15,12 @@ export function createModalWindow() {
     removeModalWindow('modal-window');
   })
 
+  overlay.addEventListener('click', (e) => {
+    console.log('click');
+    if (!e.target.closest('.modal-window__container')) {
+      removeModalWindow('modal-window');
+    }
+  })
 
   container.append(btnClose);
   overlay.append(container);
