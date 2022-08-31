@@ -52,20 +52,16 @@ export function createInputForm(dataForm, typeForm) {
       break;
       case 'remove':
         title.textContent = 'Удалить клиента';
-        const messange = document.createElement('span');
-        messange.classList.add('input-form__messange');
-        messange.textContent = 'Вы действительно хотите удалить данного клиента?';
-        header.classList.add('input-form__header_remove')
-        header.append(messange);
+        // header.classList.add('input-form__header_remove')
       break;
   }
   header.prepend(title);
 
   // main
-  if (typeForm !== 'remove') {
-    const main = document.createElement('div');
-    main.classList.add('input-form__main')
+  const main = document.createElement('div');
+  main.classList.add('input-form__main')
 
+  if (typeForm !== 'remove') {
     const sectionFullName = document.createElement('div');
     sectionFullName.classList.add('input-form__section', 'input-form__section_full-name')
     for (const objInput of dataForm) {
@@ -91,21 +87,19 @@ export function createInputForm(dataForm, typeForm) {
     btnAddContact.append(iconBtnAdd, captionBtnAdd);
     sectionContacts.append(btnAddContact);
 
-    for (const objInput of dataForm) {
-      if (objInput.inputType !== 'text') {
-        const input = document.createElement('input');
-        input.name = `${objInput.inputName}`;
-        input.value = objInput.inputValue;
-        input.placeholder = `${objInput.inputPlaceholder}`;
-        input.classList.add('input-form__input');
-
-
-        sectionContacts.prepend(input);
-      }
+    if (typeForm === 'change') {
+      createInputContact(dataForm, sectionContacts)
     }
+
     main.append(sectionFullName, sectionContacts)
-    form.append(main)
   }
+
+if (typeForm === 'remove') {
+  const messange = document.createElement('span');
+  messange.classList.add('input-form__messange');
+  messange.textContent = 'Вы действительно хотите удалить данного клиента?';
+  main.append(messange);
+}
 
   // footer
   const footer = document.createElement('div');
@@ -115,11 +109,35 @@ export function createInputForm(dataForm, typeForm) {
   const captionBtnSave = document.createElement('span');
   btnSave.type = 'submit';
   iconBtnSave.innerHTML = iconLoadSmall;
-  captionBtnSave.textContent = 'Сохранить'
+  captionBtnSave.textContent = 'Сохранить';
+  btnSave.append(iconBtnSave, captionBtnSave);
+  const btnRemoveClient = document.createElement('button');
+  btnRemoveClient.classList.add('input-form__btn-remove');
+  btnRemoveClient.type = 'button'
+  if (typeForm === 'add' || typeForm === 'remove') {
+    btnRemoveClient.textContent = 'Отмена'
+  }
+  if (typeForm === 'change') {
+    btnRemoveClient.textContent = 'Удалить клиента'
+  }
+  footer.append(btnSave, btnRemoveClient)
 
-  btnSave.append(iconBtnSave, captionBtnSave)
-  footer.append(btnSave, )
+  form.append(header, main, footer);
+  return {form, btnSave, btnRemoveClient};
+}
 
-  form.append(header, inputCroupFullName, inputCroupContacts);
-  return form;
+function createInputContact(dataForm, containerNode) {
+  for (const objInput of dataForm) {
+    if (objInput.inputType !== 'text') {
+      const input = document.createElement('input');
+      input.name = `${objInput.inputName}`;
+      input.value = objInput.inputValue;
+      input.placeholder = `${objInput.inputPlaceholder}`;
+      input.classList.add('input-form__input');
+
+
+      containerNode.prepend(input);
+    }
+  }
+
 }

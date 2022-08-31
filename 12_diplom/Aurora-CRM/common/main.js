@@ -2,7 +2,7 @@ import { exchangeDataFromServer } from '../modules/server-api.js';
 import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
-import { createModalWindow } from "../modules/modal-window.js";
+import { createModalWindow, removeModalWindow } from "../modules/modal-window.js";
 import { dataInputForm, createInputForm } from "../modules/input-form.js";
 
 let clientsDataFromServer = [];
@@ -24,7 +24,10 @@ let clientsDataFromServer = [];
     const btnAddContact = footer.btn;
     btnAddContact.addEventListener('click', () => {
       const inpuFormAddClient = createInputForm(dataInputForm, 'add');
-      createModalWindow(inpuFormAddClient);
+      createModalWindow(inpuFormAddClient.form);
+      inpuFormAddClient.btnRemoveClient.addEventListener('click', () => {
+        removeModalWindow('modal-window', 'modal-window-container')
+      })
     })
 
     container.append(header.wrap, main.wrap, footer.wrap);
