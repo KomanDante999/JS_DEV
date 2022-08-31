@@ -1,6 +1,6 @@
 import { iconBtnClose } from "./icons.js";
 
-export function createModalWindow() {
+export function createModalWindow(contant) {
   const body = document.querySelector('body');
   body.classList.add('over-hidden');
   const overlay = document.createElement('div');
@@ -41,11 +41,9 @@ export function createModalWindow() {
     }
   })
 
-  container.append(btnClose);
+  container.append(btnClose, contant);
   overlay.append(container);
   body.append(overlay);
-
-  return {overlay, container}
 }
 
 function removeModalWindow(modalId) {

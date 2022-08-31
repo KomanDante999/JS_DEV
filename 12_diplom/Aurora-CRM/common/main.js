@@ -3,6 +3,7 @@ import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
 import { createModalWindow } from "../modules/modal-window.js";
+import { dataInputForm, createInputForm } from "../modules/input-form.js";
 
 let clientsDataFromServer = [];
 
@@ -22,7 +23,8 @@ let clientsDataFromServer = [];
 
     const btnAddContact = footer.btn;
     btnAddContact.addEventListener('click', () => {
-      createModalWindow()
+      const inpuFormAddClient = createInputForm(dataInputForm, 'add');
+      createModalWindow(inpuFormAddClient);
     })
 
     container.append(header.wrap, main.wrap, footer.wrap);
