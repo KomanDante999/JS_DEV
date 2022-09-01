@@ -31,19 +31,18 @@ export function createModalWindow(contant) {
 
 export function removeModalWindow(modalId, containerId) {
   const body = document.querySelector('body');
-  const overlay = document.getElementById(`${modalId}`);
+  const modalWindow = document.getElementById(`${modalId}`);
   const container = document.getElementById(`${containerId}`);
 
-  overlay.classList.remove('modal-window_opening');
-  overlay.classList.add('modal-window_closing');
+  if (modalWindow) {
+  modalWindow.classList.remove('modal-window_opening');
+  modalWindow.classList.add('modal-window_closing');
   container.classList.remove('modal-window__container_opening');
   container.classList.add('modal-window__container_closing');
 
-  overlay.addEventListener('animationend', () => {
-    if (overlay) {
-      body.removeChild(overlay);
-    }
-
-    body.classList.remove('over-hidden');
-  })
+  modalWindow.addEventListener('animationend', () => {
+      body.removeChild(modalWindow);
+      body.classList.remove('over-hidden');
+    })
+  }
 }

@@ -1,4 +1,4 @@
-import { iconAddContact, iconLoadSmall } from "./icons.js";
+import { iconAddContact, iconAddContactActive, iconLoadSmall } from "./icons.js";
 
 export let dataInputForm = [
   {
@@ -34,7 +34,7 @@ export function createInputForm(dataForm, typeForm) {
 
   // header
   const header = document.createElement('div');
-  header.classList.add('input-form__header');
+  header.classList.add('input-form__header', 'input-form__container');
   const title = document.createElement('h3');
   title.classList.add('input-form__title');
 
@@ -63,7 +63,7 @@ export function createInputForm(dataForm, typeForm) {
 
   if (typeForm !== 'remove') {
     const sectionFullName = document.createElement('div');
-    sectionFullName.classList.add('input-form__section', 'input-form__section_full-name')
+    sectionFullName.classList.add('input-form__section', 'input-form__section_full-name' , 'input-form__container')
     for (const objInput of dataForm) {
       if (objInput.inputType === 'text') {
         const input = document.createElement('input');
@@ -80,11 +80,27 @@ export function createInputForm(dataForm, typeForm) {
     // button add contact
     const btnAddContact = document.createElement('button');
     const iconBtnAdd = document.createElement('span');
+    const iconActiveBtnAdd = document.createElement('span');
     const captionBtnAdd = document.createElement('span');
+    btnAddContact.type = 'button';
+    btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
     iconBtnAdd.innerHTML = iconAddContact;
+    iconBtnAdd.classList.add('btn-addcontact__icon');
+    iconActiveBtnAdd.innerHTML = iconAddContactActive;
+    iconActiveBtnAdd.classList.add('btn-addcontact__icon_active', 'visually-hidden');
     captionBtnAdd.textContent = 'Добавить контакт';
-    btnAddContact.classList.add('input-form__btn-addcontact');
-    btnAddContact.append(iconBtnAdd, captionBtnAdd);
+    captionBtnAdd.classList.add('btn-addcontact__caption');
+    btnAddContact.append(iconBtnAdd, iconActiveBtnAdd, captionBtnAdd);
+    btnAddContact.addEventListener('mouseover', () => {
+      iconBtnAdd.classList.add('visually-hidden');
+      iconActiveBtnAdd.classList.remove('visually-hidden');
+    })
+
+    btnAddContact.addEventListener('mouseout', () => {
+      iconBtnAdd.classList.remove('visually-hidden');
+      iconActiveBtnAdd.classList.add('visually-hidden');
+    })
+
     sectionContacts.append(btnAddContact);
 
     if (typeForm === 'change') {
@@ -103,7 +119,7 @@ if (typeForm === 'remove') {
 
   // footer
   const footer = document.createElement('div');
-  footer.classList.add('input-form__footer');
+  footer.classList.add('input-form__footer', 'input-form__container');
   const btnSave = document.createElement('button');
   const iconBtnSave = document.createComment('span');
   const captionBtnSave = document.createElement('span');
