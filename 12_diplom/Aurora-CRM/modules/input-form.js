@@ -1,4 +1,4 @@
-import { iconAddContact, iconAddContactActive, iconLoadSmall } from "./icons.js";
+import { iconLoadSmall } from "./icons.js";
 
 export let dataInputForm = [
   {
@@ -84,22 +84,10 @@ export function createInputForm(dataForm, typeForm) {
     const captionBtnAdd = document.createElement('span');
     btnAddContact.type = 'button';
     btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
-    iconBtnAdd.innerHTML = iconAddContact;
     iconBtnAdd.classList.add('btn-addcontact__icon');
-    iconActiveBtnAdd.innerHTML = iconAddContactActive;
-    iconActiveBtnAdd.classList.add('btn-addcontact__icon_active', 'visually-hidden');
     captionBtnAdd.textContent = 'Добавить контакт';
     captionBtnAdd.classList.add('btn-addcontact__caption');
-    btnAddContact.append(iconBtnAdd, iconActiveBtnAdd, captionBtnAdd);
-    btnAddContact.addEventListener('mouseover', () => {
-      iconBtnAdd.classList.add('visually-hidden');
-      iconActiveBtnAdd.classList.remove('visually-hidden');
-    })
-
-    btnAddContact.addEventListener('mouseout', () => {
-      iconBtnAdd.classList.remove('visually-hidden');
-      iconActiveBtnAdd.classList.add('visually-hidden');
-    })
+    btnAddContact.append(iconBtnAdd, captionBtnAdd);
 
     sectionContacts.append(btnAddContact);
 
