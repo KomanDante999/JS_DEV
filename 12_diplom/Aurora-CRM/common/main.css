@@ -25,8 +25,8 @@
   --color-grey02-border: hsla(0, 0%, 20%, 0.2);
   --color-gray-text: hsla(0, 0%, 69%, 1);
   --color-firm:hsla(256, 100%, 73%, 1);
-  --color-btn-hov: hsla(256, 100%, 81%, 1);
-  --color-btn-act: hsla(256, 100%, 66%, 1);
+  --color-firm-81: hsla(256, 100%, 81%, 1);
+  --color-firm-66: hsla(256, 100%, 66%, 1);
   --duration-btn-animation: 600ms;
 
 }
@@ -47,18 +47,31 @@
   transition-duration: var(--duration-btn-animation);
 }
 
+.btn-primary {
+  color: var(--color-white);
+  background-color: var(--color-firm);
+}
+
+.btn-primary:focus,
+.btn-primary:hover {
+
+}
+
 .btn-secondary {
   border: 1px solid var(--color-firm);
   color: var(--color-firm);
 }
 
+.btn-primary:focus:not(:active),
+.btn-primary:hover:not(:active),
 .btn-secondary:focus:not(:active),
 .btn-secondary:hover:not(:active) {
-  background-color: var(--color-btn-hov);
+  background-color: var(--color-firm-81);
 }
 
+.btn-primary:active,
 .btn-secondary:active {
-  background-color: var(--color-btn-act);
+  background-color: var(--color-firm-66);
 }
 
 .btn-secondary:focus,
@@ -140,6 +153,7 @@
 
 /* footer */
 .footer {
+
 }
 
 .footer__container {
@@ -226,7 +240,6 @@
 .input-form__input_text {}
 
 .input-form__section_contacts {
-  /* justify-content: center; */
   align-items: center;
   background-color: var(--color-grey-80-03);
 }
@@ -248,24 +261,27 @@
 
 .btn-addcontact__icon {
   position: relative;
-  width: 13.33px;
-  height: 13.33px;
-  border: 1px solid var(--color-firm);
-  border-radius:  50%;
   margin-right: 4px;
+  color: var(--color-firm);
 }
 
-.btn-addcontact__icon::before {
-  content: '+';
+.btn-addcontact__icon_active {
   position: absolute;
-  top: 50%;
-  left: 20%;
-  display: block;
-  width: 6.67px;
-  height: 6.67px;
-  background-color: var(--color-firm);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-white);
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: ease;
+  transition-duration: var(--duration-btn-animation);
 }
 
+.btn-addcontact:focus .btn-addcontact__icon_active,
+.btn-addcontact:hover .btn-addcontact__icon_active {
+  opacity: 1;
+}
 
 .btn-addcontact__caption {
 
@@ -280,7 +296,31 @@
 
 
 .input-form__messange {}
-.input-form__footer {}
-.input-form__btn-remove {}
+
+
+.input-form__footer {
+  align-items: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+.input-form__btn-save {}
+
+.btn-save {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 12px 35px;
+  margin-bottom: 5px;
+}
+
+.btn-save__icon {
+  margin-right: 4px;
+}
+
+.input-form__btn-remove {
+  width: fit-content;
+
+}
 
 

@@ -1,4 +1,4 @@
-import { iconLoadSmall } from "./icons.js";
+import { iconLoadSmall, iconAddContact, iconAddContactActive } from "./icons.js";
 
 export let dataInputForm = [
   {
@@ -85,8 +85,13 @@ export function createInputForm(dataForm, typeForm) {
     btnAddContact.type = 'button';
     btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
     iconBtnAdd.classList.add('btn-addcontact__icon');
+    iconBtnAdd.innerHTML = iconAddContact;
+    iconActiveBtnAdd.classList.add('btn-addcontact__icon_active');
+    iconActiveBtnAdd.innerHTML = iconAddContactActive;
     captionBtnAdd.textContent = 'Добавить контакт';
     captionBtnAdd.classList.add('btn-addcontact__caption');
+
+    iconBtnAdd.append(iconActiveBtnAdd);
     btnAddContact.append(iconBtnAdd, captionBtnAdd);
 
     sectionContacts.append(btnAddContact);
@@ -107,15 +112,19 @@ if (typeForm === 'remove') {
 
   // footer
   const footer = document.createElement('div');
-  footer.classList.add('input-form__footer', 'input-form__container');
+  footer.classList.add('input-form__footer', 'input-form__container', 'input-form__section');
   const btnSave = document.createElement('button');
-  const iconBtnSave = document.createComment('span');
+  const iconBtnSave = document.createElement('span');
   const captionBtnSave = document.createElement('span');
   btnSave.type = 'submit';
+  btnSave.classList.add('input-form__btn-save', 'btn', 'btn-primary', 'btn-save')
   iconBtnSave.innerHTML = iconLoadSmall;
+  iconBtnSave.classList.add('btn-save__icon')
   captionBtnSave.textContent = 'Сохранить';
+
   btnSave.append(iconBtnSave, captionBtnSave);
   const btnRemoveClient = document.createElement('button');
+
   btnRemoveClient.classList.add('input-form__btn-remove');
   btnRemoveClient.type = 'button'
   if (typeForm === 'add' || typeForm === 'remove') {
