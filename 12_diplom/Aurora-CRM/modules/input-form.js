@@ -1,31 +1,39 @@
-import { iconLoadSmall, iconAddContact, iconAddContactActive } from "./icons.js";
+import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
+import { newChoices } from "./choices.js";
 
-export let dataInputForm = [
-  {
-    inputName: 'surname',
-    inputValue: '',
-    inputValid: 0,
-    inputType: 'text',
-    inputPlaceholder: 'Фамилия',
-    feedbackText: '',
-  },
-  {
-    inputName: 'name',
-    inputValue: '',
-    inputValid: 0,
-    inputType: 'text',
-    inputPlaceholder: 'Имя',
-    feedbackText: '',
-  },
-  {
-    inputName: 'middleName',
-    inputValue: '',
-    inputValid: 0,
-    inputType: 'text',
-    inputPlaceholder: 'Отчество',
-    feedbackText: '',
-  },
-]
+export function newDataInputForm() {
+
+  let dataInputForm = [];
+  dataInputForm = [
+    {
+      inputName: 'surname',
+      inputValue: '',
+      inputValid: 0,
+      inputType: 'text',
+      inputPlaceholder: 'Фамилия',
+      feedbackText: '',
+    },
+    {
+      inputName: 'name',
+      inputValue: '',
+      inputValid: 0,
+      inputType: 'text',
+      inputPlaceholder: 'Имя',
+      feedbackText: '',
+    },
+    {
+      inputName: 'middleName',
+      inputValue: '',
+      inputValid: 0,
+      inputType: 'text',
+      inputPlaceholder: 'Отчество',
+      feedbackText: '',
+    },
+  ]
+
+  return dataInputForm;
+}
+
 
 export function createInputForm(dataForm, typeForm) {
   const form = document.createElement('form');
@@ -93,8 +101,14 @@ export function createInputForm(dataForm, typeForm) {
 
     iconBtnAdd.append(iconActiveBtnAdd);
     btnAddContact.append(iconBtnAdd, captionBtnAdd);
-
     sectionContacts.append(btnAddContact);
+
+    btnAddContact.addEventListener('click', () => {
+      newDataInputContact(dataForm);
+      createInputContact(dataForm, btnAddContact)
+    })
+
+
 
     if (typeForm === 'change') {
       createInputContact(dataForm, sectionContacts)
@@ -119,7 +133,7 @@ if (typeForm === 'remove') {
   btnSave.type = 'submit';
   btnSave.classList.add('input-form__btn-save', 'btn', 'btn-primary', 'btn-save')
   iconBtnSave.innerHTML = iconLoadSmall;
-  iconBtnSave.classList.add('btn-save__icon')
+  iconBtnSave.classList.add('btn-save__icon', 'visually-hidden')
   captionBtnSave.textContent = 'Сохранить';
 
   btnSave.append(iconBtnSave, captionBtnSave);
@@ -139,18 +153,97 @@ if (typeForm === 'remove') {
   return {form, btnSave, btnRemoveClient};
 }
 
-function createInputContact(dataForm, containerNode) {
-  for (const objInput of dataForm) {
-    if (objInput.inputType !== 'text') {
-      const input = document.createElement('input');
-      input.name = `${objInput.inputName}`;
-      input.value = objInput.inputValue;
-      input.placeholder = `${objInput.inputPlaceholder}`;
-      input.classList.add('input-form__input');
 
-
-      containerNode.prepend(input);
+function newDataInputContact(dataForm) {
+  let index = 0;
+  for (const objinput of dataForm) {
+    if (objinput.inputIndex >= index) {
+      index = objinput.inputIndex + 1;
     }
   }
-
+  dataForm.push(
+    {
+      inputIndex: index,
+      inputId: `input-contact-${index}`,
+      inputName: 'tel',
+      inputValue: '',
+      inputValid: 0,
+      inputType: 'tel',
+      inputPlaceholder: 'Введите данные контакта',
+      feedbackText: '',
+      select: [
+        {
+          optionName: 'Телефон',
+          optionValue: 'tel',
+          optionSelected: true,
+        },
+        {
+          optionName: 'Доп. телефон',
+          optionValue: 'telExtens',
+          optionSelected: false,
+        },
+        {
+          optionName: 'Email',
+          optionValue: 'Email',
+          optionSelected: false,
+        },
+        {
+          optionName: 'Vk',
+          optionValue: 'Vk',
+          optionSelected: false,
+        },
+        {
+          optionName: 'Facebook',
+          optionValue: 'Facebook',
+          optionSelected: false,
+        },
+      ],
+    }
+  )
+  console.log('dataForm', dataForm);
+  return dataForm;
 }
+
+function createInputContact(dataForm, targetNode) {
+  for (const objInput of dataForm) {
+    if (objInput.inputType !== 'text') {
+      const inputGroup = document.createElement('div');
+      inputGroup.classList.add('input-form__input-contact', 'input-contact');
+      // select
+      const select = document.createElement('select');
+      select.classList.add(`js-choices-${objInput.inputIndex}`, 'input-contact__select');
+      for (const objOption of objInput.select) {
+        const option = document.createElement('option');
+        option.value = objOption.optionValue;
+        option.textContent = objOption.optionName;
+        option.classList.add('input-contact__option')
+        if (objOption.optionSelected) {
+          option.selected = 'selected'
+        }
+        select.append(option);
+      }
+      // input
+      const input = document.createElement('input');
+      input.classList.add('input-contact__input');
+      input.type = `${objInput.inputType}`;
+      input.value = `${objInput.inputValue}`;
+      input.placeholder = `${objInput.inputPlaceholder}`;
+      // button remove
+      const btnRemove = document.createElement('button');
+      btnRemove.classList.add('input-contact__btn-remove');
+      const iconRemove = document.createElement('span');
+      iconRemove.innerHTML = iconBtnRemoveContact;
+
+      btnRemove.append(iconRemove);
+      inputGroup.append(select, input, btnRemove);
+      targetNode.before(inputGroup);
+    }
+  }
+}
+
+
+/*<select class="js-choices-gallery">
+<option value="painting" selected="selected">Живопись</option>
+<option value="drawing">Рисунок</option>
+<option value="sculpture">Скульптура</option>
+</select>*/

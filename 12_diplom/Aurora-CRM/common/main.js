@@ -3,7 +3,7 @@ import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
 import { createModalWindow, removeModalWindow } from "../modules/modal-window.js";
-import { dataInputForm, createInputForm } from "../modules/input-form.js";
+import { newDataInputForm, createInputForm } from "../modules/input-form.js";
 
 let clientsDataFromServer = [];
 
@@ -21,13 +21,18 @@ let clientsDataFromServer = [];
     const table = createTableWrap(dataTableHeader);
     main.tableContainer.append(table.table);
 
-    const btnAddContact = footer.btn;
-    btnAddContact.addEventListener('click', () => {
+    const btnAddClient = footer.btn;
+    btnAddClient.addEventListener('click', () => {
+      let dataInputForm = newDataInputForm()
       const inpuFormAddClient = createInputForm(dataInputForm, 'add');
       createModalWindow(inpuFormAddClient.form);
+      // remove modal window
       inpuFormAddClient.btnRemoveClient.addEventListener('click', () => {
-        removeModalWindow('modal-window', 'modal-window-container')
+        removeModalWindow('modal-window', 'modal-window-container');
       })
+
+
+
     })
 
     container.append(header.wrap, main.wrap, footer.wrap);
