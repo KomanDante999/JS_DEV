@@ -41,8 +41,8 @@ export function removeModalWindow(modalId, containerId) {
   container.classList.add('modal-window__container_closing');
 
   modalWindow.addEventListener('animationend', () => {
-      body.removeChild(modalWindow);
       body.classList.remove('over-hidden');
+      modalWindow.remove();
     })
   }
 }

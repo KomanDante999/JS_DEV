@@ -3,7 +3,7 @@ import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
 import { createModalWindow, removeModalWindow } from "../modules/modal-window.js";
-import { newDataInputForm, createInputForm } from "../modules/input-form.js";
+import { newDataInputForm, createInputForm, } from "../modules/input-form.js";
 
 let clientsDataFromServer = [];
 
@@ -30,7 +30,6 @@ let clientsDataFromServer = [];
       inpuFormAddClient.btnRemoveClient.addEventListener('click', () => {
         removeModalWindow('modal-window', 'modal-window-container');
       })
-
 
 
     })

@@ -34,13 +34,8 @@ export function newDataInputForm() {
   return dataInputForm;
 }
 
-
-export function createInputForm(dataForm, typeForm) {
-  const form = document.createElement('form');
-  form.id = 'input-form';
-  form.classList.add('input-form');
-
-  // header
+// header
+function createHeaderForm(typeForm, idClientChanger) {
   const header = document.createElement('div');
   header.classList.add('input-form__header', 'input-form__container');
   const title = document.createElement('h3');
@@ -54,7 +49,7 @@ export function createInputForm(dataForm, typeForm) {
       title.textContent = 'Изменить данные';
       const idClient = document.createElement('span');
       idClient.classList.add('input-form__id-client');
-      idClient.textContent = `ID: `;
+      idClient.textContent = `ID: ${idClientChanger}`;
       header.classList.add('input-form__header_add')
       header.append(idClient);
       break;
@@ -65,7 +60,10 @@ export function createInputForm(dataForm, typeForm) {
   }
   header.prepend(title);
 
-  // main
+  return header;
+}
+ // main
+function createMainForm(dataForm, typeForm) {
   const main = document.createElement('div');
   main.classList.add('input-form__main')
 
@@ -91,6 +89,7 @@ export function createInputForm(dataForm, typeForm) {
     const iconActiveBtnAdd = document.createElement('span');
     const captionBtnAdd = document.createElement('span');
     btnAddContact.type = 'button';
+    btnAddContact.id = 'btn-add-contact'
     btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
     iconBtnAdd.classList.add('btn-addcontact__icon');
     iconBtnAdd.innerHTML = iconAddContact;
@@ -103,57 +102,22 @@ export function createInputForm(dataForm, typeForm) {
     btnAddContact.append(iconBtnAdd, captionBtnAdd);
     sectionContacts.append(btnAddContact);
 
-    btnAddContact.addEventListener('click', () => {
-      newDataInputContact(dataForm);
-      createInputContact(dataForm, btnAddContact)
-    })
+    createInputContact(dataForm, btnAddContact);
 
-
-
-    if (typeForm === 'change') {
-      createInputContact(dataForm, sectionContacts)
-    }
-
-    main.append(sectionFullName, sectionContacts)
+    main.append(sectionFullName, sectionContacts);
   }
 
-if (typeForm === 'remove') {
+  if (typeForm === 'remove') {
   const messange = document.createElement('span');
   messange.classList.add('input-form__messange');
   messange.textContent = 'Вы действительно хотите удалить данного клиента?';
   main.append(messange);
+  }
+
+  return main;
 }
 
-  // footer
-  const footer = document.createElement('div');
-  footer.classList.add('input-form__footer', 'input-form__container', 'input-form__section');
-  const btnSave = document.createElement('button');
-  const iconBtnSave = document.createElement('span');
-  const captionBtnSave = document.createElement('span');
-  btnSave.type = 'submit';
-  btnSave.classList.add('input-form__btn-save', 'btn', 'btn-primary', 'btn-save')
-  iconBtnSave.innerHTML = iconLoadSmall;
-  iconBtnSave.classList.add('btn-save__icon', 'visually-hidden')
-  captionBtnSave.textContent = 'Сохранить';
-
-  btnSave.append(iconBtnSave, captionBtnSave);
-  const btnRemoveClient = document.createElement('button');
-
-  btnRemoveClient.classList.add('input-form__btn-remove');
-  btnRemoveClient.type = 'button'
-  if (typeForm === 'add' || typeForm === 'remove') {
-    btnRemoveClient.textContent = 'Отмена'
-  }
-  if (typeForm === 'change') {
-    btnRemoveClient.textContent = 'Удалить клиента'
-  }
-  footer.append(btnSave, btnRemoveClient)
-
-  form.append(header, main, footer);
-  return {form, btnSave, btnRemoveClient};
-}
-
-
+// contact
 function newDataInputContact(dataForm) {
   let index = 0;
   for (const objinput of dataForm) {
@@ -200,7 +164,6 @@ function newDataInputContact(dataForm) {
       ],
     }
   )
-  console.log('dataForm', dataForm);
   return dataForm;
 }
 
@@ -241,9 +204,71 @@ function createInputContact(dataForm, targetNode) {
   }
 }
 
+// footer
+function createFooterForm(typeForm) {
+  const footer = document.createElement('div');
+  footer.classList.add('input-form__footer', 'input-form__container', 'input-form__section');
+  const btnSave = document.createElement('button');
+  const iconBtnSave = document.createElement('span');
+  const captionBtnSave = document.createElement('span');
+  btnSave.type = 'submit';
+  btnSave.classList.add('input-form__btn-save', 'btn', 'btn-primary', 'btn-save')
+  iconBtnSave.innerHTML = iconLoadSmall;
+  iconBtnSave.classList.add('btn-save__icon', 'visually-hidden')
+  captionBtnSave.textContent = 'Сохранить';
+
+  btnSave.append(iconBtnSave, captionBtnSave);
+  const btnRemoveClient = document.createElement('button');
+
+  btnRemoveClient.classList.add('input-form__btn-remove');
+  btnRemoveClient.type = 'button'
+  if (typeForm === 'add' || typeForm === 'remove') {
+    btnRemoveClient.textContent = 'Отмена'
+  }
+  if (typeForm === 'change') {
+    btnRemoveClient.textContent = 'Удалить клиента'
+  }
+  footer.append(btnSave, btnRemoveClient)
+
+  return {footer, btnSave, btnRemoveClient};
+}
+
+
+
+export function createInputForm(dataForm, typeForm) {
+  const form = document.createElement('form');
+  form.id = 'modal-input-form';
+  form.classList.add('input-form');
+
+  const header = createHeaderForm(typeForm);
+  const main = createMainForm(dataForm, typeForm);
+  const footer = createFooterForm(typeForm);
+  const btnSave = footer.btnSave;
+  const btnRemoveClient = footer.btnRemoveClient
+
+  form.append(header, main, footer.footer);
+  return {form, btnSave, btnRemoveClient};
+}
+
+
+
 
 /*<select class="js-choices-gallery">
 <option value="painting" selected="selected">Живопись</option>
 <option value="drawing">Рисунок</option>
 <option value="sculpture">Скульптура</option>
 </select>*/
+
+// update input form
+export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
+  const oldForm = document.getElementById(`${idForm}`);
+  console.log('oldForm', oldForm);
+  oldForm.remove();
+  const container = document.getElementById(`${idContainer}`);
+  container.removeChild(oldForm)
+  const newForm = createInputForm(dataForm, typeForm);
+  container.append(newForm);
+
+}
+
+
