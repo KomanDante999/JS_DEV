@@ -85,6 +85,7 @@ function createMainForm(dataForm, typeForm) {
     sectionContacts.classList.add('input-form__section', 'input-form__section_contacts');
     const containerSelect = document.createElement('div');
     containerSelect.classList.add('input-form__container-select');
+    containerSelect.id = 'form-container-select'
     // button add contact
     const btnAddContact = document.createElement('button');
     const iconBtnAdd = document.createElement('span');
@@ -149,26 +150,31 @@ function newDataInputContact(dataForm) {
           optionName: 'Телефон',
           optionValue: 'tel',
           optionSelected: true,
+          type: 'tel',
         },
         {
           optionName: 'Доп. телефон',
           optionValue: 'telExtens',
           optionSelected: false,
+          type: 'tel',
         },
         {
           optionName: 'Email',
-          optionValue: 'Email',
+          optionValue: 'email',
           optionSelected: false,
+          type: 'email',
         },
         {
           optionName: 'Vk',
-          optionValue: 'Vk',
+          optionValue: 'vk',
           optionSelected: false,
+          type: 'url',
         },
         {
           optionName: 'Facebook',
-          optionValue: 'Facebook',
+          optionValue: 'facebook',
           optionSelected: false,
+          type: 'url',
         },
       ],
     }
@@ -219,10 +225,13 @@ function createInputContact(dataForm, targetNode) {
           objOption.optionSelected = false;
           if (objOption.optionValue === select.value) {
             objOption.optionValue = select.value;
+            objOption.optionSelected = true;
+            objInput.inputType = objOption.type;
+            objInput.inputValue = '';
           }
         }
-
-
+        const containerSelect = document.getElementById('form-container-select');
+        createInputContact(dataForm, containerSelect)
       })
 
       btnRemove.append(iconRemove);
