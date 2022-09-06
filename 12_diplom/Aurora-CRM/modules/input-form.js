@@ -82,7 +82,9 @@ function createMainForm(dataForm, typeForm) {
       }
     }
     const sectionContacts = document.createElement('div');
-    sectionContacts.classList.add('input-form__section', 'input-form__section_contacts')
+    sectionContacts.classList.add('input-form__section', 'input-form__section_contacts');
+    const containerSelect = document.createElement('div');
+    containerSelect.classList.add('input-form__container-select');
     // button add contact
     const btnAddContact = document.createElement('button');
     const iconBtnAdd = document.createElement('span');
@@ -97,12 +99,19 @@ function createMainForm(dataForm, typeForm) {
     iconActiveBtnAdd.innerHTML = iconAddContactActive;
     captionBtnAdd.textContent = 'Добавить контакт';
     captionBtnAdd.classList.add('btn-addcontact__caption');
+    // add select
+    btnAddContact.addEventListener('click', () => {
+      newDataInputContact(dataForm);
+      createInputContact(dataForm, containerSelect);
+    })
+    // change select
+
+
 
     iconBtnAdd.append(iconActiveBtnAdd);
     btnAddContact.append(iconBtnAdd, captionBtnAdd);
-    sectionContacts.append(btnAddContact);
+    sectionContacts.append(containerSelect, btnAddContact);
 
-    createInputContact(dataForm, btnAddContact);
 
     main.append(sectionFullName, sectionContacts);
   }
@@ -170,16 +179,22 @@ function newDataInputContact(dataForm) {
 function createInputContact(dataForm, targetNode) {
   for (const objInput of dataForm) {
     if (objInput.inputType !== 'text') {
+      // remove old inputGroup
+      const inputGroupOld = document.getElementById(`js-contact-${objInput.inputIndex}`)
+      if (inputGroupOld) {
+        inputGroupOld.remove();
+      }
       const inputGroup = document.createElement('div');
       inputGroup.classList.add('input-form__input-contact', 'input-contact');
+      inputGroup.id = `js-contact-${objInput.inputIndex}`;
       // select
       const select = document.createElement('select');
-      select.classList.add(`js-choices-${objInput.inputIndex}`, 'input-contact__select');
+      select.classList.add(`js-select-${objInput.inputIndex}`, 'js-contact-select', 'input-contact__select');
       for (const objOption of objInput.select) {
         const option = document.createElement('option');
         option.value = objOption.optionValue;
         option.textContent = objOption.optionName;
-        option.classList.add('input-contact__option')
+        option.classList.add('input-contact__option');
         if (objOption.optionSelected) {
           option.selected = 'selected'
         }
@@ -197,9 +212,22 @@ function createInputContact(dataForm, targetNode) {
       const iconRemove = document.createElement('span');
       iconRemove.innerHTML = iconBtnRemoveContact;
 
+      // event select
+      select.addEventListener('change', () => {
+        console.log('change', select.value);
+        for (const objOption of objInput.select) {
+          objOption.optionSelected = false;
+          if (objOption.optionValue === select.value) {
+            objOption.optionValue = select.value;
+          }
+        }
+
+
+      })
+
       btnRemove.append(iconRemove);
       inputGroup.append(select, input, btnRemove);
-      targetNode.before(inputGroup);
+      targetNode.append(inputGroup);
     }
   }
 }
