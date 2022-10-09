@@ -241,11 +241,37 @@
 
 .input-form__input_text {}
 
+/* section contacts */
 .input-form__section_contacts {
   align-items: center;
-  padding: 25px 30px;
   background-color: var(--color-grey-02);
 }
+
+.input-form__section_contacts.is-contains {
+  padding: 25px 30px;
+}
+
+.input-form__section_contacts.is-contains .input-form__container-select {
+  margin-bottom: 25px;
+}
+
+.input-form__input-contact {}
+
+.input-contact {}
+
+.input-contact__select {
+  font-size: 12px;
+  line-height: 16px;
+  padding: 10px 8px 10px 12px;
+}
+
+.input-contact__option {}
+
+.input-contact__input {}
+
+.input-contact__btn-remove {}
+
+
 
 .input-form__btn-addcontact {
 }
@@ -295,10 +321,6 @@
 .btn-addcontact:active {
   color: var(--color-firm);
 }
-
-.input-form__container-select {
-}
-
 
 
 

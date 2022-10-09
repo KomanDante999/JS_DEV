@@ -104,6 +104,9 @@ function createMainForm(dataForm, typeForm) {
     btnAddContact.addEventListener('click', () => {
       newDataInputContact(dataForm);
       createInputContact(dataForm, containerSelect);
+      if (!sectionContacts.classList.contains('is-contains')) {
+        sectionContacts.classList.add('is-contains');
+      }
     })
     // change select
 
