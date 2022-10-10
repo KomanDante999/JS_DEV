@@ -1,6 +1,5 @@
 import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
-import { newChoices } from "./choices.js";
-
+import { newChoices } from "./choices-init.js";
 export function newDataInputForm() {
 
   let dataInputForm = [];
@@ -198,6 +197,7 @@ function createInputContact(dataForm, targetNode) {
       inputGroup.id = `js-contact-${objInput.inputIndex}`;
       // select
       const select = document.createElement('select');
+      select.id = `js-choices-${objInput.inputIndex}`;
       select.classList.add(`js-select-${objInput.inputIndex}`, 'js-contact-select', 'input-contact__select');
       for (const objOption of objInput.select) {
         const option = document.createElement('option');
@@ -209,6 +209,8 @@ function createInputContact(dataForm, targetNode) {
         }
         select.append(option);
       }
+      newChoices(`${objInput.inputIndex}`);
+
       // input
       const input = document.createElement('input');
       input.classList.add('input-contact__input');

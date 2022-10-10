@@ -5,6 +5,7 @@ import { dataTableHeader, createTableWrap } from "../modules/table.js";
 import { createModalWindow, removeModalWindow } from "../modules/modal-window.js";
 import { newDataInputForm, createInputForm, } from "../modules/input-form.js";
 
+
 let clientsDataFromServer = [];
 
 
