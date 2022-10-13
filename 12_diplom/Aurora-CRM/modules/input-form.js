@@ -1,6 +1,4 @@
 import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
-import { newChoices } from "./choices.js";
-
 export function newDataInputForm() {
 
   let dataInputForm = [];
@@ -198,17 +196,20 @@ function createInputContact(dataForm, targetNode) {
       inputGroup.id = `js-contact-${objInput.inputIndex}`;
       // select
       const select = document.createElement('select');
+      select.id = `js-choices-${objInput.inputIndex}`;
       select.classList.add(`js-select-${objInput.inputIndex}`, 'js-contact-select', 'input-contact__select');
       for (const objOption of objInput.select) {
         const option = document.createElement('option');
         option.value = objOption.optionValue;
         option.textContent = objOption.optionName;
-        option.classList.add('input-contact__option');
+        // option.classList.add('input-contact__option');
         if (objOption.optionSelected) {
           option.selected = 'selected'
         }
         select.append(option);
       }
+
+
       // input
       const input = document.createElement('input');
       input.classList.add('input-contact__input');
@@ -223,7 +224,6 @@ function createInputContact(dataForm, targetNode) {
 
       // event select
       select.addEventListener('change', () => {
-        console.log('change', select.value);
         for (const objOption of objInput.select) {
           objOption.optionSelected = false;
           if (objOption.optionValue === select.value) {
@@ -240,6 +240,45 @@ function createInputContact(dataForm, targetNode) {
       btnRemove.append(iconRemove);
       inputGroup.append(select, input, btnRemove);
       targetNode.append(inputGroup);
+
+      new Choices(select, {
+        shouldSort: false,
+        searchEnabled: false,
+        itemSelectText: '',
+        position: 'bottom',
+        allowHTML: true,
+        classNames: {
+          containerOuter: 'choices-select',
+          containerInner: 'choices-select__inner',
+          input: 'choices-select__input',
+          inputCloned: 'choices-select__input--cloned',
+          list: 'choices-select__list',
+          listItems: 'choices-select__list--multiple',
+          listSingle: 'choices-select__list--single',
+          listDropdown: 'choices-select__list--dropdown',
+          item: 'choices-select__item',
+          itemSelectable: 'choices-select__item--selectable',
+          itemDisabled: 'choices-select__item--disabled',
+          itemChoice: 'choices-select__item--choice',
+          placeholder: 'choices-select__placeholder',
+          group: 'choices-select__group',
+          groupHeading: 'choices-select__heading',
+          button: 'choices-select__button',
+          activeState: 'is-active',
+          focusState: 'is-focused',
+          openState: 'is-open',
+          disabledState: 'is-disabled',
+          highlightedState: 'is-highlighted',
+          selectedState: 'is-selected',
+          flippedState: 'is-flipped',
+          loadingState: 'is-loading',
+          noResults: 'has-no-results',
+          noChoices: 'has-no-choices'
+        },
+      });
+
+
+
     }
   }
 }
