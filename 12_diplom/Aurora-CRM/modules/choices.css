@@ -1,11 +1,16 @@
+:root {
+  --color-inner:hsla(260, 13%, 91%, 1);
+  --color-list:hsla(260, 14%, 96%, 1);
+  --color-border:hsla(255, 12%, 80%, 1);
+}
+
 .choices-select {
   position: relative;
   z-index: 2;
-  max-width: 350px;
+  max-width: 123px;
   overflow: hidden;
   font-size: 12px;
   line-height: 16px;
-  /* color: var(--c-white); */
 }
 
 .choices-select:focus {
@@ -55,10 +60,9 @@
   display: inline-block;
   vertical-align: top;
   width: 100%;
-  background-color: transparent;
-  padding: 11px 30px 11px 15px;
-  border: 1px solid var(--c-white);
-  border-radius: 6px;
+  background-color: var(--color-inner);
+  padding: 10px 12px 9px 12px;
+  border: 1px solid var(--color-border);
   overflow: hidden;
   transition-property: background-color;
   transition-duration: 500ms;
@@ -77,6 +81,7 @@
   margin: 0;
   padding-left: 0;
   list-style: none;
+
 }
 .choices-select__list--single {
   display: inline-block;
@@ -96,12 +101,10 @@
   margin-top: -1px;
   visibility: hidden;
   will-change: visibility;
-  color: var(--c_grey-60);
-  border: 1px solid var(--c_grey-60);
-  border-radius: 6px;
+  border: 1px solid var(--color-border);
   overflow: hidden;
   word-break: break-all;
-  background-color: var(--c_black);
+  background-color: var(--color-list);
 }
 
 .is-active.choices-select__list--dropdown,
@@ -121,14 +124,14 @@
 .choices-select__list--dropdown .choices-select__item,
 .choices-select__list[aria-expanded] .choices-select__item {
   position: relative;
-  padding: 11px 30px 15px 20px;
+  padding: 10px 12px 10px 12px;
   transition-property: color, background-color;
   transition-duration: 500ms;
   transition-timing-function: ease;
 }
 
 .choices-select__list--dropdown .choices-select__item:not(:last-child) {
-  border-bottom: 1px solid var(--c_grey-60);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .choices-select__list--dropdown .choices-select__item.is-selected {
@@ -137,8 +140,8 @@
 
 .choices-select__list--dropdown .choices-select__item--selectable.is-highlighted,
 .choices-select__list[aria-expanded] .choices-select__item--selectable.is-highlighted {
-  color: var(--c-white);
-  background-color: var(--c-white-02);
+  /* color: var(--c-white);
+  background-color: var(--c-white-02); */
 }
 
 @media (min-width: 768px) {

@@ -257,12 +257,9 @@
 
 .input-form__input-contact {}
 
-.input-contact {}
-
-.input-contact__select {
-  font-size: 12px;
-  line-height: 16px;
-  padding: 10px 8px 10px 12px;
+.input-contact {
+  display: flex;
+  justify-content: start;
 }
 
 
