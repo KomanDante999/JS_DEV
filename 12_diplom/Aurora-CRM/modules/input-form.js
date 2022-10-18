@@ -4,7 +4,9 @@ export function newDataInputForm() {
   let dataInputForm = [];
   dataInputForm = [
     {
+      inputIndex: 0,
       inputName: 'surname',
+      inputId: 'input-contact-0',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
@@ -12,7 +14,9 @@ export function newDataInputForm() {
       feedbackText: '',
     },
     {
+      inputIndex: 1,
       inputName: 'name',
+      inputId: 'input-contact-1',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
@@ -20,7 +24,9 @@ export function newDataInputForm() {
       feedbackText: '',
     },
     {
+      inputIndex: 2,
       inputName: 'middleName',
+      inputId: 'input-contact-2',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
@@ -70,11 +76,14 @@ function createMainForm(dataForm, typeForm) {
     sectionFullName.classList.add('input-form__section', 'input-form__section_full-name' , 'input-form__container')
     for (const objInput of dataForm) {
       if (objInput.inputType === 'text') {
+        // input
         const input = document.createElement('input');
+        input.id = objInput.inputId;
         input.name = `${objInput.inputName}`;
         input.value = objInput.inputValue;
         input.placeholder = `${objInput.inputPlaceholder}`;
         input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
+        input.formNoValidate = 'true';
 
         sectionFullName.append(input);
       }
@@ -106,8 +115,6 @@ function createMainForm(dataForm, typeForm) {
         sectionContacts.classList.add('is-contains');
       }
     })
-    // change select
-
 
 
     iconBtnAdd.append(iconActiveBtnAdd);
@@ -212,9 +219,12 @@ function createInputContact(dataForm, targetNode) {
       // input
       const input = document.createElement('input');
       input.classList.add('input-contact__input', 'js-modal-input');
+      input.id = objInput.inputId;
+      input.name = objInput.inputName;
       input.type = `${objInput.inputType}`;
       input.value = `${objInput.inputValue}`;
       input.placeholder = `${objInput.inputPlaceholder}`;
+      input.formNoValidate = 'true';
 
       // button remove
       const btnRemove = document.createElement('button');
@@ -230,6 +240,7 @@ function createInputContact(dataForm, targetNode) {
             objOption.optionValue = select.value;
             objOption.optionSelected = true;
             objInput.inputType = objOption.type;
+            objInput.inputName = objOption.optionName;
             objInput.inputValue = '';
           }
         }
@@ -329,6 +340,17 @@ export function createInputForm(dataForm, typeForm) {
 
 export function updateDataInputForm(dataForm) {
   const inputs = document.querySelectorAll('.js-modal-input');
+  for (const input of inputs) {
+    for (const objInput of dataForm) {
+      if (input.id === objInput.inputId) {
+        objInput.inputValue = input.value;
+        objInput.inputType = input.type;
+        objInput.inputName = input.name;
+      }
+    }
+  }
+  console.log('dataForm', dataForm);
+  return dataForm;
 }
 
 // update input form
