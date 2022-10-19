@@ -255,16 +255,23 @@
 }
 
 .input-form__section_contacts.is-contains .input-form__container-select {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
-.input-form__input-contact {}
+.input-form__input-contact {
+  min-width: 390px;
+  margin-bottom: 15px;
+}
 
 .input-contact {
   display: flex;
   justify-content: start;
+  border: 1px solid var(--color-grey);
 }
 
+.input-contact.invalid {
+  border-color: var(--color-red);
+}
 
 .input-contact__input {}
 

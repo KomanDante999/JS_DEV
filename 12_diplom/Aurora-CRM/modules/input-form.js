@@ -92,6 +92,7 @@ function createMainForm(dataForm, typeForm) {
         input.placeholder = `${objInput.inputPlaceholder}`;
         input.formNoValidate = 'true';
         input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
+        // validation class
         switch (objInput.inputValid) {
           case -1:
             input.classList.add('invalid');
@@ -127,13 +128,28 @@ function createMainForm(dataForm, typeForm) {
     iconActiveBtnAdd.innerHTML = iconAddContactActive;
     captionBtnAdd.textContent = 'Добавить контакт';
     captionBtnAdd.classList.add('btn-addcontact__caption');
+
     // add select
+    createInputContact(dataForm, containerSelect);
+    if (containerSelect.childNodes.length > 0) {
+      sectionContacts.classList.add('is-contains');
+    }
+    else {
+      sectionContacts.classList.remove('is-contains');
+    }
+
+
+    // button add contact event
     btnAddContact.addEventListener('click', () => {
       newDataInputContact(dataForm);
       createInputContact(dataForm, containerSelect);
-      if (!sectionContacts.classList.contains('is-contains')) {
+      if (containerSelect.childNodes.length > 0) {
         sectionContacts.classList.add('is-contains');
       }
+      else {
+        sectionContacts.classList.remove('is-contains');
+      }
+
     })
 
 
@@ -213,16 +229,31 @@ function newDataInputContact(dataForm) {
 }
 
 function createInputContact(dataForm, targetNode) {
+  // remove old input group
+  const inputGroupOld = document.querySelectorAll('.js-input-group-addition');
+  if (inputGroupOld.length > 0) {
+    for (const group of inputGroupOld) {
+      group.remove()
+    }
+  }
+  // create input group
   for (const objInput of dataForm) {
-    if (objInput.select) {
-      // remove old inputGroup
-      const inputGroupOld = document.getElementById(`js-contact-${objInput.inputIndex}`)
-      if (inputGroupOld) {
-        inputGroupOld.remove();
-      }
+    if (objInput.inputGroup === 'addition') {
       const inputGroup = document.createElement('div');
-      inputGroup.classList.add('input-form__input-contact', 'input-contact');
-      inputGroup.id = `js-contact-${objInput.inputIndex}`;
+      inputGroup.classList.add('input-form__input-contact', 'input-contact', 'js-input-group-addition');
+      // validation class
+      switch (objInput.inputValid) {
+        case -1:
+          inputGroup.classList.add('invalid');
+        break;
+        case 1:
+          inputGroup.classList.remove('invalid');
+          break;
+
+        default:
+        inputGroup.classList.remove('invalid');
+        break;
+      }
       // select
       const select = document.createElement('select');
       select.id = `js-choices-${objInput.inputIndex}`;
@@ -403,9 +434,7 @@ export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
   const oldForm = document.getElementById(`${idForm}`);
   oldForm.remove();
   const container = document.getElementById(`${idContainer}`);
-  console.log('container',container);
   const newForm = createInputForm(dataForm, typeForm);
-  console.log('newForm',newForm);
   container.append(newForm.form);
 }
 

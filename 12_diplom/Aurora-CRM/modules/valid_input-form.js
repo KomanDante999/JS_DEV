@@ -5,38 +5,52 @@ export function validInputForm(dataForm) {
         case 'text':
           switch (objData.inputName) {
             case 'surname':
-            resultValidation = rulesByName(objData.inputValue);
-            objData.inputValue = resultValidation.value;
-            objData.inputValid = resultValidation.valid;
-            objData.feedbackText = resultValidation.feedback;
+              resultValidation = rulesByName(objData.inputValue);
+              objData.inputValue = resultValidation.value;
+              objData.inputValid = resultValidation.valid;
+              objData.feedbackText = resultValidation.feedback;
             break;
             case 'name':
-            resultValidation = rulesByName(objData.inputValue);
-            objData.inputValue = resultValidation.value;
-            objData.inputValid = resultValidation.valid;
-            objData.feedbackText = resultValidation.feedback;
+              resultValidation = rulesByName(objData.inputValue);
+              objData.inputValue = resultValidation.value;
+              objData.inputValid = resultValidation.valid;
+              objData.feedbackText = resultValidation.feedback;
             break;
             case 'middleName':
-            resultValidation = rulesByMiddleName(objData.inputValue);
-            objData.inputValue = resultValidation.value;
-            objData.inputValid = resultValidation.valid;
-            objData.feedbackText = resultValidation.feedback;
+              resultValidation = rulesByMiddleName(objData.inputValue);
+              objData.inputValue = resultValidation.value;
+              objData.inputValid = resultValidation.valid;
+              objData.feedbackText = resultValidation.feedback;
             break;
           }
+        break;
 
-          break;
         case 'tel':
+          resultValidation = rulesByTel(objData.inputValue);
+          objData.inputValue = resultValidation.value;
+          objData.inputValid = resultValidation.valid;
+          objData.feedbackText = resultValidation.feedback;
         break;
+
         case 'email':
+          resultValidation = rulesByEmail(objData.inputValue);
+          objData.inputValue = resultValidation.value;
+          objData.inputValid = resultValidation.valid;
+          objData.feedbackText = resultValidation.feedback;
         break;
+
         case 'url':
+          resultValidation = rulesByUrl(objData.inputValue);
+          objData.inputValue = resultValidation.value;
+          objData.inputValid = resultValidation.valid;
+          objData.feedbackText = resultValidation.feedback;
         break;
       }
     }
   return dataForm;
 }
 
-// правила обработки полей
+// правила обработки полей===============================
 
 // фамилия имя
 function rulesByName(value) {
@@ -120,4 +134,44 @@ function rulesByMiddleName(value) {
   valid = 1;
   return {value, valid, feedback,}
 }
+
+// telephone
+function rulesByTel(value) {
+  let valid = 0;
+  let feedback = ''
+  value = value.trim()
+  // пустая строка
+  if (!value) {
+    valid = -1;
+    feedback = 'Заполните это поле';
+    return {value, valid, feedback,}
+  }
+}
+
+// email
+function rulesByEmail(value) {
+  let valid = 0;
+  let feedback = ''
+  value = value.trim()
+  // пустая строка
+  if (!value) {
+    valid = -1;
+    feedback = 'Заполните это поле';
+    return {value, valid, feedback,}
+  }
+}
+
+// url
+function rulesByUrl(value) {
+  let valid = 0;
+  let feedback = ''
+  value = value.trim()
+  // пустая строка
+  if (!value) {
+    valid = -1;
+    feedback = 'Заполните это поле';
+    return {value, valid, feedback,}
+  }
+}
+
 
