@@ -29,8 +29,10 @@
   --color-firm:hsla(256, 100%, 73%, 1);
   --color-firm-81: hsla(256, 100%, 81%, 1);
   --color-firm-66: hsla(256, 100%, 66%, 1);
-  --duration-btn-animation: 600ms;
+  --color-red: hsla(11, 84%, 62%, 1);
+  ;
 
+  --duration-btn-animation: 600ms;
 }
 
 .container {
@@ -204,8 +206,6 @@
   line-height: 24.51px;
 }
 
-.input-form__id-client {}
-
 .input-form__header_add {}
 
 .input-form__main {
@@ -238,6 +238,9 @@
   color: var(--color-gray-text);
 }
 
+.input-form__input.invalid {
+  border-bottom: 1px solid var(--color-red);
+}
 
 .input-form__input_text {}
 

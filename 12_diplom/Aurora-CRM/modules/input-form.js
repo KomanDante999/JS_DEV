@@ -1,36 +1,44 @@
 import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
+import { validInputForm } from "./valid_input-form.js";
+
 export function newDataInputForm() {
 
   let dataInputForm = [];
   dataInputForm = [
     {
       inputIndex: 0,
+      inputGroup: 'mine',
       inputName: 'surname',
       inputId: 'input-contact-0',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
       inputPlaceholder: 'Фамилия',
+      feedbackName: 'Фамилия',
       feedbackText: '',
     },
     {
       inputIndex: 1,
+      inputGroup: 'mine',
       inputName: 'name',
       inputId: 'input-contact-1',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
       inputPlaceholder: 'Имя',
+      feedbackName: 'Имя',
       feedbackText: '',
     },
     {
       inputIndex: 2,
+      inputGroup: 'mine',
       inputName: 'middleName',
       inputId: 'input-contact-2',
       inputValue: '',
       inputValid: 0,
       inputType: 'text',
       inputPlaceholder: 'Отчество',
+      feedbackName: 'Отчество',
       feedbackText: '',
     },
   ]
@@ -75,15 +83,27 @@ function createMainForm(dataForm, typeForm) {
     const sectionFullName = document.createElement('div');
     sectionFullName.classList.add('input-form__section', 'input-form__section_full-name' , 'input-form__container')
     for (const objInput of dataForm) {
-      if (objInput.inputType === 'text') {
-        // input
+      // input
+      if (objInput.inputGroup === 'mine') {
         const input = document.createElement('input');
         input.id = objInput.inputId;
         input.name = `${objInput.inputName}`;
         input.value = objInput.inputValue;
         input.placeholder = `${objInput.inputPlaceholder}`;
-        input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
         input.formNoValidate = 'true';
+        input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
+        switch (objInput.inputValid) {
+          case -1:
+            input.classList.add('invalid');
+          break;
+          case 1:
+            input.classList.remove('invalid');
+            break;
+
+          default:
+          input.classList.remove('invalid');
+          break;
+        }
 
         sectionFullName.append(input);
       }
@@ -146,12 +166,14 @@ function newDataInputContact(dataForm) {
   dataForm.push(
     {
       inputIndex: index,
+      inputGroup: 'addition',
       inputId: `input-contact-${index}`,
       inputName: 'tel',
       inputValue: '',
       inputValid: 0,
       inputType: 'tel',
       inputPlaceholder: 'Введите данные контакта',
+      feedbackName: 'Телефон',
       feedbackText: '',
       select: [
         {
@@ -241,6 +263,7 @@ function createInputContact(dataForm, targetNode) {
             objOption.optionSelected = true;
             objInput.inputType = objOption.type;
             objInput.inputName = objOption.optionName;
+            objInput.feedbackName = objOption.optionName;
             objInput.inputValue = '';
           }
         }
@@ -322,10 +345,10 @@ function createFooterForm(typeForm) {
 }
 
 
-
+// input form for modal window
 export function createInputForm(dataForm, typeForm) {
   const form = document.createElement('form');
-  form.id = 'modal-input-form';
+  form.id = `modal-input-form-${typeForm}`;
   form.classList.add('input-form');
 
   const header = createHeaderForm(typeForm);
@@ -333,6 +356,28 @@ export function createInputForm(dataForm, typeForm) {
   const footer = createFooterForm(typeForm);
   const btnSave = footer.btnSave;
   const btnRemoveClient = footer.btnRemoveClient //change in relation to type form ("remove clitnt"/"cancellation")
+
+  // event form
+  // submit input form
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    updateDataInputForm(dataForm);
+    validInputForm(dataForm);
+
+    // validation successfully
+    if (dataForm.every(objData => objData.inputValid === 1)) {
+      // добавление новой записи в таблицу
+      // очиска данных формы ввода
+      // отрисовка таблицы
+    }
+
+    // validation unsuccessful
+    else {
+      console.log('проверочка', dataForm);
+      updateInputForm(dataForm, 'add', 'modal-input-form-add', 'modal-window-container')
+    }
+  })
+
 
   form.append(header, main, footer.footer);
   return {form, btnSave, btnRemoveClient};
@@ -358,10 +403,10 @@ export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
   const oldForm = document.getElementById(`${idForm}`);
   oldForm.remove();
   const container = document.getElementById(`${idContainer}`);
-  // container.removeChild(oldForm)
+  console.log('container',container);
   const newForm = createInputForm(dataForm, typeForm);
-  container.append(newForm);
-
+  console.log('newForm',newForm);
+  container.append(newForm.form);
 }
 
 

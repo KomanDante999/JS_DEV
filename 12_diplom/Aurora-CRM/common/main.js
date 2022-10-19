@@ -3,7 +3,7 @@ import { createHeader, createMain, createFooter } from '../modules/layout.js';
 import { createSearchForm } from "../modules/search.js";
 import { dataTableHeader, createTableWrap } from "../modules/table.js";
 import { createModalWindow, removeModalWindow } from "../modules/modal-window.js";
-import { newDataInputForm, createInputForm, updateDataInputForm,} from "../modules/input-form.js";
+import { newDataInputForm, createInputForm, updateDataInputForm, updateInputForm} from "../modules/input-form.js";
 import { validInputForm } from "../modules/valid_input-form.js";
 
 
@@ -31,24 +31,6 @@ let clientsDataFromServer = [];
       // remove modal window
       inpuFormAddClient.btnRemoveClient.addEventListener('click', () => {
         removeModalWindow('modal-window', 'modal-window-container');
-      })
-      // submit input form
-      inpuFormAddClient.form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        updateDataInputForm(dataInputForm);
-        validInputForm(dataInputForm);
-
-        // validation successfully
-        if (dataInputForm.every(objData => objData.inputValid === 1)) {
-          // добавление новой записи в таблицу
-          // очиска данных формы ввода
-          // отрисовка таблицы
-        }
-
-        // validation unsuccessful
-        else {
-          console.log('проверочка', dataInputForm);
-        }
       })
 
     })
