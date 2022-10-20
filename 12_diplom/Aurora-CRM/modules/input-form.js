@@ -90,21 +90,11 @@ function createMainForm(dataForm, typeForm) {
         input.name = `${objInput.inputName}`;
         input.value = objInput.inputValue;
         input.placeholder = `${objInput.inputPlaceholder}`;
-        input.formNoValidate = 'true';
+        // input.formNoValidate = 'true';
         input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
         // validation class
-        switch (objInput.inputValid) {
-          case -1:
-            input.classList.add('invalid');
-          break;
-          case 1:
-            input.classList.remove('invalid');
-            break;
+        toggleValidClass(objInput.inputValid, input, input);
 
-          default:
-          input.classList.remove('invalid');
-          break;
-        }
 
         sectionFullName.append(input);
       }
@@ -241,19 +231,6 @@ function createInputContact(dataForm, targetNode) {
     if (objInput.inputGroup === 'addition') {
       const inputGroup = document.createElement('div');
       inputGroup.classList.add('input-form__input-contact', 'input-contact', 'js-input-group-addition');
-      // validation class
-      switch (objInput.inputValid) {
-        case -1:
-          inputGroup.classList.add('invalid');
-        break;
-        case 1:
-          inputGroup.classList.remove('invalid');
-          break;
-
-        default:
-        inputGroup.classList.remove('invalid');
-        break;
-      }
       // select
       const select = document.createElement('select');
       select.id = `js-choices-${objInput.inputIndex}`;
@@ -267,8 +244,6 @@ function createInputContact(dataForm, targetNode) {
         }
         select.append(option);
       }
-
-
       // input
       const input = document.createElement('input');
       input.classList.add('input-contact__input', 'js-modal-input');
@@ -277,7 +252,10 @@ function createInputContact(dataForm, targetNode) {
       input.type = `${objInput.inputType}`;
       input.value = `${objInput.inputValue}`;
       input.placeholder = `${objInput.inputPlaceholder}`;
-      input.formNoValidate = 'true';
+      // input.formNoValidate = 'true';
+
+      // validation class
+      toggleValidClass(objInput.inputValid, inputGroup, input);
 
       // button remove
       const btnRemove = document.createElement('button');
@@ -376,11 +354,12 @@ function createFooterForm(typeForm) {
 }
 
 
-// input form for modal window
+// form
 export function createInputForm(dataForm, typeForm) {
   const form = document.createElement('form');
   form.id = `modal-input-form-${typeForm}`;
   form.classList.add('input-form');
+  form.noValidate = 'true'
 
   const header = createHeaderForm(typeForm);
   const main = createMainForm(dataForm, typeForm);
@@ -438,4 +417,35 @@ export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
   container.append(newForm.form);
 }
 
+
+//service function =========================
+
+// validation class
+function toggleValidClass(paramValid, targetNode, input) {
+  switch (paramValid) {
+    case -1:
+      if (!targetNode.classList.contains('invalid')) {
+        targetNode.classList.add('invalid');
+      }
+    break;
+    case 1:
+      if (targetNode.classList.contains('invalid')) {
+        targetNode.classList.remove('invalid');
+      }
+    break;
+
+    default:
+      if (targetNode.classList.contains('invalid')) {
+        targetNode.classList.remove('invalid');
+      }
+    break;
+  }
+  // remove imvalid class when entering
+  input.addEventListener('input', () => {
+    if (targetNode.classList.contains('invalid')) {
+      targetNode.classList.remove('invalid');
+    }
+  })
+
+}
 

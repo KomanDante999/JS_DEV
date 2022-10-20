@@ -1,5 +1,5 @@
 export function validInputForm(dataForm) {
-  let resultValidation = null;
+  let resultValidation = '';
   for (const objData of dataForm) {
       switch (objData.inputType) {
         case 'text':
@@ -146,6 +146,7 @@ function rulesByTel(value) {
     feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
+  return {value, valid, feedback,}
 }
 
 // email
@@ -159,6 +160,7 @@ function rulesByEmail(value) {
     feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
+  return {value, valid, feedback,}
 }
 
 // url
@@ -172,6 +174,7 @@ function rulesByUrl(value) {
     feedback = 'Заполните это поле';
     return {value, valid, feedback,}
   }
+  return {value, valid, feedback,}
 }
 
 
