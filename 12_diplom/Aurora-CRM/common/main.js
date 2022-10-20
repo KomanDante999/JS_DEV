@@ -28,10 +28,6 @@ let clientsDataFromServer = [];
       let dataInputForm = newDataInputForm()
       const inpuFormAddClient = createInputForm(dataInputForm, 'add');
       createModalWindow(inpuFormAddClient.form);
-      // remove modal window
-      inpuFormAddClient.btnRemoveClient.addEventListener('click', () => {
-        removeModalWindow('modal-window', 'modal-window-container');
-      })
 
     })
 

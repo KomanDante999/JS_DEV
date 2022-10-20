@@ -23,6 +23,8 @@
   --color-grey-02: hsla(255, 12%, 80%, .2);
   --color-grey-03: hsla(255, 12%, 80%, .3);
   --color-grey-05: hsla(255, 12%, 80%, .5);
+  --color-grey-91: hsla(260, 13%, 91%, 1);
+
 
   --color-grey02-border: hsla(0, 0%, 20%, 0.2);
   --color-gray-text: hsla(0, 0%, 69%, 1);
@@ -273,9 +275,26 @@
   border-color: var(--color-red);
 }
 
-.input-contact__input {}
+.input-contact__input {
+  width: 100%;
+  padding: 0 12px;
+}
 
-.input-contact__btn-remove {}
+.input-contact__input::-webkit-input-placeholder {
+  color: var(--color-gray-text);
+}
+
+.input-contact__btn-remove {
+  display: none;
+  width: 27px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--color-grey);
+  background-color: var(--color-grey-91);
+}
+
+.input-contact__btn-remove.is-visible {
+  display: block;
+}
 
 
 

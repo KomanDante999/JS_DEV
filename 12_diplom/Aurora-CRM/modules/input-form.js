@@ -1,8 +1,10 @@
 import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
 import { validInputForm } from "./valid_input-form.js";
+import { removeModalWindow } from "./modal-window.js";
+
+//==========  DATA  ===============
 
 export function newDataInputForm() {
-
   let dataInputForm = [];
   dataInputForm = [
     {
@@ -42,126 +44,9 @@ export function newDataInputForm() {
       feedbackText: '',
     },
   ]
-
   return dataInputForm;
 }
 
-// header
-function createHeaderForm(typeForm, idClientChanger) {
-  const header = document.createElement('div');
-  header.classList.add('input-form__header', 'input-form__container');
-  const title = document.createElement('h3');
-  title.classList.add('input-form__title');
-
-  switch (typeForm) {
-    case 'add':
-      title.textContent = 'Новый клиент';
-      break;
-    case 'change':
-      title.textContent = 'Изменить данные';
-      const idClient = document.createElement('span');
-      idClient.classList.add('input-form__id-client');
-      idClient.textContent = `ID: ${idClientChanger}`;
-      header.classList.add('input-form__header_add')
-      header.append(idClient);
-      break;
-      case 'remove':
-        title.textContent = 'Удалить клиента';
-        // header.classList.add('input-form__header_remove')
-      break;
-  }
-  header.prepend(title);
-
-  return header;
-}
- // main
-function createMainForm(dataForm, typeForm) {
-  const main = document.createElement('div');
-  main.classList.add('input-form__main')
-
-  if (typeForm !== 'remove') {
-    const sectionFullName = document.createElement('div');
-    sectionFullName.classList.add('input-form__section', 'input-form__section_full-name' , 'input-form__container')
-    for (const objInput of dataForm) {
-      // input
-      if (objInput.inputGroup === 'mine') {
-        const input = document.createElement('input');
-        input.id = objInput.inputId;
-        input.name = `${objInput.inputName}`;
-        input.value = objInput.inputValue;
-        input.placeholder = `${objInput.inputPlaceholder}`;
-        // input.formNoValidate = 'true';
-        input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
-        // validation class
-        toggleValidClass(objInput.inputValid, input, input);
-
-
-        sectionFullName.append(input);
-      }
-    }
-    const sectionContacts = document.createElement('div');
-    sectionContacts.classList.add('input-form__section', 'input-form__section_contacts');
-    const containerSelect = document.createElement('div');
-    containerSelect.classList.add('input-form__container-select');
-    containerSelect.id = 'form-container-select'
-    // button add contact
-    const btnAddContact = document.createElement('button');
-    const iconBtnAdd = document.createElement('span');
-    const iconActiveBtnAdd = document.createElement('span');
-    const captionBtnAdd = document.createElement('span');
-    btnAddContact.type = 'button';
-    btnAddContact.id = 'btn-add-contact'
-    btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
-    iconBtnAdd.classList.add('btn-addcontact__icon');
-    iconBtnAdd.innerHTML = iconAddContact;
-    iconActiveBtnAdd.classList.add('btn-addcontact__icon_active');
-    iconActiveBtnAdd.innerHTML = iconAddContactActive;
-    captionBtnAdd.textContent = 'Добавить контакт';
-    captionBtnAdd.classList.add('btn-addcontact__caption');
-
-    // add select
-    createInputContact(dataForm, containerSelect);
-    if (containerSelect.childNodes.length > 0) {
-      sectionContacts.classList.add('is-contains');
-    }
-    else {
-      sectionContacts.classList.remove('is-contains');
-    }
-
-
-    // button add contact event
-    btnAddContact.addEventListener('click', () => {
-      newDataInputContact(dataForm);
-      createInputContact(dataForm, containerSelect);
-      if (containerSelect.childNodes.length > 0) {
-        sectionContacts.classList.add('is-contains');
-      }
-      else {
-        sectionContacts.classList.remove('is-contains');
-      }
-
-    })
-
-
-    iconBtnAdd.append(iconActiveBtnAdd);
-    btnAddContact.append(iconBtnAdd, captionBtnAdd);
-    sectionContacts.append(containerSelect, btnAddContact);
-
-
-    main.append(sectionFullName, sectionContacts);
-  }
-
-  if (typeForm === 'remove') {
-  const messange = document.createElement('span');
-  messange.classList.add('input-form__messange');
-  messange.textContent = 'Вы действительно хотите удалить данного клиента?';
-  main.append(messange);
-  }
-
-  return main;
-}
-
-// contact
 function newDataInputContact(dataForm) {
   let index = 0;
   for (const objinput of dataForm) {
@@ -218,14 +103,137 @@ function newDataInputContact(dataForm) {
   return dataForm;
 }
 
-function createInputContact(dataForm, targetNode) {
-  // remove old input group
-  const inputGroupOld = document.querySelectorAll('.js-input-group-addition');
-  if (inputGroupOld.length > 0) {
-    for (const group of inputGroupOld) {
-      group.remove()
+// save inputs value
+export function updateDataInputForm(dataForm, selector) {
+  const inputs = document.querySelectorAll(`${selector}`);
+  if (inputs.length > 0) {
+    for (const input of inputs) {
+      for (const objInput of dataForm) {
+        if (input.id === objInput.inputId) {
+          objInput.inputValue = input.value;
+          objInput.inputType = input.type;
+          objInput.inputName = input.name;
+        }
+      }
     }
   }
+  return dataForm;
+}
+
+//============ elements FORM  ======================
+
+// header
+function createHeaderForm(typeForm, idClientChanger) {
+  const header = document.createElement('div');
+  header.classList.add('input-form__header', 'input-form__container');
+  const title = document.createElement('h3');
+  title.classList.add('input-form__title');
+
+  switch (typeForm) {
+    case 'add':
+      title.textContent = 'Новый клиент';
+      break;
+    case 'change':
+      title.textContent = 'Изменить данные';
+      const idClient = document.createElement('span');
+      idClient.classList.add('input-form__id-client');
+      idClient.textContent = `ID: ${idClientChanger}`;
+      header.classList.add('input-form__header_add')
+      header.append(idClient);
+      break;
+      case 'remove':
+        title.textContent = 'Удалить клиента';
+        // header.classList.add('input-form__header_remove')
+      break;
+  }
+  header.prepend(title);
+  return header;
+}
+
+ // main
+function createMainForm(dataForm, typeForm) {
+  const main = document.createElement('div');
+  main.classList.add('input-form__main')
+
+  if (typeForm !== 'remove') {
+    const sectionFullName = document.createElement('div');
+    sectionFullName.classList.add('input-form__section', 'input-form__section_full-name' , 'input-form__container')
+    for (const objInput of dataForm) {
+      // input
+      if (objInput.inputGroup === 'mine') {
+        const input = document.createElement('input');
+        input.id = objInput.inputId;
+        input.name = `${objInput.inputName}`;
+        input.value = objInput.inputValue;
+        input.placeholder = `${objInput.inputPlaceholder}`;
+        // input.formNoValidate = 'true';
+        input.classList.add('input-form__input', 'js-modal-input', 'input-form__input_text');
+        // validation class
+        toggleValidClass(objInput.inputValid, input, input);
+        sectionFullName.append(input);
+      }
+    }
+    const sectionContacts = document.createElement('div');
+    sectionContacts.classList.add('input-form__section', 'input-form__section_contacts');
+    const containerSelect = document.createElement('div');
+    containerSelect.classList.add('input-form__container-select');
+    containerSelect.id = 'form-container-select'
+    // button add contact
+    const btnAddContact = document.createElement('button');
+    const iconBtnAdd = document.createElement('span');
+    const iconActiveBtnAdd = document.createElement('span');
+    const captionBtnAdd = document.createElement('span');
+    btnAddContact.type = 'button';
+    btnAddContact.id = 'btn-add-contact'
+    btnAddContact.classList.add('input-form__btn-addcontact', 'btn-addcontact');
+    iconBtnAdd.classList.add('btn-addcontact__icon');
+    iconBtnAdd.innerHTML = iconAddContact;
+    iconActiveBtnAdd.classList.add('btn-addcontact__icon_active');
+    iconActiveBtnAdd.innerHTML = iconAddContactActive;
+    captionBtnAdd.textContent = 'Добавить контакт';
+    captionBtnAdd.classList.add('btn-addcontact__caption');
+
+    // add select
+    createInputContact(dataForm, containerSelect);
+    if (containerSelect.childNodes.length > 0) {
+      sectionContacts.classList.add('is-contains');
+    }
+    else {
+      sectionContacts.classList.remove('is-contains');
+    }
+    // button add contact event
+    btnAddContact.addEventListener('click', () => {
+      newDataInputContact(dataForm);
+      createInputContact(dataForm, containerSelect);
+      if (containerSelect.childNodes.length > 0) {
+        sectionContacts.classList.add('is-contains');
+      }
+      else {
+        sectionContacts.classList.remove('is-contains');
+      }
+    })
+    iconBtnAdd.append(iconActiveBtnAdd);
+    btnAddContact.append(iconBtnAdd, captionBtnAdd);
+    sectionContacts.append(containerSelect, btnAddContact);
+
+    main.append(sectionFullName, sectionContacts);
+  }
+
+  if (typeForm === 'remove') {
+  const messange = document.createElement('span');
+  messange.classList.add('input-form__messange');
+  messange.textContent = 'Вы действительно хотите удалить данного клиента?';
+  main.append(messange);
+  }
+  return main;
+}
+
+// contact input group
+function createInputContact(dataForm, targetNode) {
+
+  updateDataInputForm(dataForm, '.js-modal-input-addition');  // save data
+  removeNodes('.js-input-group-addition'); // remove old input groups
+
   // create input group
   for (const objInput of dataForm) {
     if (objInput.inputGroup === 'addition') {
@@ -246,22 +254,22 @@ function createInputContact(dataForm, targetNode) {
       }
       // input
       const input = document.createElement('input');
-      input.classList.add('input-contact__input', 'js-modal-input');
+      input.classList.add('input-contact__input', 'js-modal-input', 'js-modal-input-addition');
       input.id = objInput.inputId;
       input.name = objInput.inputName;
       input.type = `${objInput.inputType}`;
       input.value = `${objInput.inputValue}`;
       input.placeholder = `${objInput.inputPlaceholder}`;
-      // input.formNoValidate = 'true';
-
-      // validation class
-      toggleValidClass(objInput.inputValid, inputGroup, input);
 
       // button remove
       const btnRemove = document.createElement('button');
       btnRemove.classList.add('input-contact__btn-remove');
+      if (input.value) {
+        btnRemove.classList.add('is-visible');
+      }
       const iconRemove = document.createElement('span');
       iconRemove.innerHTML = iconBtnRemoveContact;
+
 
       // event select
       select.addEventListener('change', () => {
@@ -276,10 +284,24 @@ function createInputContact(dataForm, targetNode) {
             objInput.inputValue = '';
           }
         }
-        const containerSelect = document.getElementById('form-container-select');
-        createInputContact(dataForm, containerSelect)
+        createInputContact(dataForm, targetNode)
       })
 
+      // event input
+      toggleValidClass(objInput.inputValid, inputGroup, input);
+      input.addEventListener('change', () => {
+        btnRemove.classList.add('is-visible');
+      })
+
+      // event btnRemove
+      btnRemove.addEventListener('click', () => {
+        let indexObj = dataForm.findIndex(item => item.inputId === input.id);
+        console.log('indexObj', indexObj);
+        dataForm.splice(indexObj, 1);
+        console.log('dataForm', dataForm);
+        // createInputContact(dataForm, targetNode)
+
+      })
 
       btnRemove.append(iconRemove);
       inputGroup.append(select, input, btnRemove);
@@ -342,19 +364,36 @@ function createFooterForm(typeForm) {
 
   btnRemoveClient.classList.add('input-form__btn-remove');
   btnRemoveClient.type = 'button'
-  if (typeForm === 'add' || typeForm === 'remove') {
-    btnRemoveClient.textContent = 'Отмена'
+  switch (typeForm) {
+    case 'add':
+    case 'remove':
+      btnRemoveClient.textContent = 'Отмена'
+    break;
+    case 'change':
+      btnRemoveClient.textContent = 'Удалить клиента'
+    break;
   }
-  if (typeForm === 'change') {
-    btnRemoveClient.textContent = 'Удалить клиента'
-  }
-  footer.append(btnSave, btnRemoveClient)
+  // event button remove
+  btnRemoveClient.addEventListener('click', () => {
+    switch (typeForm) {
+      case 'add':
+        removeModalWindow('modal-window', 'modal-window-container');
+      break;
+      case 'remove':
 
+      break;
+      case 'change':
+
+      break;
+    }
+  })
+  footer.append(btnSave, btnRemoveClient)
   return {footer, btnSave, btnRemoveClient};
 }
 
 
-// form
+// ==============  FORM  =================================
+
 export function createInputForm(dataForm, typeForm) {
   const form = document.createElement('form');
   form.id = `modal-input-form-${typeForm}`;
@@ -371,7 +410,7 @@ export function createInputForm(dataForm, typeForm) {
   // submit input form
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    updateDataInputForm(dataForm);
+    updateDataInputForm(dataForm, '.js-modal-input');
     validInputForm(dataForm);
 
     // validation successfully
@@ -393,20 +432,10 @@ export function createInputForm(dataForm, typeForm) {
   return {form, btnSave, btnRemoveClient};
 }
 
-export function updateDataInputForm(dataForm) {
-  const inputs = document.querySelectorAll('.js-modal-input');
-  for (const input of inputs) {
-    for (const objInput of dataForm) {
-      if (input.id === objInput.inputId) {
-        objInput.inputValue = input.value;
-        objInput.inputType = input.type;
-        objInput.inputName = input.name;
-      }
-    }
-  }
-  console.log('dataForm', dataForm);
-  return dataForm;
-}
+
+
+
+//===============  service function  =========================
 
 // update input form
 export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
@@ -417,8 +446,17 @@ export function updateInputForm(dataForm, typeForm, idForm, idContainer) {
   container.append(newForm.form);
 }
 
+  // remove nodes
+  function removeNodes(selector) {
+    const nodes = document.querySelectorAll(`${selector}`);
+    if (nodes.length > 0) {
+      for (const node of nodes) {
+        node.remove()
+      }
+    }
+  }
 
-//service function =========================
+
 
 // validation class
 function toggleValidClass(paramValid, targetNode, input) {

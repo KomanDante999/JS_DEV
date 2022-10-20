@@ -5,11 +5,6 @@ export function validInputForm(dataForm) {
         case 'text':
           switch (objData.inputName) {
             case 'surname':
-              resultValidation = rulesByName(objData.inputValue);
-              objData.inputValue = resultValidation.value;
-              objData.inputValid = resultValidation.valid;
-              objData.feedbackText = resultValidation.feedback;
-            break;
             case 'name':
               resultValidation = rulesByName(objData.inputValue);
               objData.inputValue = resultValidation.value;
