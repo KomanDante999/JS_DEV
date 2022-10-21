@@ -239,6 +239,7 @@ function createInputContact(dataForm, targetNode) {
     if (objInput.inputGroup === 'addition') {
       const inputGroup = document.createElement('div');
       inputGroup.classList.add('input-form__input-contact', 'input-contact', 'js-input-group-addition');
+      inputGroup.id = `input-group-addition-${objInput.inputIndex}`;
       // select
       const select = document.createElement('select');
       select.id = `js-choices-${objInput.inputIndex}`;
@@ -263,6 +264,7 @@ function createInputContact(dataForm, targetNode) {
 
       // button remove
       const btnRemove = document.createElement('button');
+      btnRemove.type = 'button';
       btnRemove.classList.add('input-contact__btn-remove');
       if (input.value) {
         btnRemove.classList.add('is-visible');
@@ -295,12 +297,16 @@ function createInputContact(dataForm, targetNode) {
 
       // event btnRemove
       btnRemove.addEventListener('click', () => {
+        // e.preventDefault();
         let indexObj = dataForm.findIndex(item => item.inputId === input.id);
-        console.log('indexObj', indexObj);
         dataForm.splice(indexObj, 1);
-        console.log('dataForm', dataForm);
-        // createInputContact(dataForm, targetNode)
+        const removeInputGroup = document.getElementById(`input-group-addition-${objInput.inputIndex}`);
+        console.log('removeInputGroup', removeInputGroup);
+        removeInputGroup.remove();
 
+
+        // updateDataInputForm(dataForm, '.js-modal-input-addition');
+        // createInputContact(dataForm, targetNode);
       })
 
       btnRemove.append(iconRemove);
@@ -342,6 +348,8 @@ function createInputContact(dataForm, targetNode) {
           noChoices: 'has-no-choices'
         },
       });
+
+
     }
   }
 }
@@ -363,7 +371,7 @@ function createFooterForm(typeForm) {
   const btnRemoveClient = document.createElement('button');
 
   btnRemoveClient.classList.add('input-form__btn-remove');
-  btnRemoveClient.type = 'button'
+  btnRemoveClient.type = 'button';
   switch (typeForm) {
     case 'add':
     case 'remove':
