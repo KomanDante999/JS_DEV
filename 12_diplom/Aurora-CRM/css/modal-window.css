@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 
-.modal-window {
+.kd-modal {
   z-index: 10000;
   position: fixed;
   display: flex;
@@ -22,35 +22,40 @@
   padding: 76px 10px;
 }
 
-.modal-window_opening {
+.kd-modal.is-open {
   animation-name: emergence;
   animation-duration: var(--animation-duration);
 }
 
-.modal-window_closing {
+.kd-modal.is-close {
   animation-name: vanish;
   animation-duration: var(--animation-duration);
 }
 
-.modal-window__container {
+.kd-modal__container {
+  width: 450px;
+  height: 400px;
   display: block;
-  height: fit-content;
+  /* height: fit-content; */
   position: relative;
   background-color: white;
   box-shadow: 0px 0px 35px 0px hsla(0, 0%, 0%, 0.15);
 }
 
-.modal-window__container_opening {
+.kd-modal__container.is-open {
   animation-name: emergence-dropdown-rotate;
   animation-duration: var(--animation-duration);
 }
 
-.modal-window__container_closing {
+.kd-modal__container.is-close {
   animation-name: vanish-popup-rotate;
   animation-duration: var(--animation-duration);
 }
 
-.modal-window__btn-close {
+.kd-modal__contant {
+
+}
+.kd-modal__btn-close_top {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -60,12 +65,16 @@
   transition-duration: 300ms;
 }
 
-.modal-window__btn-close:focus,
-.modal-window__btn-close:hover {
+.kd-modal__btn-close_top:focus,
+.kd-modal__btn-close_top:hover {
   color: var(--color-btn-hov);
   transform: translate(-2px, -2px);
 }
 
-.modal-window__btn-close:active {
+.kd-modal__btn-close_top:active {
   color: var(--color-btn-act);
+}
+
+.kd-modal__btn-close_bottom {
+
 }
