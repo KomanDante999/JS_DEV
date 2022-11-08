@@ -1,4 +1,4 @@
-class DataClient {
+export class DataClient {
 
   constructor(dataClient) {
     this.id = dataClient.id

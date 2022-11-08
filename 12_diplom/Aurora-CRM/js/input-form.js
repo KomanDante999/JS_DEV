@@ -1,6 +1,4 @@
 import { iconLoadSmall, iconAddContact, iconAddContactActive, iconBtnRemoveContact } from "./icons.js";
-import { validInputForm } from "./valid_input-form.js";
-import { removeModalWindow } from "./modal-window.js";
 
 //==========  DATA  ===============
 

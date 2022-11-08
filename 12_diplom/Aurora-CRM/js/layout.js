@@ -1,5 +1,12 @@
 import { logoSvg, iconAddClient } from "./icons.js";
-import { createModalWindow } from "./modal-window.js";
+
+export class Layout {
+  constructor(container) {
+
+  }
+
+
+};
 
 export let header =
   {
