@@ -1,4 +1,5 @@
 import { AppAurora } from "./App-Aurora.js";
+import { dataTableHead } from "./Table.js";
 
 
 (() => {
@@ -6,8 +7,8 @@ import { AppAurora } from "./App-Aurora.js";
     const $container = document.getElementById('aurora-crm');
     $container.classList.add('aurora-crm');
 
-    new AppAurora($container)
-
+    let Aurora = new AppAurora($container, dataTableHead)
+    console.log('Aurora :>> ', Aurora);
 
   })
 })()

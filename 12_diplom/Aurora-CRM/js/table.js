@@ -2,61 +2,149 @@ import { iconArrowUp, iconArrowDown } from "./icons.js";
 
 export let dataTableHead = [
   {
-    name: '',
-    class: [],
-    childs: '',
+    tag: 'th',
+    name: 'id',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'ID',
+    },
+    childs: [
+      {
+        tag: 'span',
+        params: {
+          classList: 'table__icon-sort',
+          innerHTML: iconArrowDown,
+        },
+      },
+    ],
+  },
+  {
+    tag: 'th',
+    name: 'fullName',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'Фамилия Имя Отчество',
+    },
+    childs: [
+      {
+        tag: 'span',
+        params: {
+          classList: 'table__icon-sort',
+          innerHTML: iconArrowDown,
+        },
+      },
+      {
+        tag: 'span',
+        params: {
+          classList: 'table__type-sort',
+          textContent: 'А-Я',
+        },
+      },
+    ],
+  },
+  {
+    tag: 'th',
+    name: 'createDate',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'Дата и время создания',
+    },
+    childs: [
+      {
+        tag: 'span',
+        params: {
+          classList: 'table__icon-sort',
+          innerHTML: iconArrowDown,
+        },
+      },
+    ],
+  },
+  {
+    tag: 'th',
+    name: 'changeDate',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'Последние изменения',
+    },
+    childs: [
+      {
+        tag: 'span',
+        params: {
+          classList: 'table__icon-sort',
+          innerHTML: iconArrowDown,
+        },
+      },
+    ],
+  },
+  {
+    tag: 'th',
+    name: 'contacts',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'Контакты',
+    },
+  },
+  {
+    tag: 'th',
+    name: 'actions',
+    params: {
+      classList: 'table__head-cell',
+      textContent: 'Действия',
+    },
   },
 ]
 
+class CreateCell {
+
+
+  constructor(options) {
+    this.cell = document.createElement(options.tag)
+    this.cell.dataset.name = options.name
+
+    for (const[key, value] of Object.entries(options.params)) {
+      if (key == 'classList') {
+        if (Array.isArray(value)) {
+          for (const newClass of value) this.cell.classList.add(newClass)
+        } else this.cell.classList.add(value)
+      } else this.cell[key] = value
+    }
+
+    if (options.childs) {
+      for (const child of options.childs) {
+        this.childCell = document.createElement(child.tag)
+        for (const[key, value] of Object.entries(child.params)) {
+          if (key == 'classList') {
+            if (Array.isArray(value)) {
+              for (const newClass of value) this.childCell.classList.add(newClass)
+            } else this.childCell.classList.add(value)
+          } else this.childCell[key] = value
+        }
+        this.cell.append(this.childCell)
+      }
+
+    }
+  }
+}
 
 export class Table {
+  _headCells = []
 
-  constructor(container) {
+  constructor(container, dataTableHead) {
     this.table = document.createElement('table')
     this.table.classList.add('table')
     // head table
     this.head = document.createElement('thead')
     this.headRow = document.createElement('tr')
-    this.headId = document.createElement('th')
-    this.headIdIcon = document.createElement('span')
-    this.headFullName = document.createElement('th')
-    this.headFullNameIcon = document.createElement('span')
-    this.headCreateDate = document.createElement('th')
-    this.headCreateDateIcon = document.createElement('span')
-    this.headChangeDate = document.createElement('th')
-    this.headChangeDateIcon = document.createElement('span')
-    this.headContacts = document.createElement('th')
-    this.headActions = document.createElement('th')
-
     this.head.classList.add('table__head')
     this.headRow.classList.add('table__head-row')
-    this.headId.classList.add('table__head-cell')
-    this.headId.textContent = 'ID'
-    this.headIdIcon.classList.add('table__icon-sort', 'sort-up')
-    this.headIdIcon.innerHTML = iconArrowDown
-    this.headFullName.classList.add('table__head-cell')
-    this.headFullName.textContent = 'Фамилия Имя Отчество'
-    this.headFullNameIcon.classList.add('table__icon-sort', 'sort-up')
-    this.headFullNameIcon.innerHTML = iconArrowDown
-    this.headCreateDate.classList.add('table__head-cell')
-    this.headCreateDate.textContent = 'Дата и время создания'
-    this.headCreateDateIcon.classList.add('table__icon-sort', 'sort-up')
-    this.headCreateDateIcon.innerHTML = iconArrowDown
-    this.headChangeDate.classList.add('table__head-cell')
-    this.headChangeDate.textContent = 'Последние изменения'
-    this.headChangeDateIcon.classList.add('table__icon-sort', 'sort-up')
-    this.headChangeDateIcon.innerHTML = iconArrowDown
-    this.headContacts.classList.add('table__head-cell')
-    this.headContacts.textContent = 'Контакты'
-    this.headActions.classList.add('table__head-cell')
-    this.headActions.textContent = 'Действия'
+
+    for (const cellObj of dataTableHead) {
+      this.headCell = new CreateCell(cellObj)
+      this._headCells.push(this.headCell)
+      this.headRow.append(this.headCell.cell)
+    }
 
 
-    this.headId.append(this.headIdIcon)
-    this.headFullName.append(this.headFullNameIcon)
-    this.headCreateDate.append(this.headCreateDateIcon)
-    this.headChangeDate.append(this.headChangeDateIcon)
-    this.headRow.append(this.headId, this.headFullName, this.headCreateDate, this.headChangeDate, this.headContacts, this.headActions)
     this.head.append(this.headRow)
 
     // body table
