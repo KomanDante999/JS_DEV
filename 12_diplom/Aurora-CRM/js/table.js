@@ -1,107 +1,76 @@
 import { iconArrowUp, iconArrowDown } from "./icons.js";
 
-// data by header table
-export let dataTableHeader = [
+export let dataTableHead = [
   {
-    cellName: 'id',
-    cellCaption: 'ID',
-    sortedDirection: 1,
-    sortedType: 'num',
-    sortedActive: true,
-  },
-  {
-    cellName: 'fullName',
-    cellCaption: 'Фамилия Имя Отчество',
-    sortedDirection: -1,
-    sortedType: 'str',
-    sortedActive: false,
-  },
-  {
-    cellName: 'dateCreate',
-    cellCaption: 'Дата и время создания',
-    sortedDirection: -1,
-    sortedType: 'date',
-    sortedActive: false,
-  },
-  {
-    cellName: 'dateChange',
-    cellCaption: 'Последние изменения',
-    sortedDirection: -1,
-    sortedType: 'date',
-    sortedActive: false,
-  },
-  {
-    cellName: 'contacts',
-    cellCaption: 'Контакты',
-    sortedDirection: 0,
-    sortedType: '',
-    sortedActive: false,
-  },
-  {
-    cellName: 'actions',
-    cellCaption: 'Действия',
-    sortedDirection: 0,
-    sortedType: '',
-    sortedActive: false,
+    name: '',
+    class: [],
+    childs: '',
   },
 ]
- // head table
-function createCellHead(objHeader) {
-  const cell = document.createElement('th');
-  cell.classList.add('table', 'table-header__cell');
-  const btnSort = document.createElement('button');
-  btnSort.name = `${objHeader.cellName}`
-  btnSort.classList.add('js-btn-sort', 'table-header__btn-sort');
-  // active
-  if (objHeader.sortedActive) {
-    btnSort.classList.add('table-header__btn-sort_active');
-  }
-  // disable
-  if (objHeader.sortedDirection === 0) {
-    btnSort.disabled = 'true';
-    btnSort.classList.add('btn-disabled');
-  }
-  const btnCaption = document.createElement('span');
-  btnCaption.classList.add('table-header__btn-caption');
-  btnCaption.textContent = `${objHeader.cellCaption}`
-  const iconSort = document.createElement('span');
-  iconSort.classList.add('table-header__icon-sort');
-  if (objHeader.sortedDirection === 1) {
-    iconSort.innerHTML = iconArrowUp;
-  }
-  if (objHeader.sortedDirection === -1) {
-    iconSort.innerHTML = iconArrowDown;
-  }
-  btnSort.append(btnCaption, iconSort);
-  if (objHeader.sortedType === 'str') {
-    const typeSorted = document.createElement('span');
-    typeSorted.classList.add('table-header__type-sort');
-    typeSorted.textContent = 'А-Я';
-    btnSort.append(typeSorted)
-  }
 
-  cell.append(btnSort);
-  return cell;
-}
 
-export function createTableWrap(dataHeader) {
-  const table = document.createElement('table');
-  const head = document.createElement('thead');
-  const body = document.createElement('tbody');
+export class Table {
 
-  table.classList.add('table-clients');
-  table.id = 'aurora-table';
-  body.id = 'aurora-table-body'
+  constructor(container) {
+    this.table = document.createElement('table')
+    this.table.classList.add('table')
+    // head table
+    this.head = document.createElement('thead')
+    this.headRow = document.createElement('tr')
+    this.headId = document.createElement('th')
+    this.headIdIcon = document.createElement('span')
+    this.headFullName = document.createElement('th')
+    this.headFullNameIcon = document.createElement('span')
+    this.headCreateDate = document.createElement('th')
+    this.headCreateDateIcon = document.createElement('span')
+    this.headChangeDate = document.createElement('th')
+    this.headChangeDateIcon = document.createElement('span')
+    this.headContacts = document.createElement('th')
+    this.headActions = document.createElement('th')
 
-  // head
-  const rowHead = document.createElement('tr');
-  for (const objHeader of dataHeader) {
-    const cellHead = createCellHead(objHeader);
-    rowHead.append(cellHead)
+    this.head.classList.add('table__head')
+    this.headRow.classList.add('table__head-row')
+    this.headId.classList.add('table__head-cell')
+    this.headId.textContent = 'ID'
+    this.headIdIcon.classList.add('table__icon-sort', 'sort-up')
+    this.headIdIcon.innerHTML = iconArrowDown
+    this.headFullName.classList.add('table__head-cell')
+    this.headFullName.textContent = 'Фамилия Имя Отчество'
+    this.headFullNameIcon.classList.add('table__icon-sort', 'sort-up')
+    this.headFullNameIcon.innerHTML = iconArrowDown
+    this.headCreateDate.classList.add('table__head-cell')
+    this.headCreateDate.textContent = 'Дата и время создания'
+    this.headCreateDateIcon.classList.add('table__icon-sort', 'sort-up')
+    this.headCreateDateIcon.innerHTML = iconArrowDown
+    this.headChangeDate.classList.add('table__head-cell')
+    this.headChangeDate.textContent = 'Последние изменения'
+    this.headChangeDateIcon.classList.add('table__icon-sort', 'sort-up')
+    this.headChangeDateIcon.innerHTML = iconArrowDown
+    this.headContacts.classList.add('table__head-cell')
+    this.headContacts.textContent = 'Контакты'
+    this.headActions.classList.add('table__head-cell')
+    this.headActions.textContent = 'Действия'
+
+
+    this.headId.append(this.headIdIcon)
+    this.headFullName.append(this.headFullNameIcon)
+    this.headCreateDate.append(this.headCreateDateIcon)
+    this.headChangeDate.append(this.headChangeDateIcon)
+    this.headRow.append(this.headId, this.headFullName, this.headCreateDate, this.headChangeDate, this.headContacts, this.headActions)
+    this.head.append(this.headRow)
+
+    // body table
+    this.body = document.createElement('tbody')
+
+
+
+
+    this.table.append(this.head, this.body)
+    container.append(this.table)
   }
+};
 
-  head.append(rowHead);
 
-  table.append(head, body);
-  return {table, body};
-}
+
+
+

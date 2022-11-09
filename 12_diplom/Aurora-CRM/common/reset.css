@@ -93,3 +93,13 @@ button:disabled {
   color: inherit;
   border-color: inherit;
 }
+
+table {
+  border-spacing: 0;
+  border-color: transparent;
+}
+
+th {
+  font-weight: inherit;
+  text-align: inherit;
+}
