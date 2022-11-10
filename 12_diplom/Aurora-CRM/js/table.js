@@ -2,10 +2,9 @@ import { iconArrowUp, iconArrowDown } from "./icons.js";
 
 export let dataTableHead = [
   {
-    tag: 'th',
     name: 'id',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_id'],
       textContent: 'ID',
     },
     childs: [
@@ -19,10 +18,9 @@ export let dataTableHead = [
     ],
   },
   {
-    tag: 'th',
     name: 'fullName',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_full-name'],
       textContent: 'Фамилия Имя Отчество',
     },
     childs: [
@@ -43,10 +41,9 @@ export let dataTableHead = [
     ],
   },
   {
-    tag: 'th',
     name: 'createDate',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_create-date'],
       textContent: 'Дата и время создания',
     },
     childs: [
@@ -60,10 +57,9 @@ export let dataTableHead = [
     ],
   },
   {
-    tag: 'th',
     name: 'changeDate',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_change-date'],
       textContent: 'Последние изменения',
     },
     childs: [
@@ -77,51 +73,93 @@ export let dataTableHead = [
     ],
   },
   {
-    tag: 'th',
     name: 'contacts',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_contacts'],
       textContent: 'Контакты',
     },
   },
   {
-    tag: 'th',
     name: 'actions',
     params: {
-      classList: 'table__head-cell',
+      classList: ['table__head-cell', 'table__head-cell_actions'],
       textContent: 'Действия',
     },
   },
 ]
 
-class CreateCell {
+class CreateHeadCell {
 
+  _sort = 0
+  _sortCurrent = ''
 
   constructor(options) {
-    this.cell = document.createElement(options.tag)
-    this.cell.dataset.name = options.name
+    this.cell = document.createElement('th')
+    // this.cell.dataset.name = options.name
 
-    for (const[key, value] of Object.entries(options.params)) {
-      if (key == 'classList') {
-        if (Array.isArray(value)) {
-          for (const newClass of value) this.cell.classList.add(newClass)
-        } else this.cell.classList.add(value)
-      } else this.cell[key] = value
+    this.name = options.name
+    this.sort = this._sort
+
+    if (options.params) {
+      this.addAttributes(this.cell, options.params)
     }
 
     if (options.childs) {
       for (const child of options.childs) {
         this.childCell = document.createElement(child.tag)
-        for (const[key, value] of Object.entries(child.params)) {
-          if (key == 'classList') {
-            if (Array.isArray(value)) {
-              for (const newClass of value) this.childCell.classList.add(newClass)
-            } else this.childCell.classList.add(value)
-          } else this.childCell[key] = value
-        }
+        this.addAttributes(this.childCell, child.params)
         this.cell.append(this.childCell)
       }
+    }
 
+    this.cell.addEventListener('click', () => {
+      console.log(this);
+      switch (this.sort) {
+        case 0:
+          this.sort = 1
+          break;
+        case 1:
+          this.sort = -1
+          break;
+        case -1:
+          this.sort = 1
+          break;
+
+        default:
+          break;
+      }
+    })
+
+  }
+
+  set sort(value) {
+    this._sort = value
+    switch (this._sort) {
+      case 0:
+        this.cell.classList.remove('sort-up', 'sort-down')
+        break;
+        case 1:
+          this.cell.classList.add('sort-up')
+          this.cell.classList.remove('sort-down')
+          this.childCell.classList.add('asdf')
+          break;
+          case -1:
+            this.cell.classList.add('sort-down')
+            this.cell.classList.remove('sort-up')
+        break;
+    }
+  }
+  get sort() {
+    return this._sort;
+  }
+
+  addAttributes(targetNode, objParams) {
+    for (const[key, value] of Object.entries(objParams)) {
+      if (key == 'classList') {
+        if (Array.isArray(value)) {
+          for (const newClass of value) targetNode.classList.add(newClass)
+        } else targetNode.classList.add(value)
+      } else targetNode[key] = value
     }
   }
 }
@@ -139,7 +177,7 @@ export class Table {
     this.headRow.classList.add('table__head-row')
 
     for (const cellObj of dataTableHead) {
-      this.headCell = new CreateCell(cellObj)
+      this.headCell = new CreateHeadCell(cellObj)
       this._headCells.push(this.headCell)
       this.headRow.append(this.headCell.cell)
     }

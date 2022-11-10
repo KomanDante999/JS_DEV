@@ -19,7 +19,43 @@
   cursor: pointer;
 }
 
-.table__icon-sort {
+.table__head-cell_id {
+
+}
+.table__head-cell_full-name {
+
+}
+.table__head-cell_create-date {
+
+}
+.table__head-cell_change-date {
+
+}
+.table__head-cell_contacts {
+
+}
+.table__head-cell_actions {
+
+}
+
+
+.table__icon-sort,
+.table__type-sort {
   color: var(--color-firm);
   opacity: 0.7;
 }
+
+.table__head-cell.sort-up {
+  color: var(--color-firm);
+}
+
+.table__head-cell.sort-up .table__icon-sort,
+.table__head-cell.sort-up .table__type-sort {
+  opacity: 1;
+}
+
+.table__head-cell.sort-down .table__icon-sort svg{
+  color: red;
+  transform: rotate(180deg);
+}
+
