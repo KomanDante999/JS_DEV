@@ -124,16 +124,12 @@ let listClients = [
   },
 ]
 
-let dataClients = []
+export let dataClients = []
 
 for (const client of listClients) {
   dataClients.push(new DataClient(client))
 }
 
-for (const iterator of dataClients) {
-  console.log(iterator.dateChangeStr())
-
-}
 
 
 

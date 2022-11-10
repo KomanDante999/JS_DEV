@@ -1,5 +1,6 @@
 import { iconArrowUp, iconArrowDown } from "./icons.js";
 
+
 export let dataTableHead = [
   {
     name: 'id',
@@ -35,7 +36,7 @@ export let dataTableHead = [
         tag: 'span',
         params: {
           classList: 'table__type-sort',
-          textContent: 'А-Я',
+          textContent: 'Я-А',
         },
       },
     ],
@@ -91,7 +92,7 @@ export let dataTableHead = [
 class CreateHeadCell {
 
   _sort = 0
-  _sortCurrent = ''
+  _cellChilds = []
 
   constructor(options) {
     this.cell = document.createElement('th')
@@ -106,9 +107,10 @@ class CreateHeadCell {
 
     if (options.childs) {
       for (const child of options.childs) {
-        this.childCell = document.createElement(child.tag)
-        this.addAttributes(this.childCell, child.params)
-        this.cell.append(this.childCell)
+        this.cellChild = document.createElement(child.tag)
+        this.addAttributes(this.cellChild, child.params)
+        this.cell.append(this.cellChild)
+        this._cellChilds.push(this.cellChild)
       }
     }
 
@@ -129,23 +131,30 @@ class CreateHeadCell {
           break;
       }
     })
-
   }
 
   set sort(value) {
     this._sort = value
     switch (this._sort) {
       case 0:
-        this.cell.classList.remove('sort-up', 'sort-down')
+        this.cell.classList.remove('is-sorted')
+        for (const child of this._cellChilds) {
+          child.classList.remove('sort-up')
+          if (child.textContent === 'Я-А' || child.textContent === 'А-Я') child.textContent = 'А-Я'
+        }
         break;
         case 1:
-          this.cell.classList.add('sort-up')
-          this.cell.classList.remove('sort-down')
-          this.childCell.classList.add('asdf')
+          this.cell.classList.add('is-sorted')
+          for (const child of this._cellChilds) {
+            child.classList.toggle('sort-up')
+            if (child.textContent === 'Я-А') child.textContent = 'А-Я'
+          }
           break;
           case -1:
-            this.cell.classList.add('sort-down')
-            this.cell.classList.remove('sort-up')
+            for (const child of this._cellChilds) {
+              child.classList.toggle('sort-up')
+              if (child.textContent === 'А-Я') child.textContent = 'Я-А'
+            }
         break;
     }
   }
@@ -166,8 +175,9 @@ class CreateHeadCell {
 
 export class Table {
   _headCells = []
+  _currentSort = 'id'
 
-  constructor(container, dataTableHead) {
+  constructor(container, dataTableHead, dataClients) {
     this.table = document.createElement('table')
     this.table.classList.add('table')
     // head table
@@ -181,6 +191,7 @@ export class Table {
       this._headCells.push(this.headCell)
       this.headRow.append(this.headCell.cell)
     }
+
 
 
     this.head.append(this.headRow)
