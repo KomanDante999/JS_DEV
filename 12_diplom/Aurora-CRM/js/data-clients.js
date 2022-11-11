@@ -49,7 +49,7 @@ export class DataClient {
 
 let listClients = [
   {
-    id: 001,
+    id: 1000,
     dateCreation: new Date(2019,1,15,9,1),
     dateChange: new Date(2021,5,18,14,20),
     perconalData: {
@@ -63,7 +63,7 @@ let listClients = [
     }
   },
   {
-    id: 002,
+    id: 1001,
     dateCreation: new Date(2020,8,4,10,45),
     dateChange: new Date(2021,8,30,15,10),
     perconalData: {
@@ -78,7 +78,7 @@ let listClients = [
     }
   },
   {
-    id: 003,
+    id: 1002,
     dateCreation: new Date(2022,4,15,10,10),
     dateChange: new Date(2022,4,15,14,20),
     perconalData: {
@@ -93,7 +93,7 @@ let listClients = [
     }
   },
   {
-    id: 004,
+    id: 1003,
     dateCreation: new Date(2019,1,15,9,1),
     dateChange: new Date(2021,5,18,14,20),
     perconalData: {
@@ -108,7 +108,7 @@ let listClients = [
     }
   },
   {
-    id: 005,
+    id: 1004,
     dateCreation: new Date(2019,1,15,9,1),
     dateChange: new Date(2021,5,18,14,20),
     perconalData: {

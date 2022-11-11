@@ -7,7 +7,13 @@ import { dataClients } from "./Data-clients.js";
     const $container = document.getElementById('aurora-crm');
     $container.classList.add('aurora-crm');
 
-    let Aurora = new AppAurora($container, dataTableHead, dataClients)
+    let dataTable = {
+      dataHead: dataTableHead,
+      currentSort: 'id',
+      dataBody: dataClients,
+    }
+
+    let Aurora = new AppAurora($container, dataTable)
     console.log('Aurora :>> ', Aurora);
 
   })

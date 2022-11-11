@@ -16,11 +16,22 @@
 }
 
 .table__head-cell {
+}
+
+.sortable {
   cursor: pointer;
   transition-property: color;
   transition-duration: var(--duration-btn-animation);
 }
 
+.sortable:hover {
+  color: var(--color-black);
+}
+
+.sortable:hover .table__icon-sort,
+.sortable:hover .table__type-sort {
+  opacity: 1;
+}
 
 
 .table__head-cell_id {
@@ -42,22 +53,12 @@
 
 }
 
-.table__head-cell:hover {
-  color: var(--color-black);
-}
-
-.table__head-cell:hover .table__icon-sort,
-.table__head-cell:hover .table__type-sort {
-  opacity: 1;
-}
-
 .table__icon-sort,
 .table__type-sort {
   color: var(--color-firm);
   opacity: 0.7;
   transition-property: opacity, transform;
   transition-duration: var(--duration-btn-animation);
-
 }
 
 .table__head-cell.is-sorted {

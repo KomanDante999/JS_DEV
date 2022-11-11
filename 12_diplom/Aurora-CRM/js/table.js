@@ -4,8 +4,9 @@ import { iconArrowUp, iconArrowDown } from "./icons.js";
 export let dataTableHead = [
   {
     name: 'id',
+    sortable: true,
     params: {
-      classList: ['table__head-cell', 'table__head-cell_id'],
+      classList: ['table__head-cell', 'sortable', 'table__head-cell_id'],
       textContent: 'ID',
     },
     childs: [
@@ -20,8 +21,9 @@ export let dataTableHead = [
   },
   {
     name: 'fullName',
+    sortable: true,
     params: {
-      classList: ['table__head-cell', 'table__head-cell_full-name'],
+      classList: ['table__head-cell', 'sortable', 'table__head-cell_full-name'],
       textContent: 'Фамилия Имя Отчество',
     },
     childs: [
@@ -43,8 +45,9 @@ export let dataTableHead = [
   },
   {
     name: 'createDate',
+    sortable: true,
     params: {
-      classList: ['table__head-cell', 'table__head-cell_create-date'],
+      classList: ['table__head-cell', 'sortable', 'table__head-cell_create-date'],
       textContent: 'Дата и время создания',
     },
     childs: [
@@ -59,8 +62,9 @@ export let dataTableHead = [
   },
   {
     name: 'changeDate',
+    sortable: true,
     params: {
-      classList: ['table__head-cell', 'table__head-cell_change-date'],
+      classList: ['table__head-cell', 'sortable', 'table__head-cell_change-date'],
       textContent: 'Последние изменения',
     },
     childs: [
@@ -75,6 +79,7 @@ export let dataTableHead = [
   },
   {
     name: 'contacts',
+    sortable: false,
     params: {
       classList: ['table__head-cell', 'table__head-cell_contacts'],
       textContent: 'Контакты',
@@ -82,6 +87,7 @@ export let dataTableHead = [
   },
   {
     name: 'actions',
+    sortable: false,
     params: {
       classList: ['table__head-cell', 'table__head-cell_actions'],
       textContent: 'Действия',
@@ -89,17 +95,17 @@ export let dataTableHead = [
   },
 ]
 
+// создание ячейки заголовка таблицы ===========================
 class CreateHeadCell {
-
   _sort = 0
   _cellChilds = []
 
   constructor(options) {
     this.cell = document.createElement('th')
-    // this.cell.dataset.name = options.name
 
     this.name = options.name
     this.sort = this._sort
+    this.sortable = options.sortable
 
     if (options.params) {
       this.addAttributes(this.cell, options.params)
@@ -114,23 +120,21 @@ class CreateHeadCell {
       }
     }
 
-    this.cell.addEventListener('click', () => {
-      console.log(this);
-      switch (this.sort) {
-        case 0:
-          this.sort = 1
-          break;
-        case 1:
-          this.sort = -1
-          break;
-        case -1:
-          this.sort = 1
-          break;
-
-        default:
-          break;
-      }
-    })
+    if (this.sortable) {
+      this.cell.addEventListener('click', () => {
+        switch (this.sort) {
+          case 0:
+            this.sort = 1
+            break;
+          case 1:
+            this.sort = -1
+            break;
+          case -1:
+            this.sort = 1
+            break;
+        }
+      })
+    }
   }
 
   set sort(value) {
@@ -173,11 +177,15 @@ class CreateHeadCell {
   }
 }
 
+// создание ячейки тела таблицы ===========================
+
+
+// создание таблицы ============================================
 export class Table {
   _headCells = []
-  _currentSort = 'id'
+  _currentSort = ''
 
-  constructor(container, dataTableHead, dataClients) {
+  constructor(container, dataTable) {
     this.table = document.createElement('table')
     this.table.classList.add('table')
     // head table
@@ -186,13 +194,24 @@ export class Table {
     this.head.classList.add('table__head')
     this.headRow.classList.add('table__head-row')
 
-    for (const cellObj of dataTableHead) {
+    this.currentSort = dataTable.currentSort
+
+    for (const cellObj of dataTable.dataHead) {
       this.headCell = new CreateHeadCell(cellObj)
+      if (this.currentSort == cellObj.name) this.headCell.sort = 1
       this._headCells.push(this.headCell)
       this.headRow.append(this.headCell.cell)
     }
 
-
+    for (const headCell of this._headCells) {
+      if (headCell.sortable) {
+        headCell.cell.addEventListener('click', () => {
+          if (headCell.name !== this.currentSort) {
+            this.currentSort = headCell.name
+          }
+        })
+      }
+    }
 
     this.head.append(this.headRow)
 
@@ -205,6 +224,23 @@ export class Table {
     this.table.append(this.head, this.body)
     container.append(this.table)
   }
+
+
+  set currentSort(value) {
+    this._currentSort = value
+    console.log('value :>> ', value);
+    for (const headCell of this._headCells) {
+      headCell.sort = 0
+      if (headCell.name == value) headCell.sort = 1
+    }
+
+
+  }
+
+  get currentSort() {
+    return this._currentSort
+  }
+
 };
 
 
