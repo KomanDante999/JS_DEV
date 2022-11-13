@@ -1,6 +1,7 @@
 import { iconArrowUp, iconArrowDown } from "./icons.js";
+import { ListClients } from "./Data-clients.js";
 
-
+// вид заголовка таблицы
 export let dataTableHead = [
   {
     name: 'id',
@@ -177,66 +178,122 @@ class CreateHeadCell {
   }
 }
 
-// создание ячейки тела таблицы ===========================
+// создание элементов строки таблицы ===========================
+class CreateBodyRow {
 
+  constructor(container, dataHead, dataClient) {
+    for (const cellHead of dataHead) {
+      this.cell = document.createElement('td')
+      this.name = cellHead.name
+      switch (cellHead.name) {
+        case 'id':
+          this.cell.textContent = dataClient.id
+          break;
+        case 'fullName':
+          this.cell.textContent = dataClient.fullName
+          break;
+        case 'createDate':
+          this.cell.textContent = dataClient.dateCreationStr()
+          break;
+        case 'changeDate':
+          this.cell.textContent = dataClient.dateChangeStr()
+          break;
+        case 'contacts':
+          this.cell.textContent = dataClient.id
+          break;
+        case 'actions':
+          this.cell.textContent = dataClient.id
+          break;
+      }
+      this.cell.classList.add('table__body-cell')
+      container.append(this.cell)
+    }
+  }
+};
 
 // создание таблицы ============================================
 export class Table {
-  _headCells = []
+  _bodyRows = []
   _currentSort = ''
+  _sortDir = true
 
   constructor(container, dataTable) {
+    // data
+    this.dataHead = dataTable.dataHead
+    this.headCells = []
+    this.dataClient =[]
+    this.currentSort = dataTable.currentSort
+    this.sortdir = this._sortDir
+    this.dataClient = new ListClients(dataTable.dataBody)
+
+
     this.table = document.createElement('table')
     this.table.classList.add('table')
+
     // head table
     this.head = document.createElement('thead')
     this.headRow = document.createElement('tr')
     this.head.classList.add('table__head')
     this.headRow.classList.add('table__head-row')
 
-    this.currentSort = dataTable.currentSort
-
-    for (const cellObj of dataTable.dataHead) {
-      this.headCell = new CreateHeadCell(cellObj)
-      if (this.currentSort == cellObj.name) this.headCell.sort = 1
-      this._headCells.push(this.headCell)
-      this.headRow.append(this.headCell.cell)
-    }
-
-    for (const headCell of this._headCells) {
-      if (headCell.sortable) {
-        headCell.cell.addEventListener('click', () => {
-          if (headCell.name !== this.currentSort) {
-            this.currentSort = headCell.name
-          }
-        })
-      }
-    }
-
-    this.head.append(this.headRow)
+    this.createHead()
 
     // body table
     this.body = document.createElement('tbody')
+    this.body.classList.add('table__body')
+
+    this.updateBody()
 
 
-
-
+    this.head.append(this.headRow)
     this.table.append(this.head, this.body)
     container.append(this.table)
   }
 
+  createHead() {
+    if (this.dataHead.length > 0) {
+      for (const cellObj of this.dataHead) {
+        this.headCell = new CreateHeadCell(cellObj)
+        if (this.currentSort == cellObj.name) this.headCell.sort = 1
+        this.headCells.push(this.headCell)
+        this.headRow.append(this.headCell.cell)
+      }
+      for (const headCell of this.headCells) {
+        if (headCell.sortable) {
+          headCell.cell.addEventListener('click', () => {
+            if (headCell.name !== this.currentSort) {
+              this.currentSort = headCell.name
+            }
+          })
+        }
+      }
+    }
+  }
+
+  updateBody() {
+    let dataBody = []
+    this.body.innerHTML = ''
+    dataBody = this.dataClient._arrayClients
+
+    if (dataBody.length > 0) {
+      for (const client of dataBody) {
+        this.row = document.createElement('tr')
+        this.row.classList.add('table__body-row')
+        new CreateBodyRow(this.row, this.headCells, client)
+        this.body.append(this.row)
+      }
+    }
+  }
 
   set currentSort(value) {
+
     this._currentSort = value
-    console.log('value :>> ', value);
-    for (const headCell of this._headCells) {
+    for (const headCell of this.headCells) {
       headCell.sort = 0
       if (headCell.name == value) headCell.sort = 1
     }
-
-
+    console.log('this.dataClient :>> ', this.dataClient);
   }
-
   get currentSort() {
     return this._currentSort
   }
