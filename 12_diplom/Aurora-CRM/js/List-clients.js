@@ -52,12 +52,14 @@ class DataClient {
 
 export class ListClients {
   _arrayClients = []
-  _sortKey = 'fullName'
+  _sortKey = ''
   _sortDir = true
 
   constructor(dataClients) {
+    this.arrayClients = this._arrayClients
+
     for (const client of dataClients) {
-      this._arrayClients.push(new DataClient(client))
+      this.arrayClients.push(new DataClient(client))
     }
 
     this.sortDir = this._sortDir
@@ -65,13 +67,20 @@ export class ListClients {
   }
 
   sorted() {
-    this._arrayClients.sort((a,b) => {if (this._sortDir ? a[this.sortKey] < b[this.sortKey] : a[this.sortKey] > b[this.sortKey]) return -1})
+    this.arrayClients.sort((a,b) => {
+      if (this.sortDir ? a[this.sortKey] < b[this.sortKey] : a[this.sortKey] > b[this.sortKey]) return -1
+    })
+    console.log('this.sortKey :>> ', this.sortKey);
   }
 
 
   set sortKey(value) {
     this._sortKey = value
-    this.sorted()
+    console.log('this.sortKey2 :>> ', this.sortKey);
+    if (value) {
+      this.sortDir = true
+      this.sorted()
+    }
   }
   get sortKey() {
     return this._sortKey;

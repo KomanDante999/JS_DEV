@@ -45,7 +45,7 @@ export let dataTableHead = [
     ],
   },
   {
-    name: 'createDate',
+    name: 'dateCreation',
     sortable: true,
     params: {
       classList: ['table__head-cell', 'sortable', 'table__head-cell_create-date'],
@@ -62,7 +62,7 @@ export let dataTableHead = [
     ],
   },
   {
-    name: 'changeDate',
+    name: 'dateChange',
     sortable: true,
     params: {
       classList: ['table__head-cell', 'sortable', 'table__head-cell_change-date'],
@@ -98,7 +98,7 @@ export let dataTableHead = [
 
 // создание ячейки заголовка таблицы ===========================
 class CreateHeadCell {
-  _sortDir = false
+  _sortDirect = false
   _sortActive = false
   _cellChilds = []
 
@@ -106,7 +106,7 @@ class CreateHeadCell {
     this.cell = document.createElement('th')
 
     this.name = options.name
-    this.sortDir = this._sortDir
+    this.sortDirect = this._sortDirect
     this.sortable = options.sortable
     this.sortActive = this._sortActive
 
@@ -125,7 +125,7 @@ class CreateHeadCell {
 
     if (this.sortable) {
       this.cell.addEventListener('click', () => {
-        this.sortDir = !this.sortDir
+        this.sortDirect = !this.sortDirect
       })
     }
   }
@@ -140,8 +140,8 @@ class CreateHeadCell {
     }
   }
 
-  set sortDir(value) {
-    this._sortDir = value
+  set sortDirect(value) {
+    this._sortDirect = value
 
     if (value) {
       this.cell.classList.add('sort-up')
@@ -163,7 +163,7 @@ class CreateHeadCell {
 
 
   }
-  get sortDir() {return this._sortDir}
+  get sortDirect() {return this._sortDirect}
 
   set sortActive(value) {
     this._sortActive = value
@@ -192,10 +192,10 @@ class CreateBodyRow {
         case 'fullName':
           this.cell.textContent = dataClient.fullName
           break;
-        case 'createDate':
+        case 'dateCreation':
           this.cell.textContent = dataClient.dateCreationStr()
           break;
-        case 'changeDate':
+        case 'dateChange':
           this.cell.textContent = dataClient.dateChangeStr()
           break;
         case 'contacts':
@@ -215,17 +215,16 @@ class CreateBodyRow {
 export class Table {
   _bodyRows = []
   _currentSort = ''
-  _sortDir = true
+  _sortDirect = true
 
   constructor(container, dataTable) {
     // data
     this.dataHead = dataTable.dataHead
     this.headCells = []
-    this.dataClient = null
+    // this.dataClient = null
     this.currentSort = dataTable.currentSort
-    this.sortdir = this._sortDir
+    this.sortDirect = this._sortDirect
     this.dataClient = new ListClients(dataTable.dataBody)
-
 
     this.table = document.createElement('table')
     this.table.classList.add('table')
@@ -255,7 +254,7 @@ export class Table {
       for (const cellObj of this.dataHead) {
         this.headCell = new CreateHeadCell(cellObj)
         if (this.currentSort == cellObj.name) {
-          this.headCell.sortDir = true
+          this.headCell.sortDirect = true
           this.headCell.sortActive = true
         }
         this.headCells.push(this.headCell)
@@ -265,11 +264,12 @@ export class Table {
       for (const headCell of this.headCells) {
         if (headCell.sortable) {
           headCell.cell.addEventListener('click', () => {
-            // headCell.sortActive = false
+            console.log('headCell.name :>> ', headCell.name);
+            console.log('this.currentSort :>> ', this.currentSort);
             if (headCell.name !== this.currentSort) {
               this.currentSort = headCell.name
               headCell.sortActive = true
-            }
+            } else this.sortDirect = !this.sortDirect
           })
         }
       }
@@ -294,20 +294,31 @@ export class Table {
   set currentSort(value) {
     this._currentSort = value
     for (const headCell of this.headCells) {
-      headCell.sortDir = false
+      headCell.sortDirect = false
       headCell.sortActive = false
-      if (headCell.name == value) headCell.sortDir = true
+      if (headCell.name == value) headCell.sortDirect = true
     }
+    console.log('value :>> ', value);
+    console.log('this.dataClient :>> ', this.dataClient);
     if (this.dataClient) {
-      this.dataClient.sortKey = value
       this.updateBody()
+      this.dataClient.sortKey = value
     }
   }
   get currentSort() {
     return this._currentSort
   }
 
-
+  set sortDirect(value) {
+    this._sortDirect = value
+    if (this.dataClient) {
+      this.dataClient.sortDir = value
+      this.updateBody()
+    }
+  }
+  get sortDirect() {
+    return this._sortDirect
+  }
 
 };
 

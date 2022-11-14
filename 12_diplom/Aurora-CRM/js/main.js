@@ -10,7 +10,7 @@ import { dataClientsDefault } from "./data-clients-default.js";
     let listClients = dataClientsDefault
     let dataTable = {
       dataHead: dataTableHead,
-      currentSort: 'id',
+      currentSort: 'fullName',
       dataBody: listClients,
     }
 
