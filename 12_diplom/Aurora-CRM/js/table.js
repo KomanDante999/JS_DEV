@@ -1,5 +1,5 @@
 import { iconArrowUp, iconArrowDown } from "./icons.js";
-import { ListClients } from "./Data-clients.js";
+import { ListClients } from "./List-clients.js";
 
 // вид заголовка таблицы
 export let dataTableHead = [
@@ -98,15 +98,17 @@ export let dataTableHead = [
 
 // создание ячейки заголовка таблицы ===========================
 class CreateHeadCell {
-  _sort = 0
+  _sortDir = false
+  _sortActive = false
   _cellChilds = []
 
   constructor(options) {
     this.cell = document.createElement('th')
 
     this.name = options.name
-    this.sort = this._sort
+    this.sortDir = this._sortDir
     this.sortable = options.sortable
+    this.sortActive = this._sortActive
 
     if (options.params) {
       this.addAttributes(this.cell, options.params)
@@ -123,48 +125,9 @@ class CreateHeadCell {
 
     if (this.sortable) {
       this.cell.addEventListener('click', () => {
-        switch (this.sort) {
-          case 0:
-            this.sort = 1
-            break;
-          case 1:
-            this.sort = -1
-            break;
-          case -1:
-            this.sort = 1
-            break;
-        }
+        this.sortDir = !this.sortDir
       })
     }
-  }
-
-  set sort(value) {
-    this._sort = value
-    switch (this._sort) {
-      case 0:
-        this.cell.classList.remove('is-sorted')
-        for (const child of this._cellChilds) {
-          child.classList.remove('sort-up')
-          if (child.textContent === 'Я-А' || child.textContent === 'А-Я') child.textContent = 'А-Я'
-        }
-        break;
-        case 1:
-          this.cell.classList.add('is-sorted')
-          for (const child of this._cellChilds) {
-            child.classList.toggle('sort-up')
-            if (child.textContent === 'Я-А') child.textContent = 'А-Я'
-          }
-          break;
-          case -1:
-            for (const child of this._cellChilds) {
-              child.classList.toggle('sort-up')
-              if (child.textContent === 'А-Я') child.textContent = 'Я-А'
-            }
-        break;
-    }
-  }
-  get sort() {
-    return this._sort;
   }
 
   addAttributes(targetNode, objParams) {
@@ -176,7 +139,44 @@ class CreateHeadCell {
       } else targetNode[key] = value
     }
   }
-}
+
+  set sortDir(value) {
+    this._sortDir = value
+
+    if (value) {
+      this.cell.classList.add('sort-up')
+      if (this._cellChilds.length > 0)
+      for (const child of this._cellChilds) {
+        child.classList.add('sort-up')
+        if (child.textContent === 'Я-А') child.textContent = 'А-Я'
+
+      }
+
+    } else {
+      this.cell.classList.remove('sort-up')
+      if (this._cellChilds.length > 0)
+      for (const child of this._cellChilds) {
+        child.classList.remove('sort-up')
+        if (child.textContent === 'А-Я') child.textContent = 'Я-А'
+      }
+    }
+
+
+  }
+  get sortDir() {return this._sortDir}
+
+  set sortActive(value) {
+    this._sortActive = value
+    if (this._sortActive) {
+      this.cell.classList.add('is-sorted')
+    } else {
+      this.cell.classList.remove('is-sorted')
+    }
+  }
+
+  get sortActive() {return this._sortActive}
+
+};
 
 // создание элементов строки таблицы ===========================
 class CreateBodyRow {
@@ -221,7 +221,7 @@ export class Table {
     // data
     this.dataHead = dataTable.dataHead
     this.headCells = []
-    this.dataClient =[]
+    this.dataClient = null
     this.currentSort = dataTable.currentSort
     this.sortdir = this._sortDir
     this.dataClient = new ListClients(dataTable.dataBody)
@@ -254,15 +254,21 @@ export class Table {
     if (this.dataHead.length > 0) {
       for (const cellObj of this.dataHead) {
         this.headCell = new CreateHeadCell(cellObj)
-        if (this.currentSort == cellObj.name) this.headCell.sort = 1
+        if (this.currentSort == cellObj.name) {
+          this.headCell.sortDir = true
+          this.headCell.sortActive = true
+        }
         this.headCells.push(this.headCell)
         this.headRow.append(this.headCell.cell)
       }
+
       for (const headCell of this.headCells) {
         if (headCell.sortable) {
           headCell.cell.addEventListener('click', () => {
+            // headCell.sortActive = false
             if (headCell.name !== this.currentSort) {
               this.currentSort = headCell.name
+              headCell.sortActive = true
             }
           })
         }
@@ -286,17 +292,22 @@ export class Table {
   }
 
   set currentSort(value) {
-
     this._currentSort = value
     for (const headCell of this.headCells) {
-      headCell.sort = 0
-      if (headCell.name == value) headCell.sort = 1
+      headCell.sortDir = false
+      headCell.sortActive = false
+      if (headCell.name == value) headCell.sortDir = true
     }
-    console.log('this.dataClient :>> ', this.dataClient);
+    if (this.dataClient) {
+      this.dataClient.sortKey = value
+      this.updateBody()
+    }
   }
   get currentSort() {
     return this._currentSort
   }
+
+
 
 };
 
