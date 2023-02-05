@@ -1,86 +1,30 @@
-class DataClient {
-
-  constructor(dataClient) {
-    this.id = dataClient.id
-    this.surname = dataClient.perconalData.surname
-    this.name = dataClient.perconalData.name
-    this.middleName = dataClient.perconalData.middleName
-    this.fullName = this.getFullName()
-    this.dateCreation = dataClient.dateCreation
-    this.dateChange = dataClient.dateChange
-    this.contact = {}
-
-    if (dataClient.contactData) {
-      for (const[key, value] of Object.entries(dataClient.contactData)) {
-        this.contact[key] = value
-      }
-    }
-
-  }
-
-  getFullName() {
-    return `${this.surname} ${this.name} ${this.middleName}`
-  }
-
-  dateCreationStr() {
-    const year  = this.dateCreation.getFullYear()
-    let month  = this.dateCreation.getMonth() +1
-    let day  = this.dateCreation.getDate()
-    let hours = this.dateCreation.getHours()
-    let minutes = this.dateCreation.getMinutes()
-    if (month < 10) month = `0${month}`
-    if (day < 10) day = `0${day}`
-    if (hours < 10) hours = `0${hours}`
-    if (minutes < 10) minutes = `0${minutes}`
-    return `${day}.${month}.${year}  ${hours}:${minutes}`
-  }
-
-  dateChangeStr() {
-    const year  = this.dateChange.getFullYear()
-    let month  = this.dateChange.getMonth() +1
-    let day  = this.dateChange.getDate()
-    let hours = this.dateChange.getHours()
-    let minutes = this.dateChange.getMinutes()
-    if (month < 10) month = `0${month}`
-    if (day < 10) day = `0${day}`
-    if (hours < 10) hours = `0${hours}`
-    if (minutes < 10) minutes = `0${minutes}`
-    return `${day}.${month}.${year}  ${hours}:${minutes}`
-  }
-}
-
-
 export class ListClients {
-  _arrayClients = []
   _sortKey = ''
   _sortDir = true
 
-  constructor(dataClients) {
-    this.arrayClients = this._arrayClients
+  constructor(params) {
 
-    for (const client of dataClients) {
-      this.arrayClients.push(new DataClient(client))
+    this.incomingData = []
+    if (Array.isArray(params.dataTable)) this.incomingData = params.dataTable
+    else this.incomingData.push(params.dataTable)
+
+
+    this.arrayClients = []
+    for (const client of this.incomingData) {
+      this.arrayClients.push(new ParsingIncomingData(client))
     }
-
-    this.sortDir = this._sortDir
-    this.sortKey = this._sortKey
+    this.sortKey = params.currentSort
   }
 
   sorted() {
     this.arrayClients.sort((a,b) => {
       if (this.sortDir ? a[this.sortKey] < b[this.sortKey] : a[this.sortKey] > b[this.sortKey]) return -1
     })
-    console.log('this.sortKey :>> ', this.sortKey);
   }
-
 
   set sortKey(value) {
     this._sortKey = value
-    console.log('this.sortKey2 :>> ', this.sortKey);
-    if (value) {
-      this.sortDir = true
-      this.sorted()
-    }
+    if (value) this.sortDir = true
   }
   get sortKey() {
     return this._sortKey;
@@ -92,8 +36,51 @@ export class ListClients {
   get sortDir() {
     return this._sortDir;
   }
+}
+
+class ParsingIncomingData {
+
+  constructor(dataClient) {
+    this.id = dataClient.id
+    this.surname = dataClient.surname
+    this.name = dataClient.name
+    this.middleName = dataClient.lastName
+    this.fullName = this.getFullName()
+    this.dateCreation = new Date(Date.parse(dataClient.createdAt))
+    this.dateUpdate = new Date(Date.parse(dataClient.updatedAt))
+    this.contacts = []
+
+    if (dataClient.contacts.length > 0) {
+      for (const item of dataClient.contacts) {
+        this.contact = {
+          type: item.type,
+          value: item.value,
+        }
+        this.contacts.push(this.contact)
+      }
+    }
+  }
+
+  getFullName() {
+    return `${this.surname} ${this.name} ${this.middleName}`
+  }
+
+  dateToStr(date) {
+    let year  = date.getFullYear()
+    let month  = date.getMonth() +1
+    let day  = date.getDate()
+    let hours = date.getHours()
+    let minutes = date.getMinutes()
+    if (month < 10) month = `0${month}`
+    if (day < 10) day = `0${day}`
+    if (hours < 10) hours = `0${hours}`
+    if (minutes < 10) minutes = `0${minutes}`
+    return `${day}.${month}.${year}  ${hours}:${minutes}`
+  }
 
 }
+
+
 
 
 

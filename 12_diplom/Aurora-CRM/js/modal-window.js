@@ -1,68 +1,61 @@
 import { iconBtnClose } from "./icons.js";
 
 export class ModalWindow{
-  constructor(btnDown){
-    this.body = document.querySelector('body');
-    this.modal = document.createElement('div')
-    this.container = document.createElement('div')
-    this.contant = document.createElement('div')
-    this.btnCloseTop = document.createElement('button')
-    this.btnCloseBottom = document.createElement('button')
-    if (!btnDown) {
-      this.btnCloseBottom.style.display = 'none'
-    }
+  constructor(){
+    this.$body = document.querySelector('body');
+    this.$modal = document.createElement('div')
+    this.$container = document.createElement('div')
+    this.$contant = document.createElement('div')
+    this.$btnCloseTop = document.createElement('button')
 
-    this.body.classList.add('over-hidden')
-    this.modal.classList.add('kd-modal', 'is-open')
-    this.container.classList.add('kd-modal__container', 'is-open')
-    this.contant.classList.add('kd-modal__contant')
-    this.btnCloseTop.classList.add('kd-modal__btn-close_top')
-    this.btnCloseBottom.classList.add('kd-modal__btn-close_bottom')
+    this.$body.classList.add('over-hidden')
+    this.$modal.classList.add('kd-modal', 'is-open')
+    this.$container.classList.add('kd-modal__container', 'is-open')
+    this.$contant.classList.add('kd-modal__contant')
+    this.$btnCloseTop.classList.add('kd-modal__btn-close_top')
 
-    this.btnCloseTop.innerHTML = iconBtnClose
-    this.btnCloseBottom.textContent = 'Отмена'
+    this.$btnCloseTop.innerHTML = iconBtnClose
 
-    this.btnCloseTop.addEventListener('click', () => {
-      this.modal.classList.remove('is-open')
-      this.modal.classList.add('is-close')
-      this.container.classList.remove('is-open')
-      this.container.classList.add('is-close')
-      this.modal.addEventListener('animationend', () => {
-        this.modal.remove()
-        this.body.classList.remove('over-hidden')
-      })
+    this.$btnCloseTop.addEventListener('click', () => {
+      this.closeWindow()
     })
-    this.btnCloseBottom.addEventListener('click', () => {
-      this.modal.classList.remove('is-open')
-      this.modal.classList.add('is-close')
-      this.container.classList.remove('is-open')
-      this.container.classList.add('is-close')
-      this.modal.addEventListener('animationend', () => {
-        this.modal.remove()
-        this.body.classList.remove('over-hidden')
-      })
+
+    this.$container.addEventListener('mousedown', event => {
+      event._mousedownOnContainer = true
     })
-    this.container.addEventListener('click', event => {
-      event._clickOnModal = true
-      console.log('event._clickOnModal :>> ', event._clickOnModal);
-    })
-    this.modal.addEventListener('click', event => {
-      if (!event._clickOnModal) {
-        console.log('overlay');
-          this.modal.classList.remove('is-open')
-          this.modal.classList.add('is-close')
-          this.container.classList.remove('is-open')
-          this.container.classList.add('is-close')
-          this.modal.addEventListener('animationend', () => {
-            this.modal.remove()
-            this.body.classList.remove('over-hidden')
-          })
+    this.$modal.addEventListener('mousedown', event => {
+      if (!event._mousedownOnContainer) {
+        this.closeWindow()
       }
     })
 
-    this.container.append(this.btnCloseTop, this.contant, this.btnCloseBottom)
-    this.modal.append(this.container)
-    this.body.append(this.modal)
+    this.$container.append(this.$btnCloseTop, this.$contant)
+    this.$modal.append(this.$container)
+    this.$body.append(this.$modal)
+
+
+  }
+
+  closeWindow() {
+    this.$modal.classList.remove('is-open')
+    this.$modal.classList.add('is-close')
+    this.$container.classList.remove('is-open')
+    this.$container.classList.add('is-close')
+    this.$modal.addEventListener('animationend', () => {
+      this.$modal.remove()
+      this.$body.classList.remove('over-hidden')
+    })
+  }
+
+  createBtnBottom(btnText) {
+    this.$btnBottom = document.createElement('button')
+    this.$btnBottom.textContent = `${btnText}`
+    this.$btnBottom.classList.add('kd-modal__btn-bottom')
+    this.$container.append(this.$btnBottom)
+  }
+
+  removeBtnBottom() {
+    this.$container.remove(this.$btnBottom)
   }
 }
 
